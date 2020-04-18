@@ -21,7 +21,7 @@ else()
   message(STATUS "BUILD TESTS: disabled")
 endif()
 
-project(concealX)
+project(ultranoteI)
 
 include_directories(include src external "${CMAKE_BINARY_DIR}/version")
 if(APPLE)
