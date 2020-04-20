@@ -127,7 +127,7 @@ const uint64_t MAX_BLOCK_REWARD = (UINT64_C(10) * parameters::COIN); // max rewa
 const uint64_t REWARD_INCREASE_INTERVAL = (UINT64_C(21900)); // aprox. 1 month (+ 0.4 xuni increment per month)
 
 const char     CRYPTONOTE_NAME[] = "ultranotei";
-const char     GENESIS_COINBASE_TX_HEX[010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990] = "";
+const char     GENESIS_COINBASE_TX_HEX[] = "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
 const uint32_t GENESIS_NONCE = 10000;
 const uint64_t GENESIS_TIMESTAMP = 1587360548; // 20200420
 
