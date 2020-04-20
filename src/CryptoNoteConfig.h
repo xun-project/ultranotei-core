@@ -26,7 +26,7 @@ const uint64_t CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE = 10; /* 20 minutes */
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW = 30;
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1 = 11; /* changed for LWMA3 */
 
-const uint64_t MONEY_SUPPLY = UINT64_C(100000000000000); /* max supply: 100M (Consensus II) */
+const uint64_t MONEY_SUPPLY = UINT64_C(21000000000000); /* max supply: 21M (Consensus II) */
 
 const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX = 0;
 const size_t   ZAWY_DIFFICULTY_FIX = 1;
@@ -70,7 +70,7 @@ const uint32_t DEPOSIT_MIN_TERM_V3 = 21900; /* consensus 2019 - one month */
 const uint32_t DEPOSIT_MAX_TERM_V3 = 1 * 12 * 21900; /* consensus 2019 - one year */
 const uint32_t DEPOSIT_HEIGHT_V3 = 200; /* consensus 2019 - deposts v3.0 */
 const uint64_t DEPOSIT_MIN_TOTAL_RATE_FACTOR = 0; /* constant rate */
-const uint64_t DEPOSIT_MAX_TOTAL_RATE = 4; /* legacy deposits */
+const uint64_t DEPOSIT_MAX_TOTAL_RATE = 3; /* legacy deposits */
 
 static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
 static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
@@ -122,7 +122,7 @@ const char     MINER_CONFIG_FILE_NAME[]                       = "miner_conf.json
 } // parameters
 
 const uint64_t START_BLOCK_REWARD = (UINT64_C(5) * parameters::COIN); // start reward (Consensus I)
-const uint64_t FOUNDATION_TRUST = (UINT64_C(10000000) * parameters::COIN); // 10M locked funds to secure network  (Consensus II)
+const uint64_t FOUNDATION_TRUST = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network  (Consensus II)
 const uint64_t MAX_BLOCK_REWARD = (UINT64_C(10) * parameters::COIN); // max reward (Consensus I)
 const uint64_t REWARD_INCREASE_INTERVAL = (UINT64_C(21900)); // aprox. 1 month (+ 0.4 xuni increment per month)
 
