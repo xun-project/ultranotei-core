@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -689,15 +690,13 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
   if (m_generate_new.empty() && m_wallet_file_arg.empty()) {
     std::cout << "  " << ENDL
     << "  " << ENDL
-    << "      @@@@@@   .@@@@@@&   .@@@   ,@@,   &@@@@@  @@@@@@@@    &@@@*    @@@        " << ENDL
-    << "    &@@@@@@@  @@@@@@@@@@  .@@@@  ,@@,  @@@@@@@  @@@@@@@@    @@@@@    @@@        " << ENDL
-    << "    @@@       @@@    @@@* .@@@@@ ,@@, &@@*      @@@        ,@@#@@.   @@@        " << ENDL
-    << "    @@@       @@@    (@@& .@@@@@,,@@, @@@       @@@...     @@@ @@@   @@@        " << ENDL
-    << "    @@@      .@@&    /@@& .@@*@@@.@@, @@@       @@@@@@     @@@ @@@   @@@        " << ENDL
-    << "    @@@       @@@    #@@  .@@( @@@@@, @@@       @@@       @@@/ #@@&  @@@        " << ENDL
-    << "    @@@       @@@    @@@, .@@( &@@@@, &@@*      @@@       @@@@@@@@@  @@@        " << ENDL
-    << "    %@@@@@@@  @@@@@@@@@@  .@@(  @@@@,  @@@@@@@  @@@@@@@@ .@@@   @@@. @@@@@@@@#  " << ENDL
-    << "      @@@@@@    @@@@@@(   .@@(   @@@,    @@@@@  @@@@@@@@ @@@    (@@@ @@@@@@@@#  " << ENDL
+            << " ##     ## ##     ## ##    ##    #### " << ENDL
+            << "  ##   ##  ##     ## ###   ##     ##  " << ENDL
+            << "   ## ##   ##     ## ####  ##     ##  " << ENDL
+            << "    ###    ##     ## ## ## ##     ##  " << ENDL
+            << "   ## ##   ##     ## ##  ####     ##  " << ENDL
+            << "  ##   ##  ##     ## ##   ###     ##  " << ENDL
+            << " ##     ##  #######  ##    ##    #### " << ENDL
     << "  " << ENDL
     << "  " << ENDL;
     std::cout << "How you would like to proceed?\n\n\t[O]pen an existing wallet\n\t[G]enerate a new wallet file\n\t[I]mport wallet from keys\n\t[M]nemonic seed import\n\t[E]xit.\n\n";
