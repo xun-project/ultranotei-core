@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2020 UltraNote developers
+
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -81,8 +83,14 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
+    /* @NOTE: We can keep m_upgradeHeightV2 = 0 as generateGenesisBlock will always be created
+     *        created using BLOCK_MAJOR_VERSION_1 */
     m_upgradeHeightV2 = 0;
-	  m_upgradeHeightV3 = static_cast<uint32_t>(-1);
+	m_upgradeHeightV3 = 2;
+    m_upgradeHeightV4 = 3;
+    m_upgradeHeightV5 = 4;
+    m_upgradeHeightV6 = 5;
+    m_upgradeHeightV7 = 6;
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
