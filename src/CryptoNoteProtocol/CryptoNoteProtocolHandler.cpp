@@ -657,37 +657,15 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized()
   {
     logger(Logging::INFO) << ENDL << "********************************************************************************" << ENDL
                           << "  " << ENDL
-                          << "                                      .//.                                      " << ENDL
-                          << "                                  ./((((((((,                                   " << ENDL
-                          << "                              .*((((((((((((((((.                               " << ENDL
-                          << "                           *(((((((((*.**.*((((((((/.                           " << ENDL
-                          << "                        /((((((((/.%@@@//(((/.*((((((((,                        " << ENDL
-                          << "                       %@*.((/.#@@@@@@@//(((((((/./(.*(/                        " << ENDL
-                          << "                       %@@@/#@@@@@@@%.    ./(((((((,(((/                        " << ENDL
-                          << "                       %@@@/#@@@@,             *(((,((*                         " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/#@@@@,                                              " << ENDL
-                          << "                       %@@@/(@@@@,              .&@@%.                          " << ENDL
-                          << "                       %@@@/(/.(@@@*        ,&@@@@@@@%..                        " << ENDL
-                          << "                       %@@@@,*@@@@@@@@@,*@@@@@@@@%..(((*                        " << ENDL
-                          << "                       %@@@@@@@&.,@@@@@@@@@@@%..(((((((*                        " << ENDL
-                          << "                          ,@@@@@@@@&.,&@@&..((((((((*                           " << ENDL
-                          << "                              /@@@@@@@@,*(((((((/.                              " << ENDL
-                          << "                                  (@@@@**((((.                                  " << ENDL
-                          << "                                     .#***                                      " << ENDL
+                          << "              ##     ## ##     ## ##    ##    ####                                  " << ENDL
+                          << "               ##   ##  ##     ## ###   ##     ##                                   " << ENDL 
+                          << "                ## ##   ##     ## ####  ##     ##                                   " << ENDL
+                          << "                 ###    ##     ## ## ## ##     ##                                   " << ENDL
+                          << "                ## ##   ##     ## ##  ####     ##                                   " << ENDL
+                          << "               ##   ##  ##     ## ##   ###     ##                                   " << ENDL 
+                          << "              ##     ##  #######  ##    ##    ####                                  " << ENDL
                           << "  " << ENDL
-                          << "You are now synchronized with the Conceal network. You may now start concealwallet." << ENDL
+                          << "You are now synchronized with the UltraNote network. You may now start ultranoteiwallet." << ENDL
                           << "Please note, that the blockchain will be saved only after you quit the daemon" << ENDL
                           << "with the \"exit\" command or if you use the \"save\" command." << ENDL
                           << "Otherwise, you will possibly need to synchronize the blockchain again." << ENDL
