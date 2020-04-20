@@ -76,8 +76,8 @@ static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
 static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
-const uint64_t MULTIPLIER_FACTOR = 50; /* legacy deposits */
-const uint32_t END_MULTIPLIER_BLOCK = 3600; /* legacy deposits */
+const uint64_t MULTIPLIER_FACTOR = 10; /* legacy deposits */
+const uint32_t END_MULTIPLIER_BLOCK = 21900; /* legacy deposits */
 
 const size_t   MAX_BLOCK_SIZE_INITIAL = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 10;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR = 100 * 1024;
@@ -122,7 +122,7 @@ const char     MINER_CONFIG_FILE_NAME[]                       = "miner_conf.json
 } // parameters
 
 const uint64_t START_BLOCK_REWARD = (UINT64_C(5) * parameters::COIN); // start reward (Consensus I)
-const uint64_t FOUNDATION_TRUST = (UINT64_C(10000000) * parameters::COIN); // locked funds to secure network  (Consensus II)
+const uint64_t FOUNDATION_TRUST = (UINT64_C(10000000) * parameters::COIN); // 10M locked funds to secure network  (Consensus II)
 const uint64_t MAX_BLOCK_REWARD = (UINT64_C(10) * parameters::COIN); // max reward (Consensus I)
 const uint64_t REWARD_INCREASE_INTERVAL = (UINT64_C(21900)); // aprox. 1 month (+ 0.4 xuni increment per month)
 
