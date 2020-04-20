@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <initializer_list>
+#include <map>
 
 namespace CryptoNote {
 namespace parameters {
