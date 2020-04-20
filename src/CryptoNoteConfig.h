@@ -191,7 +191,31 @@ __attribute__((unused))
 // {<block height>, "<block hash>"},
 const std::initializer_list<CheckpointData> CHECKPOINTS  = {
 	
+
+};// {BlockIndex , Version}
+const std::map<const uint32_t, const uint8_t> Version = {
+
 };
+
+
+// {BlockIndex , Version}
+const std::map<const uint32_t, const uint8_t> TestNetVersion = {
+   
+    {1, 1},
+    {1, 2},
+    {200, 3},
+    {400, 4},
+    {600, 5},
+    {800, 6},
+    {1000, 7},
+    	
+};
+
+// {BlockIndex , Hash}
+const std::map<const uint32_t, const char*> VersionCheck = {
+    
+};
+
 
 } // CryptoNote
 
