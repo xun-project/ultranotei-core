@@ -131,15 +131,15 @@ const char     GENESIS_COINBASE_TX_HEX[] = "";
 const uint32_t GENESIS_NONCE = 10000;
 const uint64_t GENESIS_TIMESTAMP = 1527078920;
 
-const uint8_t  TRANSACTION_VERSION_1 = 1; //important
-const uint8_t  TRANSACTION_VERSION_2 = 2; //important
+const uint8_t  TRANSACTION_VERSION_1 = 1; // important
+const uint8_t  TRANSACTION_VERSION_2 = 2; // important
 const uint8_t  BLOCK_MAJOR_VERSION_1 = 1; // (Consensus I) important
 const uint8_t  BLOCK_MAJOR_VERSION_2 = 2; // (Consensus II) important
 const uint8_t  BLOCK_MAJOR_VERSION_3 = 3; // (Consensus III)
 const uint8_t  BLOCK_MAJOR_VERSION_4 = 4; // LWMA3
 const uint8_t  BLOCK_MAJOR_VERSION_7 = 7; /* Cryptonight Conceal */
-const uint8_t  BLOCK_MINOR_VERSION_0 = 0;
-const uint8_t  BLOCK_MINOR_VERSION_1 = 1;
+const uint8_t  BLOCK_MINOR_VERSION_0 = 0; // important
+const uint8_t  BLOCK_MINOR_VERSION_1 = 1; // important
 
 const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT = 10000; // by default, blocks ids count in synchronizing
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT = 128; // by default, blocks count in blocks downloading
