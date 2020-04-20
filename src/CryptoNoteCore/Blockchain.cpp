@@ -807,7 +807,11 @@ bool Blockchain::rollback_blockchain_switching(std::list<Block> &original_chain,
 }
 
 
-
+    const std::map<const uint32_t, const uint8_t>* versionMap;
+    if(m_currency.isTestnet())
+      versionMap = &TestNetVersion;
+    else
+      versionMap = &Version;
 
 
 
