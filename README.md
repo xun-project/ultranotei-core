@@ -20,7 +20,7 @@ Run these commands:
 ```
 cd ~
 sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
-git clone https://UltraNote@bitbucket.org/xunteam/ultranote.git 
+git clone https://bitbucket.org/xunteam/ultranotei-core.git 
 cd UltraNote
 mkdir build
 cd build
@@ -29,7 +29,7 @@ cd ..
 make
 ```
 
-The resulting executables can be found in `UltraNote/build/release/src`.
+The resulting executables can be found in `ultranotei-core/build/release/src`.
 
 #### Advanced options:
 
@@ -50,7 +50,7 @@ Building with Clang: it may be possible to use Clang instead of GCC, but this ma
 
 ##### Building
 
-- From the start menu, open 'x64 Native Tools Command Prompt for vs2017'.
+- From the start menu, open 'x64 Native Tools Command Prompt for vs2019'.
 - `cd <your_ultranote_directory>`
 - `mkdir build`
 - `cd build`
@@ -65,7 +65,7 @@ Building with Clang: it may be possible to use Clang instead of GCC, but this ma
 ```
 brew install git cmake boost rocksdb readline
 brew link --force readline
-git clone https://UltraNote@bitbucket.org/xunteam/ultranote.git
+git clone https://bitbucket.org/xunteam/ultranotei-core.git 
 cd UltraNote
 mkdir build
 cd build
@@ -73,4 +73,4 @@ cmake ..
 make
 ```
 
-The resulting executables can be found in `UltraNote/build/release/src`.
+The resulting executables can be found in `ultranotei-core/build/release/src`.
