@@ -60,7 +60,7 @@ namespace Tools
   }
 
     bool PasswordContainer::read_password() {
-  {	    return read_password(false);
+  	    return read_password(false);
   }
 
   bool PasswordContainer::read_password(bool verify) {
@@ -72,9 +72,9 @@ namespace Tools
       std::cout << "password: ";
       
            if (verify) {
-    }	        std::string password1;
-    else	        std::string password2;
-    {	        r = read_from_tty(password1);
+            std::string password1;
+            std::string password2;
+            r = read_from_tty(password1);
         if (r) {
           std::cout << "confirm password: ";
           r = read_from_tty(password2);
@@ -98,7 +98,7 @@ namespace Tools
     }
 
        if (r) {
-    {
+    
       m_empty = false;
     }
         else {
