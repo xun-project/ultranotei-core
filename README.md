@@ -21,7 +21,7 @@ Run these commands:
 cd ~
 sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
 git clone https://bitbucket.org/xunteam/ultranotei-core.git 
-cd UltraNote
+cd ultranotei-core
 mkdir build
 cd build
 cmake ..
@@ -51,7 +51,7 @@ Building with Clang: it may be possible to use Clang instead of GCC, but this ma
 ##### Building
 
 - From the start menu, open 'x64 Native Tools Command Prompt for vs2019'.
-- `cd <your_ultranote_directory>`
+- `cd ultranotei-core`
 - `mkdir build`
 - `cd build`
 -  Set the PATH variable for cmake: ie. `set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%`
@@ -66,7 +66,7 @@ Building with Clang: it may be possible to use Clang instead of GCC, but this ma
 brew install git cmake boost rocksdb readline
 brew link --force readline
 git clone https://bitbucket.org/xunteam/ultranotei-core.git 
-cd UltraNote
+cd ultranotei-core
 mkdir build
 cd build
 cmake ..
