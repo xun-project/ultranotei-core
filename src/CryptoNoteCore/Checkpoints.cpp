@@ -100,42 +100,7 @@ std::vector<uint32_t> Checkpoints::getCheckpointHeights() const {
   return checkpointHeights;
 }
 
-bool Checkpoints::load_checkpoints_from_dns()
-{
-  std::string domain("checkpoints.conceal.id");
-  std::vector<std::string>records;
 
-  logger(Logging::DEBUGGING) << "<< Checkpoints.cpp << " << "Fetching DNS checkpoint records from " << domain;
-
-  if (!Common::fetch_dns_txt(domain, records)) {
-    logger(Logging::DEBUGGING) << "<< Checkpoints.cpp << " << "Failed to lookup DNS checkpoint records from " << domain;
-  }
-
-  for (const auto& record : records) {
-    uint32_t height;
-    Crypto::Hash hash = NULL_HASH;
-    std::stringstream ss;
-    size_t del = record.find_first_of(':');
-    std::string height_str = record.substr(0, del), hash_str = record.substr(del + 1, 64);
-    ss.str(height_str);
-    ss >> height;
-    char c;
-    if (del == std::string::npos) continue;
-    if ((ss.fail() || ss.get(c)) || !Common::podFromHex(hash_str, hash)) {
-      logger(Logging::INFO) << "<< Checkpoints.cpp << " << "Failed to parse DNS checkpoint record: " << record;
-      continue;
-    }
-
-    if (!(0 == m_points.count(height))) {
-      logger(DEBUGGING) << "<< Checkpoints.cpp << " << "Checkpoint already exists for height: " << height << ". Ignoring DNS checkpoint.";
-    } else {
-      add_checkpoint(height, hash_str);
-	    logger(INFO) << "<< Checkpoints.cpp << " << "Added DNS checkpoint: " << height_str << ":" << hash_str;
-    }
-  }
-
-  return true;
-}
 
 bool Checkpoints::load_checkpoints()
 {
