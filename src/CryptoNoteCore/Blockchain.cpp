@@ -2,6 +2,7 @@
 // Copyright (c) 2016-2019, The Karbo developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -1145,8 +1146,8 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     return false;
   }
 
-  /* in the absence of a better solution, we fetch checkpoints from dns records */
-  m_checkpoints.load_checkpoints_from_dns();
+ // /* in the absence of a better solution, we fetch checkpoints from dns records */
+ // m_checkpoints.load_checkpoints_from_dns();
 
   if (!m_checkpoints.is_alternative_block_allowed(getCurrentBlockchainHeight(), block_height)) {
     logger(DEBUGGING) << "Block with id: " << id << std::endl <<
