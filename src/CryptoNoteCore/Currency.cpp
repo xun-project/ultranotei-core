@@ -83,18 +83,19 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    /* @NOTE: We can keep m_upgradeHeightV2 = 0 as generateGenesisBlock will always be created
-     *        created using BLOCK_MAJOR_VERSION_1 */
-    m_upgradeHeightV2 = 0;
-    m_upgradeHeightV3 = 1;
-    m_upgradeHeightV6 = 2;
-	m_upgradeHeightV7 = 3;
+    m_upgradeHeightV2 = 1;
+    m_upgradeHeightV3 = 199;
+    m_upgradeHeightV4 = 399;
+    m_upgradeHeightV5 = 599;
+    m_upgradeHeightV6 = 799;
+    m_upgradeHeightV7 = 999;
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
     m_txPoolFileName = "testnet_" + m_txPoolFileName;
     m_blockchinIndicesFileName = "testnet_" + m_blockchinIndicesFileName;
   }
+
 
   return true;
 }
