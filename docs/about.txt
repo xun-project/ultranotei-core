@@ -1,20 +1,20 @@
-[ Conceal.Network ]
+[ UltraNote ]
 
 DECENTRALIZED BANKING, PRIVATE TRANSACTIONS & SECURE MESSAGING
 
 
-{ What's Conceal.Network? }
+{ What's UltraNote? }
 
-Conceal.Network is a decentralized blockchain bank, with deposits and investments paying interest rates, without involvement of financial institutions, powered by 100% open source code.
+UltraNote is a decentralized blockchain, with deposits function paying interest rates up to 3% per year without involvement of financial institutions, powered by 100% open source code.
 
-Conceal.Network enables untraceable and anonymous messaging, and a secure way to transfer funds. Using a distributed public ledger, the sender and receiver are kept anonymous, a key concern in a post Snowden world. Hackers cannot trace money or messages when the messages are sent across public networks.
+UltraNote enables untraceable and anonymous messaging with file transfers up to 100Mb, and a secure way to transfer funds. Using a distributed public ledger, the sender and receiver are kept anonymous, a key concern in a post Snowden world. Hackers cannot trace money or messages when the messages are sent across public networks.
 
-Conceal Cryptocurrency (₡CCX) is based on the Cryptonote protocol and runs on a secure peer-to-peer network technology to operate with no central authority. You control the private keys to your funds.
+UltraNote Cryptocurrency (XUNI) is based on the Cryptonote protocol and runs on a secure peer-to-peer network technology to operate with no central authority. You control the private keys to your funds.
 
-Conceal is accessible by anyone in the world regardless of their geographic location or status. Our blockchain is resistant to any kind of analysis. All your CCX transactions and messages are anonymous.
+UltraNote is accessible by anyone in the world regardless of their geographic location or status. Our blockchain is resistant to any kind of analysis. All your XUNI transactions and messages are anonymous.
 
-Conceal avoids many concerns, e.g. technological, environment impact, reputational and security, of Bitcoin, and provides a glimpse of the future.
+UltraNote avoids many concerns, e.g. technological, environment impact, reputational and security, of Bitcoin, and provides a glimpse of the future.
 
-Conceal is open-source, community driven and truly decentralized.
+UltraNote is open-source, community driven and truly decentralized.
 
-No one owns Conceal, everyone can take part.
+No one owns UltraNote, everyone can take part.
