@@ -296,6 +296,7 @@ bool RpcServer::k_on_check_tx_proof(const K_COMMAND_RPC_CHECK_TX_PROOF::request&
 
 		// get tx pub key
 		Crypto::PublicKey txPubKey = getTransactionPublicKeyFromExtra(transaction.extra);
+    std::ignore = txPubKey;
 
 		// look for outputs
 		uint64_t received(0);

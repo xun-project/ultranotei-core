@@ -47,6 +47,7 @@ TcpConnection::~TcpConnection() {
     assert(contextPair.writeContext == nullptr);
     int result = close(connection);
     assert(result != -1);
+    std::ignore = result;
   }
 }
 

@@ -501,7 +501,7 @@ bool processServerAliasResponse(const std::string& s, std::string& address) {
 }
 
 
-
+/*
 bool splitUrlToHostAndUri(const std::string& aliasUrl, std::string& host, std::string& uri) {
   size_t protoBegin = aliasUrl.find("http://");
   if (protoBegin != 0 && protoBegin != std::string::npos) {
@@ -521,7 +521,7 @@ bool splitUrlToHostAndUri(const std::string& aliasUrl, std::string& host, std::s
 
   return true;
 }
-
+*/
 bool askAliasesTransfersConfirmation(const std::map<std::string, std::vector<WalletLegacyTransfer>>& aliases, const Currency& currency) {
   std::cout << "Would you like to send money to the following addresses?" << std::endl;
 

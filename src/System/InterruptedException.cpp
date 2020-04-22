@@ -7,5 +7,7 @@
 #include "InterruptedException.h"
 
 namespace {
+#ifdef _WIn32
 char suppressMSVCWarningLNK4221;
+#endif
 }

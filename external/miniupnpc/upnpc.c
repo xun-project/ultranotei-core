@@ -127,7 +127,8 @@ static void ListRedirections(struct UPNPUrls * urls,
 	printf("PortMappingNumberOfEntries : %u\n", num);*/
 	printf(" i protocol exPort->inAddr:inPort description remoteHost leaseTime\n");
 	do {
-		snprintf(index, 6, "%d", i);
+		const char *format = "%%d";
+		snprintf(index, 6, format, i);
 		rHost[0] = '\0'; enabled[0] = '\0';
 		duration[0] = '\0'; desc[0] = '\0';
 		extPort[0] = '\0'; intPort[0] = '\0'; intClient[0] = '\0';

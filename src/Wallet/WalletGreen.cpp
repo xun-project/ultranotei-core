@@ -876,6 +876,7 @@ size_t WalletGreen::makeTransaction(const TransactionParameters& sendingTransact
 
     if (id != WALLET_INVALID_TRANSACTION_ID) {
       auto& tx = m_transactions[id];
+      std::ignore = tx;
     }
   });
 
@@ -1064,6 +1065,7 @@ bool WalletGreen::updateWalletTransactionInfo(size_t transactionId, const Crypto
   });
 
   assert(r);
+  std::ignore = r;
 
   return updated;
 }
@@ -1869,6 +1871,7 @@ void WalletGreen::onTransactionUpdated(const Crypto::PublicKey&, const Crypto::H
     uint64_t outputsAmount;
     bool found = container->getTransactionInformation(transactionHash, info, &inputsAmount, &outputsAmount);
     assert(found);
+    std::ignore = found;
 
     ContainerAmounts containerAmounts;
     containerAmounts.container = container;
@@ -2124,6 +2127,7 @@ size_t WalletGreen::createFusionTransaction(uint64_t threshold, uint64_t mixin,
 
     if (id != WALLET_INVALID_TRANSACTION_ID) {
       auto& tx = m_transactions[id];
+      std::ignore = tx;
     }
   });
 
@@ -2198,7 +2202,8 @@ size_t WalletGreen::createFusionTransaction(uint64_t threshold, uint64_t mixin,
 
     ++round;
   } while (transactionSize > m_currency.fusionTxMaxSize() && fusionInputs.size() >= m_currency.fusionTxMinInputCount());
-
+  std::ignore = transactionAmount;
+  
   if (fusionInputs.size() < m_currency.fusionTxMinInputCount()) {
     throw std::system_error(make_error_code(error::MINIMUM_INPUT_COUNT));
   }
