@@ -7,5 +7,7 @@
 #include "SwappedVector.h"
 
 namespace {
+#ifdef _WIN32
 char suppressMSVCWarningLNK4221;
+#endif
 }

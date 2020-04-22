@@ -54,6 +54,7 @@ namespace CryptoNote {
     BinaryArray ba;
     bool r = toBinaryArray(adr, ba);
     assert(r);
+    std::ignore = r;
     return Tools::Base58::encode_addr(prefix, Common::asString(ba));
   }
   //-----------------------------------------------------------------------

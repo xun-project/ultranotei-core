@@ -76,6 +76,23 @@
         "xthread": "cpp",
         "sparse_hash_map": "cpp",
         "sparse_hash_set": "cpp",
-        "sparsetable": "cpp"
+        "sparsetable": "cpp",
+        "clocale": "cpp",
+        "csignal": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "strstream": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "regex": "cpp",
+        "string_view": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp",
+        "variant": "cpp"
     }
 }

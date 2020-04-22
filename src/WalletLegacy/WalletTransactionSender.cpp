@@ -124,6 +124,7 @@ Transaction convertTransaction(const ITransaction& transaction, size_t upperTran
   return result;
 }
 
+/*
 uint64_t checkDepositsAndCalculateAmount(const std::vector<DepositId>& depositIds, const WalletUserTransactionsCache& transactionsCache) {
   uint64_t amount = 0;
 
@@ -137,6 +138,7 @@ uint64_t checkDepositsAndCalculateAmount(const std::vector<DepositId>& depositId
 
   return amount;
 }
+*/
 
 void countDepositsTotalSumAndInterestSum(const std::vector<DepositId>& depositIds, WalletUserTransactionsCache& depositsCache,
                                          uint64_t& totalSum, uint64_t& interestsSum) {
@@ -798,6 +800,7 @@ uint64_t WalletTransactionSender::selectDepositTransfers(const std::vector<Depos
     Deposit deposit;
     bool r = m_transactionsCache.getDeposit(id, deposit);
     assert(r);
+    std::ignore = r;
 
     foundMoney += deposit.amount + deposit.interest;
   }

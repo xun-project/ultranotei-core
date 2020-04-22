@@ -7,5 +7,7 @@
 #include "SwappedMap.h"
 
 namespace {
+  #ifdef _WIN32
   char suppressMSVCWarningLNK4221;
+  #endif
 }

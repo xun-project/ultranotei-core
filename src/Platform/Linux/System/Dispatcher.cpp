@@ -103,11 +103,13 @@ Dispatcher::Dispatcher() {
 
         auto result = close(remoteSpawnEvent);
         assert(result == 0);
+        std::ignore = result;
       }
     }
 
     auto result = close(epoll);
     assert(result == 0);
+    std::ignore = result;
   }
 
   throw std::runtime_error("Dispatcher::Dispatcher, "+message);
@@ -134,6 +136,7 @@ Dispatcher::~Dispatcher() {
   while (!timers.empty()) {
     int result = ::close(timers.top());
     assert(result == 0);
+    std::ignore = result;
     timers.pop();
   }
 
@@ -143,6 +146,7 @@ Dispatcher::~Dispatcher() {
   assert(result == 0);
   result = pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(this->mutex));
   assert(result == 0);
+  std::ignore = result;
 }
 
 void Dispatcher::clear() {

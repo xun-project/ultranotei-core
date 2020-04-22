@@ -85,6 +85,7 @@ void SynchronizationState::addBlocks(const Crypto::Hash* blockHashes, uint32_t h
   assert(blockHashes);
   auto size = m_blockchain.size();
   assert( size == height);
+  std::ignore = size;
   m_blockchain.insert(m_blockchain.end(), blockHashes, blockHashes + count);
 }
 

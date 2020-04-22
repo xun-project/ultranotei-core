@@ -613,6 +613,7 @@ size_t WalletLegacy::estimateFusion(const uint64_t& threshold) {
     uint8_t powerOfTen = 0;
     assert(powerOfTen < std::numeric_limits<uint64_t>::digits10 + 1);
     bucketSizes[powerOfTen]++;
+    std::ignore = out;
   }
   for (auto bucketSize : bucketSizes) {
     if (bucketSize >= m_currency.fusionTxMinInputCount()) {
@@ -1149,6 +1150,7 @@ std::vector<uint32_t> WalletLegacy::getTransactionHeights(const std::vector<Tran
 	  TransactionInformation info;
 	  bool ok = m_transferDetails->getTransactionInformation(hash, info, NULL, NULL);
 	  assert(ok);
+    std::ignore = ok;
 	  heights.push_back(info.blockHeight);
   }
   return heights;
@@ -1251,7 +1253,7 @@ bool WalletLegacy::getTxProof(Crypto::Hash& txid, CryptoNote::AccountPublicAddre
   try {
     Crypto::generate_tx_proof(txid, R, address.viewPublicKey, rA, tx_key, sig);
   }
-  catch (std::runtime_error) {
+  catch (const std::runtime_error &) {
     return false;
   }
 

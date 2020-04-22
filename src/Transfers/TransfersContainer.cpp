@@ -972,6 +972,7 @@ void TransfersContainer::addUnlockJob(const TransactionOutputInformationEx& outp
 
   auto r = m_transfersUnlockJobs.emplace(std::move(job));
   assert(r.second);
+  std::ignore = r;
 }
 
 void TransfersContainer::deleteUnlockJob(const TransactionOutputInformationEx& output) {

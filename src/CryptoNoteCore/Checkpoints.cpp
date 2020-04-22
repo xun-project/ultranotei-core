@@ -136,4 +136,8 @@ bool Checkpoints::load_checkpoints_from_file(const std::string& fileName) {
 	return true;
 }
 
+ bool Checkpoints::load_checkpoints_from_dns(){
+   return false;
+ }
+
 }

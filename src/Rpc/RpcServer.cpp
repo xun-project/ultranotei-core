@@ -296,6 +296,7 @@ bool RpcServer::k_on_check_tx_proof(const K_COMMAND_RPC_CHECK_TX_PROOF::request&
 
 		// get tx pub key
 		Crypto::PublicKey txPubKey = getTransactionPublicKeyFromExtra(transaction.extra);
+    std::ignore = txPubKey;
 
 		// look for outputs
 		uint64_t received(0);
@@ -810,12 +811,12 @@ bool RpcServer::f_on_blocks_list_json(const F_COMMAND_RPC_GET_BLOCKS_LIST::reque
   }
 
   uint32_t print_blocks_count = 30;
-  uint32_t last_height = req.height - print_blocks_count;
+  uint32_t last_height = static_cast<uint32_t>( req.height ) - print_blocks_count;
   if (req.height <= print_blocks_count)  {
     last_height = 0;
   }
 
-  for (uint32_t i = req.height; i >= last_height; i--) {
+  for (uint32_t i = static_cast<uint32_t>( req.height ); i >= static_cast<uint32_t>( last_height ); i--) {
     Hash block_hash = m_core.getBlockIdByHeight(static_cast<uint32_t>(i));
     Block blk;
     if (!m_core.getBlockByHash(block_hash, blk)) {
@@ -884,7 +885,7 @@ bool RpcServer::f_on_block_json(const F_COMMAND_RPC_GET_BLOCK_DETAILS::request& 
   res.block.reward = block_header.reward;
 
   std::vector<size_t> blocksSizes;
-  if (!m_core.getBackwardBlocksSizes(res.block.height, blocksSizes, parameters::CRYPTONOTE_REWARD_BLOCKS_WINDOW)) {
+  if (!m_core.getBackwardBlocksSizes(static_cast<uint32_t>( res.block.height ), blocksSizes, parameters::CRYPTONOTE_REWARD_BLOCKS_WINDOW)) {
     return false;
   }
   res.block.sizeMedian = Common::medianValue(blocksSizes);
@@ -905,7 +906,7 @@ bool RpcServer::f_on_block_json(const F_COMMAND_RPC_GET_BLOCK_DETAILS::request& 
   }
   res.block.alreadyGeneratedCoins = std::to_string(alreadyGeneratedCoins);
 
-  if (!m_core.getGeneratedTransactionsNumber(res.block.height, res.block.alreadyGeneratedTransactions)) {
+  if (!m_core.getGeneratedTransactionsNumber(static_cast<uint32_t>( res.block.height ), res.block.alreadyGeneratedTransactions)) {
     return false;
   }
 
@@ -927,10 +928,10 @@ bool RpcServer::f_on_block_json(const F_COMMAND_RPC_GET_BLOCK_DETAILS::request& 
   // virtual bool getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins, uint64_t fee, uint32_t height,
                               // uint64_t& reward, int64_t& emissionChange) = 0;
 
-  if (!m_core.getBlockReward(res.block.sizeMedian, 0, prevBlockGeneratedCoins, 0, res.block.height, maxReward, emissionChange)) {
+  if (!m_core.getBlockReward(res.block.sizeMedian, 0, prevBlockGeneratedCoins, 0, static_cast<uint32_t>( res.block.height ), maxReward, emissionChange)) {
     return false;
   }
-  if (!m_core.getBlockReward(res.block.sizeMedian, res.block.transactionsCumulativeSize, prevBlockGeneratedCoins, 0, res.block.height, currentReward, emissionChange)) {
+  if (!m_core.getBlockReward(res.block.sizeMedian, res.block.transactionsCumulativeSize, prevBlockGeneratedCoins, 0, static_cast<uint32_t>( res.block.height ), currentReward, emissionChange)) {
     return false;
   }
 

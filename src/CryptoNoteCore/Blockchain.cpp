@@ -726,7 +726,7 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
 
-  uint32_t block_index = m_blocks.size();
+  uint32_t block_index = static_cast<uint32_t>( m_blocks.size() );
   uint8_t block_major_version = get_block_major_version_for_height(block_index + 1);
 
   if (block_major_version >= 4) {
@@ -977,7 +977,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
     }
   }
 
-  uint32_t block_index = m_blocks.size();
+  uint32_t block_index = static_cast<uint32_t>( m_blocks.size() );
   uint8_t block_major_version = get_block_major_version_for_height(block_index + 1);
 
   if (block_major_version >= 4) {
@@ -1925,7 +1925,7 @@ bool Blockchain::addNewBlock(const Block& bl_, block_verification_context& bvc) 
       return false;
     }
 
-  	uint32_t height = m_blocks.size();
+  	uint32_t height = static_cast<uint32_t>( m_blocks.size() );
 
     //check that block refers to chain tail
     if (!(bl.previousBlockHash == getTailId())) {
@@ -2218,7 +2218,7 @@ void Blockchain::popBlock(const Crypto::Hash& blockHash) {
     transactions[i] = m_blocks.back().transactions[1 + i].tx;
   }
 
-  uint32_t height = m_blocks.size(); //height of popped block should be same as number of blocks
+  uint32_t height = static_cast<uint32_t>( m_blocks.size() ); //height of popped block should be same as number of blocks
   saveTransactions(transactions, height);
 
   popTransactions(m_blocks.back(), getObjectHash(m_blocks.back().bl.baseTransaction));
