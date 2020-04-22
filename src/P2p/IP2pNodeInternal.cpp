@@ -5,3 +5,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "IP2pNodeInternal.h"
+
+
+namespace CryptoNote {
+#ifdef _WIN32
+	char suppressMSVCWarningLNK4221;
+#endif
+}

@@ -562,7 +562,7 @@ std::vector<std::string> WalletGreen::doCreateAddressList(const std::vector<NewA
     load(ss, password);
     shutdown();
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &) {
     //m_logger(ERROR, BRIGHT_RED) << "Failed to add wallets: " << e.what();
     startBlockchainSynchronizer();
     throw;

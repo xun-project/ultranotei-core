@@ -311,9 +311,9 @@ uint64_t Currency::calculateInterestV2(uint64_t amount, uint32_t term) const {
       qTier = static_cast<float>(1.15);
 
     float mq = static_cast<float>(1.4473);
-    float termQuarters = term / 64800;
-    float m8 = 100.0*pow(1.0+(mq/100.0), termQuarters)-100.0;
-    float m5 = termQuarters * 0.5;
+    float termQuarters = static_cast<float>( term ) / 64800;
+    float m8 = static_cast<float>( 100.0*pow(1.0+(mq/100.0), termQuarters)-100.0 );
+    float m5 = static_cast<float>( termQuarters * 0.5 );
     float m7 = m8 * (1 + (m5/100));
     float rate = m7 * qTier;
     float interest = amount * (rate/100);
@@ -324,7 +324,7 @@ uint64_t Currency::calculateInterestV2(uint64_t amount, uint32_t term) const {
   /* weekly deposits */
   if (term % 5040 == 0) {    
     uint64_t actualAmount = amount;
-    float weeks = term / 5040;
+    float weeks = static_cast<float>( term ) / 5040;
     float baseInterest = static_cast<float>(0.0696);
     float interestPerWeek = static_cast<float>(0.0002);
     float interestRate = baseInterest + (weeks * interestPerWeek);
@@ -354,11 +354,11 @@ uint64_t Currency::calculateInterestV3(uint64_t amount, uint32_t term) const
 
   /* Consensus 2019 - Monthly deposits */
    
-  float months = term / 21900;
+  float months = static_cast<float>( term ) / 21900;
   if (months > 12) {
     months = 12;
   }
-  float ear = baseInterest + (months - 1) * 0.001;
+  float ear = static_cast<float>( baseInterest + (months - 1) * 0.001 );
   float eir = (ear/12) * months;
   returnVal = static_cast<uint64_t>(eir);
 
