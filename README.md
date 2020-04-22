@@ -1,111 +1,76 @@
-![image](https://bitbucket.com/ultranoteiNetwork/ultranotei-assets/blob/master/splash.png)
-![](https://bitbucket.com/bomb-on/ultranotei-core/workflows/Ubuntu%2016.04/badge.svg)  
-![](https://bitbucket.com/bomb-on/ultranotei-core/workflows/Ubuntu%2018.04/badge.svg)  
-![](https://bitbucket.com/bomb-on/ultranotei-core/workflows/Windows/badge.svg)  
-![](https://bitbucket.com/bomb-on/ultranotei-core/workflows/macOS/badge.svg)
+## Building UltraNote
 
-# ultranotei Core (CLI)
-Latest Release: v1.0.0
-Maintained by ultranotei Developers.
+On Apple or Linux and can't get readline installed? Run cmake with `cmake .. -DFORCE_READLINE=FALSE` to disable readline support.
 
-## Information
-ultranotei is a decentralized banking platform with encrypted messages and own privacy protected cryptocurrency.
+### On Linux:
 
-ultranotei is based on the Cryptonote protocol and runs on a secure peer-to-peer network technology to operate with no central authority. You control your private keys to your funds, you control your destiny. ultranotei Network is accessible by anyone in the world regardless of his/her geographic location or status. Our blockchain is resistant to any kind of analysis. All your xuni transactions and messages are anonymous. ultranotei Network provides an instant secure, untraceable and unlinkable way of encrypted communication - crypto messages.
+Dependencies: GCC 4.7.3 or later, CMake 2.8.6 or later, GNU Readline, and Boost 1.55 or later.
 
-ultranotei is open-source, community driven and truly decentralized. No one owns it, everyone can take part.
+You may download them from:
 
-## Resources
-- Web: [http://ultranotei.network](https://ultranotei.network/)
-- bitbucket: [https://bitbucket.com/ultranoteiNetwork/ultranotei-core](https://bitbucket.com/ultranoteiNetwork/ultranotei-core)
-- Wiki: [https://ultranotei.network/wiki](https://ultranotei.network/wiki/doku.php)
-- Explorer: [https://explorer.ultranotei.network](https://explorer.ultranotei.network)
-- Paperwallet: [https://ultranotei.network/paperwallet](https://ultranotei.network/paperwallet/)
-- Discord: [https://discord.gg/YbpHVSd](https://discord.gg/YbpHVSd)
-- Twitter: [https://twitter.com/ultranoteiNetwork](https://twitter.com/ultranoteiNetwork)
-- Medium: [https://medium.com/@ultranoteiNetwork](https://medium.com/@ultranoteiNetwork)
-- Reddit: [https://www.reddit.com/r/ultranoteiNetwork/](https://www.reddit.com/r/ultranoteiNetwork/)
-- Bitcoin Talk: [https://bitcointalk.org/index.php?topic=4515873](https://bitcointalk.org/index.php?topic=4515873)
+- http://gcc.gnu.org/
+- http://www.cmake.org/
+- http://www.boost.org/
+- https://tiswww.case.edu/php/chet/readline/rltop.html (Mac + Linux only)
 
+Alternatively, it may be possible to install them using a package manager.
 
-## Compiling ultranotei from source
+To build:
+Run these commands:
+```
+cd ~
+sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
+git clone https://bitbucket.org/xunteam/ultranotei-core.git 
+cd ultranotei-core
+mkdir build
+cd build
+cmake ..
+cd ..
+make
+```
 
-### Linux / Ubuntu
+The resulting executables can be found in `ultranotei-core/build/release/src`.
 
-##### Prerequisites
+#### Advanced options:
 
-- You will need the following dependencies to build the ultranotei CLI: boost, cmake, git, gcc, g++, python, and make.
-- On Ubuntu: `sudo apt-get install -y build-essential python-dev gcc g++ git cmake libboost-all-dev`
+Parallel build: run `make -j<number of threads>` instead of `make`.
 
-#### Building
+Debug build: run `make build-debug`.
 
-- `git clone https://bitbucket.com/ultranoteiNetwork/ultranotei-core`
-- `cd ultranotei-core`
-- `mkdir build && cd $_`
-- `cmake ..`
-- `make`
+Test suite: run `make test-release` to run tests in addition to building. Running `make test-debug` will do the same to the debug version.
 
-If the build is successful the binaries will be in the src folder.
+Building with Clang: it may be possible to use Clang instead of GCC, but this may not work everywhere. To build, run `export CC=clang CXX=clang++` before running `make`.
 
-### Windows 10
+### On Windows
 
 ##### Prerequisites
-
-- Install [Visual Studio 2019 Community Edition](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16)
-- Install [CMake](https://cmake.org/download/)
-- When installing Visual Studio, you need to install **Desktop development with C++** and the **MSVC v142 - VS 2019 C++ x64/x86 build tools** components. The option to install the v142 build tools can be found by expanding the "Desktop development with C++" node on the right. You will need this for the project to build correctly.
-- Use the premade binaries for [MSVC 14.2](https://bitbucket.com/ultranoteiNetwork)
-- Install [Boost 1.70.0](https://sourceforge.net/projects/boost/files/boost-binaries/1.70.0/boost_1_70_0-msvc-14.1-64.exe/download), ensuring you download the installer for MSVC 14.2.
+- Install [Visual Studio 2017 Community Edition](https://www.visualstudio.com/thank-you-downloading-visual-studio/?sku=Community&rel=15&page=inlineinstall)
+- When installing Visual Studio, it is **required** that you install **Desktop development with C++** and the **VC++ v140 toolchain** when selecting features. The option to install the v140 toolchain can be found by expanding the "Desktop development with C++" node on the right. You will need this for the project to build correctly.
+- Install [Boost 1.59.0](https://sourceforge.net/projects/boost/files/boost-binaries/1.59.0/), ensuring you download the installer for MSVC 14.
 
 ##### Building
 
-- From the start menu, open 'x64 Native Tools Command Prompt for vs2019' or run "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsMSBuildCmd.bat" from any command prompt.
-
-- `git clone https://bitbucket.com/ultranoteiNetwork/ultranotei-core`
+- From the start menu, open 'x64 Native Tools Command Prompt for vs2019'.
 - `cd ultranotei-core`
 - `mkdir build`
 - `cd build`
-- `cmake -G "Visual Studio 16 2017" -A x64 -DBOOST_LIBRARYDIR="c:\local\boost_1_65_1\lib64-msvc-14.2 ..` (Or your boost installed dir.)
-- `msbuild ultranoteI.sln /p:Configuration=Release /m`
+-  Set the PATH variable for cmake: ie. `set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%`
+- `cmake -G "Visual Studio 16 2019" .. -A x64 -DBOOST_ROOT=C:/local/boost_1_65_1` (Or your boost installed dir.)
+- `MSBuild UltraNote.sln /p:Configuration=Release /m`
+- If all went well, it will complete successfully, and you will find all your binaries in the '..\build\src\Release' directory.
+- Additionally, a `.sln` file will have been created in the `build` directory. If you wish to open the project in Visual Studio with this, you can.
 
-If the build is successful the binaries will be in the src/Release folder.
+### On Apple:
 
-### macOS
-
-#### Prerequisites
-
-In order to install prerequisites, [XCode](https://developer.apple.com/xcode/) and [Homebrew](https://brew.sh/) needs to be installed.
-Once both are ready, open terminal app, run following command:
-
-```bash
-$ xcode-select --install
+```
+brew install git cmake boost rocksdb readline
+brew link --force readline
+git clone https://bitbucket.org/xunteam/ultranotei-core.git 
+cd ultranotei-core
+mkdir build
+cd build
+cmake ..
+make
 ```
 
-and install all tools. On newer macOS versions (v10.14 and higher) this step is done through Software Update app.
-
-After that, proceed with installing dependencies:
-
-```bash
-$ brew install git python cmake gcc boost@1.60
-```
-
-Ensure that Boost is properly linked:
-
-```bash
-$ brew link --force boost@1.60
-```
-
-When all dependencies are installed, build ultranotei Core binaries:
-
-```bash
-$ git clone https://bitbucket.com/ultranoteiNetwork/ultranotei-core
-$ cd ultranotei-core
-$ mkdir build && cd $_
-$ cmake ..
-$ make
-```
-
-If the build is successful the binaries will be located in `src` directory.
-
-#### Special Thanks
-Special thanks goes out to the developers from Cryptonote, Bytecoin, Monero, Forknote, TurtleCoin, Karbo and Masari.
+The resulting executables can be found in `ultranotei-core/build/release/src`.

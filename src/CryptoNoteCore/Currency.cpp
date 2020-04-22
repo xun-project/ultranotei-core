@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2020 UltraNote developers
+
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -84,14 +86,19 @@ bool Currency::init() {
     m_upgradeHeightV2 = 10;
     m_upgradeHeightV3 = 60;
     m_upgradeHeightV6 = 70;
+<<<<<<< HEAD
     m_upgradeHeightV7 = 80;    
 
+=======
+    m_upgradeHeightV7 = 80; 
+>>>>>>> origin/testnet
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
     m_txPoolFileName = "testnet_" + m_txPoolFileName;
     m_blockchinIndicesFileName = "testnet_" + m_blockchinIndicesFileName;
   }
+
 
   return true;
 }

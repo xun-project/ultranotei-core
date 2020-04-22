@@ -99,12 +99,12 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO = 4;
 
 const uint64_t UPGRADE_HEIGHT = 1;			
-const uint64_t UPGRADE_HEIGHT_V2 = 1;
-const uint64_t UPGRADE_HEIGHT_V3 = 200; /* Cryptonight-Fast */
-const uint64_t UPGRADE_HEIGHT_V4 = 400; /* MixIn 2 */
-const uint64_t UPGRADE_HEIGHT_V5 = 600; /* Deposits 2.0, Investments 1.0 */
-const uint64_t UPGRADE_HEIGHT_V6 = 800; /* LWMA3 */
-const uint64_t UPGRADE_HEIGHT_V7 = 1000; /* Cryptoight Conceal */
+const uint64_t UPGRADE_HEIGHT_V2 = 200;
+const uint64_t UPGRADE_HEIGHT_V3 = 400; /* Cryptonight-Fast */
+const uint64_t UPGRADE_HEIGHT_V4 = 600; /* MixIn 2 */
+const uint64_t UPGRADE_HEIGHT_V5 = 800; /* Deposits 2.0, Investments 1.0 */
+const uint64_t UPGRADE_HEIGHT_V6 = 1000; /* LWMA3 */
+const uint64_t UPGRADE_HEIGHT_V7 = 1200; /* Cryptoight Conceal */
 const unsigned UPGRADE_VOTING_THRESHOLD = 90; // percent
 const size_t   UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
 const size_t   UPGRADE_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
@@ -191,30 +191,9 @@ __attribute__((unused))
 // Blockchain Checkpoints:
 // {<block height>, "<block hash>"},
 const std::initializer_list<CheckpointData> CHECKPOINTS  = {
-	
-
-};// {BlockIndex , Version}
-const std::map<const uint32_t, const uint8_t> Version = {
-
-};
 
 
-// {BlockIndex , Version}
-const std::map<const uint32_t, const uint8_t> TestNetVersion = {
-   
-    {1, 1},
-    {1, 2},
-    {200, 3},
-    {400, 4},
-    {600, 5},
-    {800, 6},
-    {1000, 7},
-    	
-};
 
-// {BlockIndex , Hash}
-const std::map<const uint32_t, const char*> VersionCheck = {
-    
 };
 
 
