@@ -16,8 +16,8 @@ jobs:
         id: build
         run: |
           build_folder="build/"
-          ccx_ver=$(echo ${{ github.ref }} | sed 's|refs/tags/||')
-          release_name="ccx-cli-macOS-v$ccx_ver"
+          xuni_ver=$(echo ${{ github.ref }} | sed 's|refs/tags/||')
+          release_name="xuni-cli-macOS-v$xuni_ver"
           brew install gcc boost@1.60
           brew link boost@1.60 --force
           mkdir "$build_folder"
@@ -34,13 +34,13 @@ jobs:
           echo "::set-output name=sha256::${sha256}"
           echo "::set-output name=release_name::${release_name}.zip"
           echo "::set-output name=asset_path::${asset_path}"
-          echo "::set-output name=ccx_ver::${ccx_ver}"
+          echo "::set-output name=xuni_ver::${xuni_ver}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.build.outputs.asset_path }}
-          name: Conceal Core CLI v${{ steps.build.outputs.ccx_ver }}
+          name: Conceal Core CLI v${{ steps.build.outputs.xuni_ver }}
           body: |
             **${{ steps.build.outputs.release_name }}**
             ${{ steps.build.outputs.sha256 }}

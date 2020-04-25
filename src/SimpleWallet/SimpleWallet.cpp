@@ -471,8 +471,8 @@ bool processServerAliasResponse(const std::string& s, std::string& address) {
   try {
   //   
   // Courtesy of Monero Project
-		// make sure the txt record has "oa1:ccx" and find it
-		auto pos = s.find("oa1:ccx");
+		// make sure the txt record has "oa1:xuni" and find it
+		auto pos = s.find("oa1:xuni");
 		if (pos == std::string::npos)
 			return false;
 		// search from there to find "recipient_address="

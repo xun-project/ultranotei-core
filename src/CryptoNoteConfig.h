@@ -77,8 +77,8 @@ static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
 static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
-const uint64_t MULTIPLIER_FACTOR = 10; /* legacy deposits */
-const uint32_t END_MULTIPLIER_BLOCK = 21900; /* legacy deposits */
+const uint64_t MULTIPLIER_FACTOR = 1; /* legacy deposits */
+const uint32_t END_MULTIPLIER_BLOCK = 150; /* legacy deposits */
 
 const size_t   MAX_BLOCK_SIZE_INITIAL = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 10;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR = 100 * 1024;
@@ -99,12 +99,12 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO = 4;
 
 const uint64_t UPGRADE_HEIGHT = 1;			
-const uint64_t UPGRADE_HEIGHT_V2 = 200;
-const uint64_t UPGRADE_HEIGHT_V3 = 400; /* Cryptonight-Fast */
-const uint64_t UPGRADE_HEIGHT_V4 = 600; /* MixIn 2 */
-const uint64_t UPGRADE_HEIGHT_V5 = 800; /* Deposits 2.0, Investments 1.0 */
-const uint64_t UPGRADE_HEIGHT_V6 = 1000; /* LWMA3 */
-const uint64_t UPGRADE_HEIGHT_V7 = 1200; /* Cryptoight Conceal */
+const uint64_t UPGRADE_HEIGHT_V2 = 1;
+const uint64_t UPGRADE_HEIGHT_V3 = 200; /* Cryptonight-Fast */
+const uint64_t UPGRADE_HEIGHT_V4 = 400; /* MixIn 2 */
+const uint64_t UPGRADE_HEIGHT_V5 = 600; /* Deposits 2.0, Investments 1.0 */
+const uint64_t UPGRADE_HEIGHT_V6 = 800; /* LWMA3 */
+const uint64_t UPGRADE_HEIGHT_V7 = 1000; /* Cryptoight Conceal */
 const unsigned UPGRADE_VOTING_THRESHOLD = 90; // percent
 const size_t   UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
 const size_t   UPGRADE_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
