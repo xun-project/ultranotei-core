@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -32,7 +33,7 @@ public:
 
   size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
   size_t timestampCheckWindow(uint8_t blockMajorVersion) const {
-  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
     return timestampCheckWindow_v1();
   }
   else {
@@ -43,7 +44,7 @@ public:
 
   uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
   uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const {
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
       return blockFutureTimeLimit_v1();
     }
     else {
@@ -80,7 +81,7 @@ public:
   size_t difficultyCut() const { return m_difficultyCut; }
   size_t difficultyCutByBlockVersion(uint8_t blockMajorVersion) const;
   size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const {
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
       return difficultyBlocksCount2();
     }
     else {
@@ -238,8 +239,7 @@ private:
 
   uint32_t m_upgradeHeightV2;
   uint32_t m_upgradeHeightV3;
-  uint32_t m_upgradeHeightV6;
-  uint32_t m_upgradeHeightV7;  
+  
 
   unsigned int m_upgradeVotingThreshold;
   uint32_t m_upgradeVotingWindow;
@@ -339,8 +339,6 @@ public:
 
   CurrencyBuilder& upgradeHeightV2(uint64_t val) { m_currency.m_upgradeHeightV2 = static_cast<uint32_t>(val); return *this; }
   CurrencyBuilder& upgradeHeightV3(uint64_t val) { m_currency.m_upgradeHeightV3 = static_cast<uint32_t>(val); return *this; }
-  CurrencyBuilder& upgradeHeightV6(uint64_t val) { m_currency.m_upgradeHeightV6 = static_cast<uint32_t>(val); return *this; }
-  CurrencyBuilder& upgradeHeightV7(uint64_t val) { m_currency.m_upgradeHeightV7 = static_cast<uint32_t>(val); return *this; }  
   CurrencyBuilder& upgradeVotingThreshold(unsigned int val);
   CurrencyBuilder& upgradeVotingWindow(uint32_t val) { m_currency.m_upgradeVotingWindow = val; return *this; }
   CurrencyBuilder& upgradeWindow(uint32_t val);
