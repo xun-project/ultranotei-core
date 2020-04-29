@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -514,7 +515,7 @@ void WalletSerializer::loadWallet(Common::IInputStream& source, const std::strin
     loadTransfers(source, cryptoContext, version);
   }
 
-  if (version < 5) {
+  if (version < 3) {
     updateTransfersSign();
     cache = false;
   }
@@ -522,20 +523,20 @@ void WalletSerializer::loadWallet(Common::IInputStream& source, const std::strin
   if (cache) {
     loadBalances(source, cryptoContext);
     loadTransfersSynchronizer(source, cryptoContext);
-    if (version < 5) {
+    if (version < 3) {
       loadObsoleteSpentOutputs(source, cryptoContext);
     }
 
     loadUnlockTransactionsJobs(source, cryptoContext);
 
-    if (version < 5) {
+    if (version < 3) {
       loadObsoleteChange(source, cryptoContext);
     }
 
-    if (version > 3) {
+    if (version >= 3) {
       loadUncommitedTransactions(source, cryptoContext);
 
-      if (version >= 5) {
+      if (version >= 3) {
         initTransactionPool();
       }
     }
