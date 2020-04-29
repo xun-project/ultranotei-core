@@ -313,7 +313,7 @@ std::string tryToOpenWalletOrLoadKeysOrThrow(LoggerRef& logger, std::unique_ptr<
   }
 
   if (walletExists) {
-    logger(INFO) << "Loading wallet...";
+    logger(INFO, GREEN) << "Loading wallet...";
     std::ifstream walletFile;
     walletFile.open(walletFileName, std::ios_base::binary | std::ios_base::in);
     if (walletFile.fail()) {
@@ -335,7 +335,7 @@ std::string tryToOpenWalletOrLoadKeysOrThrow(LoggerRef& logger, std::unique_ptr<
           throw std::runtime_error("failed to load wallet: " + initError.message());
         }
 
-        logger(INFO) << "Storing wallet...";
+        logger(INFO, GREEN) << "Storing wallet...";
 
         try {
           CryptoNote::WalletHelper::storeWallet(*wallet, walletFileName);
@@ -369,7 +369,7 @@ std::string tryToOpenWalletOrLoadKeysOrThrow(LoggerRef& logger, std::unique_ptr<
       throw std::runtime_error("failed to load wallet: " + initError.message());
     }
 
-    logger(INFO) << "Storing wallet...";
+    logger(INFO, GREEN) << "Storing wallet...";
 
     try {
       CryptoNote::WalletHelper::storeWallet(*wallet, walletFileName);
@@ -409,8 +409,8 @@ void printListTransfersHeader(LoggerRef& logger) {
   header += makeCenteredString(BLOCK_MAX_WIDTH, "block") + "  ";
   header += makeCenteredString(UNLOCK_TIME_MAX_WIDTH, "unlock time");
 
-  logger(INFO) << header;
-  logger(INFO) << std::string(header.size(), '-');
+  logger(INFO, BRIGHT_MAGENTA) << header;
+  logger(INFO, BRIGHT_MAGENTA) << std::string(header.size(), '-');
 }
 
 void printListTransfersItem(LoggerRef& logger, const WalletLegacyTransaction& txInfo, IWalletLegacy& wallet, const Currency& currency) {
@@ -1497,7 +1497,7 @@ bool simple_wallet::show_incoming_transfers(const std::vector<std::string>& args
     m_wallet->getTransaction(trantransactionNumber, txInfo);
     if (txInfo.totalAmount < 0) continue;
     hasTransfers = true;
-    logger(INFO) << "        amount       \t                              tx id";
+    logger(INFO, YELLOW) << "        amount       \t                              tx id";
     logger(INFO, GREEN) <<
       std::setw(21) << m_currency.formatAmount(txInfo.totalAmount) << '\t' << Common::podToHex(txInfo.hash);
   }
@@ -1596,7 +1596,7 @@ bool simple_wallet::show_payments(const std::vector<std::string> &args) {
       return paymentId;
     });
 
-    logger(INFO) << "                            payment                             \t" <<
+    logger(INFO, YELLOW) << "                            payment                             \t" <<
       "                          transaction                           \t" <<
       "  height\t       amount        ";
 
@@ -2092,12 +2092,12 @@ int main(int argc, char* argv[]) {
       wrpc.send_stop_signal();
     });
 
-    logger(INFO) << "Starting wallet rpc server";
+    logger(INFO, YELLOW) << "Starting wallet rpc server";
     wrpc.run();
-    logger(INFO) << "Stopped wallet rpc server";
+    logger(INFO, YELLOW) << "Stopped wallet rpc server";
 
     try {
-      logger(INFO) << "Storing wallet...";
+      logger(INFO, GREEN) << "Storing wallet...";
       CryptoNote::WalletHelper::storeWallet(*wallet, walletFileName);
       logger(INFO, BRIGHT_GREEN) << "Stored ok";
     } catch (const std::exception& e) {
@@ -2126,7 +2126,7 @@ int main(int argc, char* argv[]) {
     if (!wal.deinit()) {
       logger(ERROR, BRIGHT_RED) << "Failed to close wallet";
     } else {
-      logger(INFO) << "Wallet closed";
+      logger(INFO, YELLOW) << "Wallet closed";
     }
   }
   return 1;
