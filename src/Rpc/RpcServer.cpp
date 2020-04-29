@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -499,7 +500,7 @@ bool RpcServer::setViewKey(const std::string& view_key) {
   Crypto::Hash private_view_key_hash;
   size_t size;
   if (!Common::fromHex(view_key, &private_view_key_hash, sizeof(private_view_key_hash), size) || size != sizeof(private_view_key_hash)) {
-    logger(INFO) << "<< rpcserver.cpp << " << "Could not parse private view key";
+    logger(INFO, RED) << "- rpcserver.cpp - " << "Could not parse private view key";
     return false;
   }
   m_view_key = *(struct Crypto::SecretKey *) &private_view_key_hash;
@@ -690,7 +691,7 @@ bool RpcServer::on_send_raw_tx(const COMMAND_RPC_SEND_RAW_TX::request& req, COMM
   BinaryArray tx_blob;
   if (!fromHex(req.tx_as_hex, tx_blob))
   {
-    logger(INFO) << "<< rpcserver.cpp << " << "[on_send_raw_tx]: Failed to parse tx from hexbuff: " << req.tx_as_hex;
+    logger(INFO, RED) << "- rpcserver.cpp - " << "[on_send_raw_tx]: Failed to parse tx from hexbuff: " << req.tx_as_hex;
     res.status = "Failed";
     return true;
   }
@@ -698,21 +699,21 @@ bool RpcServer::on_send_raw_tx(const COMMAND_RPC_SEND_RAW_TX::request& req, COMM
   tx_verification_context tvc = boost::value_initialized<tx_verification_context>();
   if (!m_core.handle_incoming_tx(tx_blob, tvc, false))
   {
-    logger(INFO) << "<< rpcserver.cpp << " << "[on_send_raw_tx]: Failed to process tx";
+    logger(INFO, RED) << "- rpcserver.cpp - " << "[on_send_raw_tx]: Failed to process tx";
     res.status = "Failed";
     return true;
   }
 
   if (tvc.m_verification_failed)
   {
-    logger(INFO) << "<< rpcserver.cpp << " << "[on_send_raw_tx]: tx verification failed";
+    logger(INFO, RED) << "- rpcserver.cpp - " << "[on_send_raw_tx]: tx verification failed";
     res.status = "Failed";
     return true;
   }
 
   if (!tvc.m_should_be_relayed)
   {
-    logger(INFO) << "<< rpcserver.cpp << " << "[on_send_raw_tx]: tx accepted, but not relayed";
+    logger(INFO, YELLOW) << "- rpcserver.cpp - " << "[on_send_raw_tx]: tx accepted, but not relayed";
     res.status = "Not relayed";
     return true;
   }

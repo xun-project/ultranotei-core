@@ -2,6 +2,7 @@
 // Copyright (c) 2018, The TurtleCoin Developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -193,7 +194,7 @@ void P2pNode::acceptLoop() {
       auto connection = m_listener.accept();
       auto ctx = new P2pContext(m_dispatcher, std::move(connection), true, 
         getRemoteAddress(connection), m_cfg.getTimedSyncInterval(), getGenesisPayload());
-      logger(INFO) << "Incoming connection from " << ctx->getRemoteAddress();
+      logger(INFO, GREEN) << "Incoming connection from " << ctx->getRemoteAddress();
       workingContextGroup.spawn([this, ctx] {
         preprocessIncomingConnection(ContextPtr(ctx));
       });
@@ -408,7 +409,7 @@ bool P2pNode::fetchPeerList(ContextPtr connection) {
 
     return handleRemotePeerList(response.local_peerlist, response.node_data.local_time);
   } catch (std::exception& e) {
-    logger(INFO) << *connection << "Failed to obtain peer list: " << e.what();
+    logger(INFO, YELLOW) << *connection << "Failed to obtain peer list: " << e.what();
   }
 
   return false;

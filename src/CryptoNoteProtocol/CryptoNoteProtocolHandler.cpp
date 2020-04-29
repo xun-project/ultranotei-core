@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -146,7 +147,7 @@ void CryptoNoteProtocolHandler::log_connections()
        << std::setw(25) << get_protocol_state_string(cntxt.m_state)
        << std::setw(20) << std::to_string(time(NULL) - cntxt.m_started) << ENDL;
   });
-  logger(INFO) << "Connections: " << ENDL << ss.str();
+  logger(INFO, GREEN) << "Connections: " << ENDL << ss.str();
 }
 
 /* Get a list of daemons connected to this node */
