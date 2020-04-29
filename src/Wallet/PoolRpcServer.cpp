@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -183,7 +184,7 @@ bool pool_rpc_server::on_transfer(const wallet_rpc::COMMAND_RPC_TRANSFER::reques
     ttl = static_cast<uint64_t>(time(nullptr)) + req.ttl;
   }
 
-  uint64_t actualFee = CryptoNote::parameters::MINIMUM_FEE_V2;
+  uint64_t actualFee = CryptoNote::parameters::MINIMUM_FEE;
 
   std::string extraString;
   std::copy(extra.begin(), extra.end(), std::back_inserter(extraString));
@@ -219,7 +220,7 @@ bool pool_rpc_server::on_optimize(const wallet_rpc::COMMAND_RPC_OPTIMIZE::reques
   std::vector<CryptoNote::WalletLegacyTransfer> transfers;
   std::vector<CryptoNote::TransactionMessage> messages;
   std::string extraString;
-  uint64_t fee = CryptoNote::parameters::MINIMUM_FEE_V2;
+  uint64_t fee = CryptoNote::parameters::MINIMUM_FEE;
   uint64_t mixIn = 0;
   uint64_t unlockTimestamp = 0;
   uint64_t ttl = 0;
