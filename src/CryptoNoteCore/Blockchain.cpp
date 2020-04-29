@@ -256,13 +256,13 @@ public:
     }
 
     logger(INFO, GREEN) << operation << "paymentID index";
-    ar & m_bs.m_paymentIdIndex;
+    s(m_bs.m_paymentIdIndex, "paymentIdIndex");
 
     logger(INFO, GREEN) << operation << "timestamp index";
-    ar & m_bs.m_timestampIndex;
+    s(m_bs.m_timestampIndex, "timestampIndex");
 
     logger(INFO, GREEN) << operation << "generated transactions index";
-    ar & m_bs.m_generatedTransactionsIndex;
+    s(m_bs.m_generatedTransactionsIndex, "generatedTransactionsIndex");
 
     m_loaded = true;
   }
