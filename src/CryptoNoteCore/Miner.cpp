@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -166,7 +167,7 @@ namespace CryptoNote
         loadFromJson(m_config, filebuf);
       }
 
-      logger(INFO) << "Loaded " << m_extra_messages.size() << " extra messages, current index " << m_config.current_extra_message_index;
+      logger(INFO, GREEN) << "Loaded " << m_extra_messages.size() << " extra messages, current index " << m_config.current_extra_message_index;
     }
 
     if(!config.startMining.empty()) {
@@ -217,7 +218,7 @@ namespace CryptoNote
       m_threads.push_back(std::thread(std::bind(&miner::worker_thread, this, i)));
     }
 
-    logger(INFO) << "Mining has started with " << threads_count << " threads, good luck!";
+    logger(INFO, GREEN) << "Mining has started with " << threads_count << " threads, good luck!";
     return true;
   }
   
@@ -247,7 +248,7 @@ namespace CryptoNote
     }
 
     m_threads.clear();
-    logger(INFO) << "<< Miner.cpp << " << "Mining has been stopped, " << m_threads.size() << " finished" ;
+    logger(INFO, YELLOW) << "- Miner.cpp - " << "Mining has been stopped, " << m_threads.size() << " finished" ;
     return true;
   }
   //-----------------------------------------------------------------------------------------------------
@@ -339,7 +340,7 @@ namespace CryptoNote
   //-----------------------------------------------------------------------------------------------------
   bool miner::worker_thread(uint32_t th_local_index)
   {
-    logger(INFO) << "Miner thread was started ["<< th_local_index << "]";
+    logger(INFO, GREEN) << "Miner thread was started ["<< th_local_index << "]";
     uint32_t nonce = m_starter_nonce + th_local_index;
     difficulty_type local_diff = 0;
     uint32_t local_template_ver = 0;
@@ -396,7 +397,7 @@ namespace CryptoNote
       nonce += m_threads_total;
       ++m_hashes;
     }
-    logger(INFO) << "Miner thread stopped ["<< th_local_index << "]";
+    logger(INFO, YELLOW) << "Miner thread stopped ["<< th_local_index << "]";
     return true;
   }
   //-----------------------------------------------------------------------------------------------------
