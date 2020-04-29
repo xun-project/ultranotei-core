@@ -1,7 +1,9 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
-// Copyright (c) 2014-2017 XDN developers
-// Copyright (c) 2016-2017 BXC developers
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
+// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2016-2019, The Karbo developers
+// Copyright (c) 2019-2020 The Lithe Project Development Team
+
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,6 +22,7 @@
 #include "Checkpoints.h"
 #include "../CryptoNoteConfig.h"
 #include "Common/StringTools.h"
+#include "Common/DnsTools.h"
 
 using namespace Logging;
 
@@ -100,7 +103,42 @@ std::vector<uint32_t> Checkpoints::getCheckpointHeights() const {
   return checkpointHeights;
 }
 
+bool Checkpoints::load_checkpoints_from_dns()
+{
+  std::string domain("*");
+  std::vector<std::string>records;
 
+  logger(Logging::DEBUGGING) << "<< Checkpoints.cpp << " << "Fetching DNS checkpoint records from " << domain;
+
+  if (!Common::fetch_dns_txt(domain, records)) {
+    logger(Logging::DEBUGGING) << "<< Checkpoints.cpp << " << "Failed to lookup DNS checkpoint records from " << domain;
+  }
+
+  for (const auto& record : records) {
+    uint32_t height;
+    Crypto::Hash hash = NULL_HASH;
+    std::stringstream ss;
+    size_t del = record.find_first_of(':');
+    std::string height_str = record.substr(0, del), hash_str = record.substr(del + 1, 64);
+    ss.str(height_str);
+    ss >> height;
+    char c;
+    if (del == std::string::npos) continue;
+    if ((ss.fail() || ss.get(c)) || !Common::podFromHex(hash_str, hash)) {
+      logger(Logging::INFO, RED) << "- Checkpoints.cpp - " << "Failed to parse DNS checkpoint record: " << record;
+      continue;
+    }
+
+    if (!(0 == m_points.count(height))) {
+      logger(DEBUGGING) << "- Checkpoints.cpp - " << "Checkpoint already exists for height: " << height << ". Ignoring DNS checkpoint.";
+    } else {
+      add_checkpoint(height, hash_str);
+	    logger(INFO, GREEN) << "- Checkpoints.cpp - " << "Added DNS checkpoint: " << height_str << ":" << hash_str;
+    }
+  }
+
+  return true;
+}
 
 bool Checkpoints::load_checkpoints()
 {
@@ -135,9 +173,5 @@ bool Checkpoints::load_checkpoints_from_file(const std::string& fileName) {
 	logger(Logging::INFO) << "Loaded " << m_points.size() << " checkpoints from "	<< fileName;
 	return true;
 }
-
- bool Checkpoints::load_checkpoints_from_dns(){
-   return false;
- }
 
 }
