@@ -208,7 +208,12 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 
 /* ---------------------------------------------------------------------------------------------------- */
 
-uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term, uint32_t height) const {
+uint64_t Currency::calculateInterestMaths(uint64_t amount, uint32_t term, uint32_t height) const {
+
+  /* deposits 3.0 */
+  if (term % 21900 == 0) {
+    return calculateInterest(amount, term);
+  }
 
   uint64_t a = static_cast<uint64_t>(term) * m_depositMaxTotalRate - m_depositMinTotalRateFactor;
   uint64_t bHi;
@@ -231,108 +236,10 @@ uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term, uint32_t he
   }
   return interestLo;
 }
-
-/* ---------------------------------------------------------------------------------------------------- */
-
-uint64_t Currency::calculateInterestV2(uint64_t amount, uint32_t term) const {
-
-  uint64_t returnVal = 0;
-
-  /* investments */
-  if (term % 64800 == 0) {    
-
-    /* minimum 50000 for investments */
-    uint64_t amount4Humans = amount / 1000000;
-    assert(amount4Humans >= 50000);
-
-    /* quantity tiers */
-    float qTier = 1;
-    if(amount4Humans > 110000 && amount4Humans < 180000)
-      qTier = static_cast<float>(1.01);
-      
-    if(amount4Humans >= 180000 && amount4Humans < 260000)
-      qTier = static_cast<float>(1.02);
-
-    if(amount4Humans >= 260000 && amount4Humans < 350000)
-      qTier = static_cast<float>(1.03);
-
-    if(amount4Humans >= 350000 && amount4Humans < 450000)
-      qTier = static_cast<float>(1.04);
-
-    if(amount4Humans >= 450000 && amount4Humans < 560000)
-      qTier = static_cast<float>(1.05);
-
-    if(amount4Humans >= 560000 && amount4Humans < 680000)
-      qTier = static_cast<float>(1.06);
-
-    if(amount4Humans >= 680000 && amount4Humans < 810000)
-      qTier = static_cast<float>(1.07);
-
-    if(amount4Humans >= 810000 && amount4Humans < 950000)
-      qTier = static_cast<float>(1.08);
-
-    if(amount4Humans >= 950000 && amount4Humans < 1100000)
-      qTier = static_cast<float>(1.09);
-
-    if(amount4Humans >= 1100000 && amount4Humans < 1260000)
-      qTier = static_cast<float>(1.1);
-
-    if(amount4Humans >= 1260000 && amount4Humans < 1430000)
-      qTier = static_cast<float>(1.11);
-
-    if(amount4Humans >= 1430000 && amount4Humans < 1610000)
-      qTier = static_cast<float>(1.12);
-
-    if(amount4Humans >= 1610000 && amount4Humans < 1800000)
-      qTier = static_cast<float>(1.13);
-
-    if(amount4Humans >= 1800000 && amount4Humans < 2000000)
-      qTier = static_cast<float>(1.14);
-
-    if(amount4Humans > 2000000)
-      qTier = static_cast<float>(1.15);
-
-    float mq = static_cast<float>(1.4473);
-    float termQuarters = static_cast<float>( term ) / 64800;
-    float m8 = static_cast<float>( 100.0*pow(1.0+(mq/100.0), termQuarters)-100.0 );
-    float m5 = static_cast<float>( termQuarters * 0.5 );
-    float m7 = m8 * (1 + (m5/100));
-    float rate = m7 * qTier;
-    float interest = amount * (rate/100);
-    returnVal = static_cast<uint64_t>(interest);
-    return returnVal;
-  } 
-
-  /* weekly deposits */
-  if (term % 5040 == 0) {    
-    uint64_t actualAmount = amount;
-    float weeks = static_cast<float>( term ) / 5040;
-    float baseInterest = static_cast<float>(0.0696);
-    float interestPerWeek = static_cast<float>(0.0002);
-    float interestRate = baseInterest + (weeks * interestPerWeek);
-    float interest = actualAmount * ((weeks * interestRate) / 100);
-    returnVal = static_cast<uint64_t>(interest);
-    return returnVal;
-  } 
-
-  return returnVal;
-
-} /* Currency::calculateInterestV2 */
-
-
-uint64_t Currency::calculateInterestV3(uint64_t amount, uint32_t term) const
+uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term) const
 {
 
   uint64_t returnVal = 0;
-  uint64_t amount4Humans = amount / 1000000;
-  
-  float baseInterest = static_cast<float>(0.029);
-
-  if(amount4Humans >= 10000 && amount4Humans < 20000)
-    baseInterest = static_cast<float>(0.039);
-
-  if(amount4Humans >= 20000)
-    baseInterest = static_cast<float>(0.049);
 
   /* Consensus 2019 - Monthly deposits */
    
@@ -340,14 +247,14 @@ uint64_t Currency::calculateInterestV3(uint64_t amount, uint32_t term) const
   if (months > 12) {
     months = 12;
   }
-  float ear = static_cast<float>( baseInterest + (months - 1) * 0.001 );
+  float ear = static_cast<float>( (months - 1) * 0.001 );
   float eir = (ear/12) * months;
   returnVal = static_cast<uint64_t>(eir);
 
   float interest = amount * eir;
   returnVal = static_cast<uint64_t>(interest);
   return returnVal;
-} /* Currency::calculateInterestV3 */
+} /* Currency::calculateInterest */
 
 /* ---------------------------------------------------------------------------------------------------- */
 
@@ -357,7 +264,7 @@ uint64_t Currency::calculateTotalTransactionInterest(const Transaction& tx, uint
     if (input.type() == typeid(MultisignatureInput)) {
       const MultisignatureInput& multisignatureInput = boost::get<MultisignatureInput>(input);
       if (multisignatureInput.term != 0) {
-        interest += calculateInterest(multisignatureInput.amount, multisignatureInput.term, height);
+        interest += calculateInterestMaths(multisignatureInput.amount, multisignatureInput.term, height);
       }
     }
   }
@@ -375,7 +282,7 @@ uint64_t Currency::getTransactionInputAmount(const TransactionInput& in, uint32_
     if (multisignatureInput.term == 0) {
       return multisignatureInput.amount;
     } else {
-      return multisignatureInput.amount + calculateInterest(multisignatureInput.amount, multisignatureInput.term, height);
+      return multisignatureInput.amount + calculateInterestMaths(multisignatureInput.amount, multisignatureInput.term, height);
     }
   } else if (in.type() == typeid(BaseInput)) {
     return 0;
