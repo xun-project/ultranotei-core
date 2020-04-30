@@ -211,17 +211,8 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term, uint32_t height) const {
 
   /* deposits 3.0 and investments 1.0 */
-  if ((term % 21900 == 0) && (height > parameters::DEPOSIT_HEIGHT_V3)) {
-   return calculateInterestV3(amount, term);
-  }
-
-  /* deposits 2.0 and investments 1.0 */
-  if (term % 64800 == 0) {
-    return calculateInterestV2(amount, term);
-  }
-
-  if (term % 5040 == 0) {
-    return calculateInterestV2(amount, term);
+  if (term % 21900 == 0) {
+   return calculateInterest(amount, term);
   }
 
   uint64_t a = static_cast<uint64_t>(term) * m_depositMaxTotalRate - m_depositMinTotalRateFactor;
@@ -903,7 +894,6 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   numberOfDecimalPlaces(parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT);
 
   minimumFee(parameters::MINIMUM_FEE);
-  minimumFeeV1(parameters::MINIMUM_FEE_V1);
   minimumFeeBanking(parameters::MINIMUM_FEE_BANKING);  
   defaultDustThreshold(parameters::DEFAULT_DUST_THRESHOLD);
 
@@ -915,7 +905,6 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   depositMinAmount(parameters::DEPOSIT_MIN_AMOUNT);
   depositMinTerm(parameters::DEPOSIT_MIN_TERM);
   depositMaxTerm(parameters::DEPOSIT_MAX_TERM);
-  depositMaxTermV1(parameters::DEPOSIT_MAX_TERM_V1);
   depositMinTotalRateFactor(parameters::DEPOSIT_MIN_TOTAL_RATE_FACTOR);
   depositMaxTotalRate(parameters::DEPOSIT_MAX_TOTAL_RATE);
 
