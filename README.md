@@ -55,7 +55,7 @@ Building with Clang: it may be possible to use Clang instead of GCC, but this ma
 - `mkdir build`
 - `cd build`
 -  Set the PATH variable for cmake: ie. `set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%`
-- `cmake -G "Visual Studio 16 2019" .. -A x64 -DBOOST_ROOT=C:/local/boost_1_65_1` (Or your boost installed dir.)
+- `cmake -G "Visual Studio 16 2019" .. -A x64 -DBOOST_ROOT=C:/local/boost_1_72_0` (Or your boost installed dir.)
 - `MSBuild UltraNote.sln /p:Configuration=Release /m`
 - If all went well, it will complete successfully, and you will find all your binaries in the '..\build\src\Release' directory.
 - Additionally, a `.sln` file will have been created in the `build` directory. If you wish to open the project in Visual Studio with this, you can.
