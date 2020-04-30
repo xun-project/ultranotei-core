@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -242,7 +243,7 @@ std::unique_ptr<WalletRequest> WalletTransactionSender::makeDepositRequest(Trans
                                                                            uint64_t mixIn) {
 
   throwIf(term < m_currency.depositMinTerm(), error::DEPOSIT_TERM_TOO_SMALL);
-  throwIf(term > m_currency.depositMaxTermV1(), error::DEPOSIT_TERM_TOO_BIG);
+  throwIf(term > m_currency.depositMaxTerm(), error::DEPOSIT_TERM_TOO_BIG);
   throwIf(amount < m_currency.depositMinAmount(), error::DEPOSIT_AMOUNT_TOO_SMALL);
 
   uint64_t neededMoney = getSumWithOverflowCheck(amount, fee);
@@ -466,7 +467,7 @@ std::unique_ptr<WalletRequest> WalletTransactionSender::doSendMultisigTransactio
     deposit.creatingTransactionId = context->transactionId;
     deposit.spendingTransactionId = WALLET_LEGACY_INVALID_TRANSACTION_ID;
 	uint32_t height = transactionInfo.blockHeight;
-	deposit.interest = m_currency.calculateInterest(deposit.amount, deposit.term, height);
+	deposit.interest = m_currency.calculateInterestMaths(deposit.amount, deposit.term, height);
     deposit.locked = true;
     DepositId depositId = m_transactionsCache.insertDeposit(deposit, depositIndex, transaction->getTransactionHash());
     transactionInfo.firstDepositId = depositId;
