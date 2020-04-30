@@ -29,10 +29,6 @@ const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1 = 11; /* changed for LWMA3 *
 
 const uint64_t MONEY_SUPPLY = UINT64_C(21000000000000); /* max supply: 21M (Consensus II) */
 
-const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX = 0;
-const size_t   ZAWY_DIFFICULTY_FIX = 1;
-const uint8_t  ZAWY_DIFFICULTY_BLOCK_VERSION = 0;
-
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = 100000; /* size of block in bytes, after which reward is calculated using block size */
 const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE = 600;
@@ -40,9 +36,7 @@ const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT = 6;
 
 const uint64_t POINT = UINT64_C(1000); 
 const uint64_t COIN = UINT64_C(1000000); /* smallest atomic unit */
-const uint64_t MINIMUM_FEE = UINT64_C(10); /* 0.000010 xuni */
-const uint64_t MINIMUM_FEE_V1 = UINT64_C(100); /* 0.000100 xuni */
-const uint64_t MINIMUM_FEE_V2 = UINT64_C(1000); /* 0.001000 xuni */
+const uint64_t MINIMUM_FEE = UINT64_C(1000); /* 0.001000 xuni */
 const uint64_t MINIMUM_FEE_BANKING = UINT64_C(1000); /* 0.001000 xuni */
 const uint64_t DEFAULT_DUST_THRESHOLD = UINT64_C(10); /* 0.000010 xuni */  
 
@@ -63,48 +57,41 @@ const size_t   MINIMUM_MIXIN = 4;
 
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
-const uint64_t DEPOSIT_MIN_AMOUNT = 1 * COIN; 
-const uint32_t DEPOSIT_MIN_TERM = 5040; /* one week */
-const uint32_t DEPOSIT_MAX_TERM = 1 * 12 * 21900; /* legacy deposts - one year */
-const uint32_t DEPOSIT_MAX_TERM_V1 = 64800 * 20; /* five years */
-const uint32_t DEPOSIT_MIN_TERM_V3 = 21900; /* consensus 2019 - one month */
-const uint32_t DEPOSIT_MAX_TERM_V3 = 1 * 12 * 21900; /* consensus 2019 - one year */
-const uint32_t DEPOSIT_HEIGHT_V3 = 200; /* consensus 2019 - deposts v3.0 */
-const uint64_t DEPOSIT_MIN_TOTAL_RATE_FACTOR = 0; /* constant rate */
-const uint64_t DEPOSIT_MAX_TOTAL_RATE = 3; /* legacy deposits */
+const uint64_t DEPOSIT_MIN_AMOUNT 							= 1 * COIN; 
+const uint32_t DEPOSIT_MIN_TERM 							= 21900; /* one month */
+const uint32_t DEPOSIT_MAX_TERM 							= 1 * 12 * 21900; /* one year */
+const uint64_t DEPOSIT_MIN_TOTAL_RATE_FACTOR 				= 0; /* constant rate */
+const uint64_t DEPOSIT_MAX_TOTAL_RATE 						= 3; /* legacy deposits */
 
 static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
 static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
-const uint64_t MULTIPLIER_FACTOR = 1; /* legacy deposits */
-const uint32_t END_MULTIPLIER_BLOCK = 150; /* legacy deposits */
+const uint64_t MULTIPLIER_FACTOR 							 = 10; /* legacy deposits */
+const uint32_t END_MULTIPLIER_BLOCK 						 = 43800; /* legacy deposits */
 
 const size_t   MAX_BLOCK_SIZE_INITIAL = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 10;
-const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR = 100 * 1024;
-const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
+const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR 		 = 100 * 1024;
+const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR 		 = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
 
-const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS = 1;
+const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS 	 = 1;
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
 
 const size_t   CRYPTONOTE_MAX_TX_SIZE_LIMIT = (CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE / 4) - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE; /* maximum transaction size */
-const size_t   CRYPTONOTE_OPTIMIZE_SIZE = 100; /* proportional to CRYPTONOTE_MAX_TX_SIZE_LIMIT */
+const size_t   CRYPTONOTE_OPTIMIZE_SIZE 					 = 100; /* proportional to CRYPTONOTE_MAX_TX_SIZE_LIMIT */
 
-const uint64_t CRYPTONOTE_MEMPOOL_TX_LIVETIME = (60 * 60 * 12); /* 12 hours in seconds */
+const uint64_t CRYPTONOTE_MEMPOOL_TX_LIVETIME 				 = (60 * 60 * 12); /* 12 hours in seconds */
 const uint64_t CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME = (60 * 60 * 24); /* 23 hours in seconds */
 const uint64_t CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL  = 7; /* CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL * CRYPTONOTE_MEMPOOL_TX_LIVETIME  = time to forget tx */
 
 const size_t   FUSION_TX_MAX_SIZE = CRYPTONOTE_MAX_TX_SIZE_LIMIT * 2;
-const size_t   FUSION_TX_MIN_INPUT_COUNT = 12;
-const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO = 4;
+const size_t   FUSION_TX_MIN_INPUT_COUNT 					= 12;
+const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO 			= 4;
 
-const uint64_t UPGRADE_HEIGHT = 1;			
-const uint64_t UPGRADE_HEIGHT_V2 = 1;
-const uint64_t UPGRADE_HEIGHT_V3 = 200; /* Cryptonight-Fast */
-const uint64_t UPGRADE_HEIGHT_V4 = 400; /* MixIn 2 */
-const uint64_t UPGRADE_HEIGHT_V5 = 600; /* Deposits 2.0, Investments 1.0 */
-const uint64_t UPGRADE_HEIGHT_V6 = 800; /* LWMA3 */
-const uint64_t UPGRADE_HEIGHT_V7 = 1000; /* Cryptoight Conceal */
+const uint64_t UPGRADE_HEIGHT 								= 1;			
+const uint64_t UPGRADE_HEIGHT_V2							= 1;
+const uint64_t UPGRADE_HEIGHT_V3 							= 2; 
+
 const unsigned UPGRADE_VOTING_THRESHOLD = 90; // percent
 const size_t   UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
 const size_t   UPGRADE_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
@@ -122,23 +109,23 @@ const char     MINER_CONFIG_FILE_NAME[]                       = "miner_conf.json
 
 } // parameters
 
-const uint64_t START_BLOCK_REWARD = (UINT64_C(5) * parameters::COIN); // start reward (Consensus I)
-const uint64_t FOUNDATION_TRUST = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network  (Consensus II)
-const uint64_t MAX_BLOCK_REWARD = (UINT64_C(10) * parameters::COIN); // max reward (Consensus I)
-const uint64_t REWARD_INCREASE_INTERVAL = (UINT64_C(21900)); // aprox. 1 month (+ 0.4 xuni increment per month)
+const uint64_t START_BLOCK_REWARD 							  = (UINT64_C(5) * parameters::COIN); // start reward (Consensus I)
+const uint64_t FOUNDATION_TRUST 							  = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network  (Consensus II)
+const uint64_t MAX_BLOCK_REWARD 							  = (UINT64_C(10) * parameters::COIN); // max reward (Consensus I)
+const uint64_t REWARD_INCREASE_INTERVAL 					  = (UINT64_C(21900)); // aprox. 1 month (+ 0.4 xuni increment per month)
 
-const char     CRYPTONOTE_NAME[] = "ultranotei";
-const char     GENESIS_COINBASE_TX_HEX[] = "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
+const char     CRYPTONOTE_NAME[] 							  = "ultranotei";
+const char     GENESIS_COINBASE_TX_HEX[] 					  = "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
 const uint32_t GENESIS_NONCE = 10000;
-const uint64_t GENESIS_TIMESTAMP = 1587360548; // 20200420
+const uint64_t GENESIS_TIMESTAMP 							  = 1587360548; // 20200420
 
-const uint8_t  TRANSACTION_VERSION_1 = 1; // important
-const uint8_t  TRANSACTION_VERSION_2 = 2; // important
-const uint8_t  BLOCK_MAJOR_VERSION_1 = 1; // (Consensus I) important
-const uint8_t  BLOCK_MAJOR_VERSION_2 = 2; // (Consensus II) important
-const uint8_t  BLOCK_MAJOR_VERSION_3 = 3; // (Consensus III)
-const uint8_t  BLOCK_MAJOR_VERSION_4 = 4; // LWMA3
-const uint8_t  BLOCK_MAJOR_VERSION_7 = 7; /* Cryptonight Conceal */
+const uint8_t  TRANSACTION_VERSION_1 						  = 1; 
+const uint8_t  TRANSACTION_VERSION_2 						  = 2; 
+
+const uint8_t  BLOCK_MAJOR_VERSION_1 						  = 1; // (Consensus I) 
+const uint8_t  BLOCK_MAJOR_VERSION_2 						  = 2; // (Consensus II) 
+const uint8_t  BLOCK_MAJOR_VERSION_3 						  = 3; // (Consensus III)
+
 const uint8_t  BLOCK_MINOR_VERSION_0 = 0; // important
 const uint8_t  BLOCK_MINOR_VERSION_1 = 1; // important
 
