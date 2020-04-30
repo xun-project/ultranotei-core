@@ -54,6 +54,9 @@ RpcServer::HandlerFunction binMethod(bool (RpcServer::*handler)(typename Command
     }
 
     bool result = (obj->*handler)(req, res);
+    for (const auto& cors_domain: obj->getCorsDomains()) {
+      response.addHeader("Access-Control-Allow-Origin", cors_domain);
+    }
     response.setBody(storeToBinaryKeyValue(res.data()));
     return result;
   };
@@ -71,6 +74,9 @@ RpcServer::HandlerFunction jsonMethod(bool (RpcServer::*handler)(typename Comman
     }
 
     bool result = (obj->*handler)(req, res);
+    for (const auto& cors_domain: obj->getCorsDomains()) {
+      response.addHeader("Access-Control-Allow-Origin", cors_domain);
+    }
     response.setBody(storeToJson(res.data()));
     return result;
   };
@@ -127,6 +133,9 @@ void RpcServer::processRequest(const HttpRequest& request, HttpResponse& respons
 bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& response) {
 
   using namespace JsonRpc;
+  for (const auto& cors_domain: m_cors_domains) {
+    response.addHeader("Access-Control-Allow-Origin", cors_domain);
+  }
 
   response.addHeader("Content-Type", "application/json");
 
@@ -176,8 +185,16 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
   logger(TRACE) << "JSON-RPC response: " << jsonResponse.getBody();
   return true;
 }
+  bool RpcServer::enableCors(const std::vector<std::string> domains) {
+  m_cors_domains = domains;
+  return true;
+}
+  
+  std::vector<std::string> RpcServer::getCorsDomains() {
+  return m_cors_domains;
+}
 
-bool RpcServer::isCoreReady() {
+  bool RpcServer::isCoreReady() {
   return m_core.currency().isTestnet() || m_p2p.get_payload_object().isSynchronized();
 }
 
