@@ -210,7 +210,7 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 
 uint64_t Currency::calculateInterestMaths(uint64_t amount, uint32_t term, uint32_t height) const {
 
-  /* deposits 3.0 and investments 1.0 */
+  /* deposits 3.0 */
   if (term % 21900 == 0) {
     return calculateInterest(amount, term);
   }
