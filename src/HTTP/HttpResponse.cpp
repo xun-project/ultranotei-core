@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -49,6 +50,7 @@ namespace CryptoNote {
 HttpResponse::HttpResponse() {
   status = STATUS_200;
   headers["Server"] = "CryptoNote-based HTTP server";
+  headers["Access-Control-Allow-Origin"] = "*";
 }
 
 void HttpResponse::setStatus(HTTP_STATUS s) {
