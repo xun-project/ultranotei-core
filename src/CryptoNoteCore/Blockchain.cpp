@@ -1783,7 +1783,7 @@ bool Blockchain::check_tx_outputs(const Transaction& tx) const {
       } else {
         const auto& multisignatureOutput = ::boost::get<MultisignatureOutput>(out.target);
         if (multisignatureOutput.term != 0) {
-          if (multisignatureOutput.term < m_currency.depositMinTerm() || multisignatureOutput.term > m_currency.depositMaxTermV1()) {
+          if (multisignatureOutput.term < m_currency.depositMinTerm() || multisignatureOutput.term > m_currency.depositMaxTerm()) {
             logger(INFO, BRIGHT_WHITE) << getObjectHash(tx) << " multisignature output has invalid term: " << multisignatureOutput.term;
             return false;
           } else if (out.amount < m_currency.depositMinAmount()) {

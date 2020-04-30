@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -64,7 +65,7 @@ void WalletLegacySerializer::serialize(std::ostream& stream, const std::string& 
   std::string plain = plainArchive.str();
   std::string cipher;
 
-  Crypto::chacha_iv iv = encrypt(plain, password, cipher);
+  Crypto::chacha8_iv iv = encrypt(plain, password, cipher);
 
   uint32_t version = walletSerializationVersion;
   StdOutputStream output(stream);
@@ -91,14 +92,14 @@ void WalletLegacySerializer::saveKeys(CryptoNote::ISerializer& serializer) {
   keys.serialize(serializer, "keys");
 }
 
-Crypto::chacha_iv WalletLegacySerializer::encrypt(const std::string& plain, const std::string& password, std::string& cipher) {
-  Crypto::chacha_key key;
+Crypto::chacha8_iv WalletLegacySerializer::encrypt(const std::string& plain, const std::string& password, std::string& cipher) {
+  Crypto::chacha8_key key;
   Crypto::cn_context context;
   Crypto::generate_chacha8_key(context, password, key);
 
   cipher.resize(plain.size());
 
-  Crypto::chacha_iv iv = Crypto::rand<Crypto::chacha_iv>();
+  Crypto::chacha8_iv iv = Crypto::rand<Crypto::chacha8_iv>();
   Crypto::chacha8(plain.data(), plain.size(), key, iv, &cipher[0]);
 
   return iv;
@@ -114,7 +115,7 @@ void WalletLegacySerializer::deserialize(std::istream& stream, const std::string
   uint32_t version;
   serializerEncrypted(version, "version");
 
-  Crypto::chacha_iv iv;
+  Crypto::chacha8_iv iv;
   serializerEncrypted(iv, "iv");
 
   std::string cipher;
@@ -164,7 +165,7 @@ bool WalletLegacySerializer::deserialize(std::istream& stream, const std::string
     uint32_t version;
     serializerEncrypted(version, "version");
 
-    Crypto::chacha_iv iv;
+    Crypto::chacha8_iv iv;
     serializerEncrypted(iv, "iv");
 
     std::string cipher;
@@ -223,8 +224,8 @@ bool WalletLegacySerializer::deserialize(std::istream& stream, const std::string
 
 
 
-void WalletLegacySerializer::decrypt(const std::string& cipher, std::string& plain, Crypto::chacha_iv iv, const std::string& password) {
-  Crypto::chacha_key key;
+void WalletLegacySerializer::decrypt(const std::string& cipher, std::string& plain, Crypto::chacha8_iv iv, const std::string& password) {
+  Crypto::chacha8_key key;
   Crypto::cn_context context;
   Crypto::generate_chacha8_key(context, password, key);
 

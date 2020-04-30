@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -41,6 +42,7 @@ DaemonCommandsHandler::DaemonCommandsHandler(CryptoNote::core& core, CryptoNote:
   m_consoleHandler.setHandler("show_hr", boost::bind(&DaemonCommandsHandler::show_hr, this, _1), "Start showing hash rate");
   m_consoleHandler.setHandler("hide_hr", boost::bind(&DaemonCommandsHandler::hide_hr, this, _1), "Stop showing hash rate");
   m_consoleHandler.setHandler("set_log", boost::bind(&DaemonCommandsHandler::set_log, this, _1), "set_log <level> - Change current log level, <level> is a number 0-4");
+  m_consoleHandler.setHandler("status", boost::bind(&DaemonCommandsHandler::status, this, _1), "Show daemon status");
 }
 
 //--------------------------------------------------------------------------------
@@ -57,6 +59,23 @@ std::string DaemonCommandsHandler::get_commands_str()
 }
 
 //--------------------------------------------------------------------------------
+
+bool DaemonCommandsHandler::status(const std::vector<std::string>& args) {
+
+  /*
+   * Its very basic but it works
+   */
+  std::cout
+  << "Height: "   << m_core.get_current_blockchain_height() << std::endl
+  << "Net-Type: " << (m_core.currency().isTestnet() ? "Testnet" : "Mainnet") << std::endl
+  << "Software Version: " << PROJECT_VERSION << std::endl
+  // @TODO: Obviously needs more stuff here
+  << std::endl;
+
+  return true;
+}
+
+//--------------------------------------------------------------------------------
 bool DaemonCommandsHandler::exit(const std::vector<std::string>& args) {
   m_consoleHandler.requestStop();
   m_srv.sendStopSignal();
@@ -65,6 +84,7 @@ bool DaemonCommandsHandler::exit(const std::vector<std::string>& args) {
 
 //--------------------------------------------------------------------------------
 bool DaemonCommandsHandler::help(const std::vector<std::string>& args) {
+  Common::Console::setTextColor(Common::Console::Color::BrightMagenta);
   std::cout << get_commands_str() << ENDL;
   return true;
 }

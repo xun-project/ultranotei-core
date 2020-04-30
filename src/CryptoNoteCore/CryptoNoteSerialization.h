@@ -1,13 +1,14 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #pragma once
 
 #include "CryptoNoteBasic.h"
-#include "crypto/chacha.h"
+#include "crypto/chacha8.h"
 #include "Serialization/ISerializer.h"
 #include "crypto/crypto.h"
 
@@ -16,7 +17,7 @@ namespace Crypto {
 bool serialize(PublicKey& pubKey, Common::StringView name, CryptoNote::ISerializer& serializer);
 bool serialize(SecretKey& secKey, Common::StringView name, CryptoNote::ISerializer& serializer);
 bool serialize(Hash& h, Common::StringView name, CryptoNote::ISerializer& serializer);
-bool serialize(chacha_iv& chacha, Common::StringView name, CryptoNote::ISerializer& serializer);
+bool serialize(chacha8_iv& chacha8, Common::StringView name, CryptoNote::ISerializer& serializer);
 bool serialize(KeyImage& keyImage, Common::StringView name, CryptoNote::ISerializer& serializer);
 bool serialize(Signature& sig, Common::StringView name, CryptoNote::ISerializer& serializer);
 bool serialize(EllipticCurveScalar& ecScalar, Common::StringView name, CryptoNote::ISerializer& serializer);

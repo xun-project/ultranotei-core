@@ -995,7 +995,7 @@ bool simple_wallet::new_wallet(const std::string &wallet_file, const std::string
     std::string secretKeysData = std::string(reinterpret_cast<char*>(&keys.spendSecretKey), sizeof(keys.spendSecretKey)) + std::string(reinterpret_cast<char*>(&keys.viewSecretKey), sizeof(keys.viewSecretKey));
     std::string guiKeys = Tools::Base58::encode_addr(CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX, secretKeysData);
 
-    logger(INFO, BRIGHT_GREEN) << "ConcealWallet is an open-source, client-side, free wallet which allow you to send and receive CCX instantly on the blockchain. You are  in control of your funds & your keys. When you generate a new wallet, login, send, receive or deposit $CCX everything happens locally. Your seed is never transmitted, received or stored. That's why its imperative to write, print or save your seed somewhere safe. The backup of keys is your responsibility. If you lose your seed, your account can not be recovered. The Conceal Team doesn't take any responsibility for lost funds due to nonexistent/missing/lost private keys." << std::endl << std::endl;
+    logger(INFO, BRIGHT_GREEN) << "UltraNoteIwallet is an open-source, client-side, free wallet which allow you to send and receive XUNI instantly on the blockchain. You are  in control of your funds & your keys. When you generate a new wallet, login, send, receive or deposit $xuni everything happens locally. Your seed is never transmitted, received or stored. That's why its imperative to write, print or save your seed somewhere safe. The backup of keys is your responsibility. If you lose your seed, your account can not be recovered. The UltraNote Team doesn't take any responsibility for lost funds due to nonexistent/missing/lost private keys." << std::endl << std::endl;
 
     logger(INFO, BRIGHT_WHITE) <<
       "Wallet Address: " << m_wallet->getAddress() << std::endl <<
@@ -1213,7 +1213,7 @@ bool simple_wallet::get_reserve_proof(const std::vector<std::string> &args)
 		
 		//logger(INFO, BRIGHT_WHITE) << "\n\n" << sig_str << "\n\n" << std::endl;
 
-		const std::string filename = "reserve_proof_" + args[0] + "_CCX.txt";
+		const std::string filename = "reserve_proof_" + args[0] + "_xuni.txt";
 		boost::system::error_code ec;
 		if (boost::filesystem::exists(filename, ec)) {
 			boost::filesystem::remove(filename, ec);
@@ -1470,7 +1470,7 @@ bool simple_wallet::export_keys(const std::vector<std::string>& args/* = std::ve
   std::string secretKeysData = std::string(reinterpret_cast<char*>(&keys.spendSecretKey), sizeof(keys.spendSecretKey)) + std::string(reinterpret_cast<char*>(&keys.viewSecretKey), sizeof(keys.viewSecretKey));
   std::string guiKeys = Tools::Base58::encode_addr(CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX, secretKeysData);
 
-  logger(INFO, BRIGHT_GREEN) << std::endl << "ConcealWallet is an open-source, client-side, free wallet which allow you to send and receive CCX instantly on the blockchain. You are  in control of your funds & your keys. When you generate a new wallet, login, send, receive or deposit $CCX everything happens locally. Your seed is never transmitted, received or stored. That's why its imperative to write, print or save your seed somewhere safe. The backup of keys is your responsibility. If you lose your seed, your account can not be recovered. The Conceal Team doesn't take any responsibility for lost funds due to nonexistent/missing/lost private keys." << std::endl << std::endl;
+  logger(INFO, BRIGHT_GREEN) << std::endl << "UltraNoteIwallet is an open-source, client-side, free wallet which allow you to send and receive xuni instantly on the blockchain. You are  in control of your funds & your keys. When you generate a new wallet, login, send, receive or deposit $xuni everything happens locally. Your seed is never transmitted, received or stored. That's why its imperative to write, print or save your seed somewhere safe. The backup of keys is your responsibility. If you lose your seed, your account can not be recovered. The UltraNote Team doesn't take any responsibility for lost funds due to nonexistent/missing/lost private keys." << std::endl << std::endl;
 
   std::cout << "Private spend key: " << Common::podToHex(keys.spendSecretKey) << std::endl;
   std::cout << "Private view key: " <<  Common::podToHex(keys.viewSecretKey) << std::endl;
@@ -1989,12 +1989,12 @@ int main(int argc, char* argv[]) {
       CryptoNote::Currency tmp_currency = CryptoNote::CurrencyBuilder(logManager).currency();
       CryptoNote::simple_wallet tmp_wallet(dispatcher, tmp_currency, logManager);
 
-      std::cout << "Conceal Wallet v" << PROJECT_VERSION_LONG << std::endl;
-      std::cout << "Usage: concealwallet [--wallet-file=<file>|--generate-new-wallet=<file>] [--daemon-address=<host>:<port>] [<COMMAND>]";
+      std::cout << "UltraNoteI Wallet v" << PROJECT_VERSION_LONG << std::endl;
+      std::cout << "Usage: ultranoteiwallet [--wallet-file=<file>|--generate-new-wallet=<file>] [--daemon-address=<host>:<port>] [<COMMAND>]";
       std::cout << desc_all << '\n' << tmp_wallet.get_commands_str();
       return false;
     } else if (command_line::get_arg(vm, command_line::arg_version))  {
-      std::cout << "Conceal Wallet v" << PROJECT_VERSION_LONG << std::endl;
+      std::cout << "UltraNoteI Wallet v" << PROJECT_VERSION_LONG << std::endl;
       return false;
     }
 
@@ -2016,7 +2016,7 @@ int main(int argc, char* argv[]) {
 
   logManager.configure(buildLoggerConfiguration(logLevel, Common::ReplaceExtenstion(argv[0], ".log")));
 
-  logger(INFO, BRIGHT_GREEN) << "Conceal Wallet v" << PROJECT_VERSION_LONG;
+  logger(INFO, BRIGHT_GREEN) << "UltraNoteI Wallet v" << PROJECT_VERSION_LONG;
 
   CryptoNote::Currency currency = CryptoNote::CurrencyBuilder(logManager).
     testnet(command_line::get_arg(vm, arg_testnet)).currency();
