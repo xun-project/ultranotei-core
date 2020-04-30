@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -614,7 +615,7 @@ DepositId WalletUserTransactionsCache::insertNewDeposit(const TransactionOutputI
   deposit.creatingTransactionId = creatingTransactionId;
   deposit.term = depositOutput.term;
   deposit.spendingTransactionId = WALLET_LEGACY_INVALID_TRANSACTION_ID;
-  deposit.interest = currency.calculateInterest(deposit.amount, deposit.term, height);
+  deposit.interest = currency.calculateInterestMaths(deposit.amount, deposit.term, height);
   deposit.locked = true;
 
   return insertDeposit(deposit, depositOutput.outputInTransaction, depositOutput.transactionHash);
