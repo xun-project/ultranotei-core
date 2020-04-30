@@ -212,7 +212,7 @@ uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term, uint32_t he
 
   /* deposits 3.0 and investments 1.0 */
   if (term % 21900 == 0) {
-   return calculateInterest(amount, term);
+    return calculateInterestV3(amount, term);
   }
 
   uint64_t a = static_cast<uint64_t>(term) * m_depositMaxTotalRate - m_depositMinTotalRateFactor;
