@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -42,7 +43,7 @@ Block Miner::mine(const BlockMiningParameters& blockMiningParameters, size_t thr
 
   assert(m_state != MiningState::MINING_IN_PROGRESS);
   if (m_state == MiningState::MINING_STOPPED) {
-    m_logger(Logging::DEBUGGING) << "<< Miner.cpp << " << "Mining has been stopped";
+    m_logger(Logging::DEBUGGING) << "- Miner - " << "Mining has been stopped";
     throw System::InterruptedException();
   }
 
