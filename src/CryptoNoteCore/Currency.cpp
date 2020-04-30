@@ -237,7 +237,32 @@ uint64_t Currency::calculateInterestMaths(uint64_t amount, uint32_t term, uint32
   return interestLo;
 }
 uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term) const
+{
 
+  uint64_t returnVal = 0;
+  uint64_t amount4Humans = amount / 1000000;
+  
+  float baseInterest = static_cast<float>(0.029);
+
+  if(amount4Humans >= 10000 && amount4Humans < 20000)
+    baseInterest = static_cast<float>(0.039);
+
+  if(amount4Humans >= 20000)
+    baseInterest = static_cast<float>(0.049);
+
+  /* Consensus 2019 - Monthly deposits */
+   
+  float months = static_cast<float>( term ) / 21900;
+  if (months > 12) {
+    months = 12;
+  }
+  float ear = static_cast<float>( baseInterest + (months - 1) * 0.001 );
+  float eir = (ear/12) * months;
+  returnVal = static_cast<uint64_t>(eir);
+
+  float interest = amount * eir;
+  returnVal = static_cast<uint64_t>(interest);
+  return returnVal;
 } /* Currency::calculateInterest */
 
 /* ---------------------------------------------------------------------------------------------------- */
