@@ -95,7 +95,7 @@ uint64_t calculateDepositsAmount(const std::vector<CryptoNote::TransactionOutput
   return std::accumulate(transfers.begin(), transfers.end(), static_cast<uint64_t>(0), [&currency, &index, heights] (uint64_t sum, const CryptoNote::TransactionOutputInformation& deposit) {
     if (deposit.term % 64800 != 0) 
     {
-      return sum + deposit.amount + currency.calculateInterest(deposit.amount, deposit.term, heights[index++]);
+      return sum + deposit.amount + currency.calculateInterestMaths(deposit.amount, deposit.term, heights[index++]);
     }
     else
     {
@@ -110,7 +110,7 @@ uint64_t calculateInvestmentsAmount(const std::vector<CryptoNote::TransactionOut
   return std::accumulate(transfers.begin(), transfers.end(), static_cast<uint64_t>(0), [&currency, &index, heights] (uint64_t sum, const CryptoNote::TransactionOutputInformation& deposit) {
     if (deposit.term % 64800 == 0) 
     {
-      return sum + deposit.amount + currency.calculateInterest(deposit.amount, deposit.term, heights[index++]);
+      return sum + deposit.amount + currency.calculateInterestMaths(deposit.amount, deposit.term, heights[index++]);
     }
     else
     {
