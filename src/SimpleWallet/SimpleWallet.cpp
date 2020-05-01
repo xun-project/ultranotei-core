@@ -977,11 +977,11 @@ bool simple_wallet::new_wallet(const std::string &wallet_file, const std::string
 
     logger(INFO, BRIGHT_GREEN) << "UltraNoteIwallet is an open-source, client-side, free wallet which allow you to send and receive XUNI instantly on the blockchain. You are  in control of your funds & your keys. When you generate a new wallet, login, send, receive or deposit $xuni everything happens locally. Your seed is never transmitted, received or stored. That's why its imperative to write, print or save your seed somewhere safe. The backup of keys is your responsibility. If you lose your seed, your account can not be recovered. The UltraNote Team doesn't take any responsibility for lost funds due to nonexistent/missing/lost private keys." << std::endl << std::endl;
 
-    logger(INFO, BRIGHT_WHITE) <<
-      "Wallet Address: " << m_wallet->getAddress() << std::endl <<
-      "Private View Key: " << Common::podToHex(keys.viewSecretKey) << std::endl <<
-      "Private Spend Key: " << Common::podToHex(keys.spendSecretKey) << std::endl <<
-      "Mnemonic Seed: " << generate_mnemonic(keys.spendSecretKey) << std::endl << std::endl;
+    std::cout << "Wallet Address: " << BrightMagentaMsg(m_wallet->getAddress()) << std::endl;
+    std::cout << "Private spend key: " << BrightMagentaMsg(Common::podToHex(keys.spendSecretKey)) << std::endl;
+    std::cout << "Private view key: " << BrightMagentaMsg(Common::podToHex(keys.viewSecretKey)) << std::endl;
+    std::cout << "Mnemonic Seed: " << BrightMagentaMsg(generate_mnemonic(keys.spendSecretKey)) << std::endl;
+
 
   }
   catch (const std::exception& e) {
@@ -989,14 +989,15 @@ bool simple_wallet::new_wallet(const std::string &wallet_file, const std::string
     return false;
   }
 
-  success_msg_writer() <<
-    "**********************************************************************\n" <<
-    "Your wallet has been generated.\n" <<
-    "Use \"help\" command to see the list of available commands.\n" <<
-    "Always use \"exit\" command when closing simplewallet to save\n" <<
-    "current session's state. Otherwise, you will possibly need to synchronize \n" <<
-    "your wallet again. Your wallet key is NOT under risk anyway.\n" <<
-    "**********************************************************************";
+  std::cout << "" << std::endl
+            << BrightGreenMsg("Congratulations, your wallet has been created!") << std::endl
+            << "" << std::endl
+            << BrightYellowMsg("You should always use \"exit\" command when closing lithe-wallet to save") << std::endl
+            << BrightYellowMsg("your current session's state.") << std::endl
+            << BrightYellowMsg("Otherwise, you will possibly need to re-synchronize your chain.") << std::endl
+            << "" << std::endl
+            << YellowMsg("If you forget to use exit, your wallet is not at risk in anyway.") << std::endl;
+            
   return true;
 }
 //----------------------------------------------------------------------------------------------------
