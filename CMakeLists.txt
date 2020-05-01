@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 set(VERSION "0.1")
-# Packaged from main commits
+# Packaged from commit 72946d93d209ad1dd3b642c395653f166d8060e7
 set(COMMIT 72946d9)
 set(REFS " (HEAD -> master)")
 
@@ -10,18 +10,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
-set(CMAKE_SKIP_INSTALL_RULES ON)
+set(CMAKE_SKIP_INSTALL_RULES OFF)
 set(CMAKE_SKIP_PACKAGE_ALL_DEPENDENCY ON)
 set(CMAKE_SUPPRESS_REGENERATION ON)
+set(FORCE_READLINE ON CACHE STRING "Make readline support mandatory on Linux and Mac? Defaults to ON")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-if(DO_TESTS)
-  message(STATUS "BUILD TESTS: enabled")
-  enable_testing()
-else()
-  message(STATUS "BUILD TESTS: disabled")
+# GNU Readline isn't easy to get working on windows :(
+if (MSVC)
+    set(FORCE_READLINE OFF)
 endif()
 
-project(ultranoteI)
+enable_testing()
+# copy CTestCustom.cmake to build dir to disable long running tests in 'make test'
+configure_file(${CMAKE_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_BINARY_DIR})
+
+project(UltraNote)
+
+set(GTEST_OS_SOLARIS 0)
 
 include_directories(include src external "${CMAKE_BINARY_DIR}/version")
 if(APPLE)
@@ -30,14 +36,33 @@ if(APPLE)
 endif()
 
 if(MSVC)
-  include_directories(src/Platform/Windows)
+include_directories(src/Platform/Windows)
 elseif(APPLE)
-  include_directories(src/Platform/OSX)
+include_directories(src/Platform/OSX)
 else()
-  include_directories(src/Platform/Linux)
+include_directories(src/Platform/Linux)
 endif()
 
 set(STATIC ${MSVC} CACHE BOOL "Link libraries statically")
+
+# Don't bother searching for readline on windows
+if (NOT MSVC)
+    # If we're forcing readline, then exit if it's not found
+    if (FORCE_READLINE)
+        find_package(Readline REQUIRED)
+    else()
+        find_package(Readline)
+    endif()
+endif()
+
+if(READLINE_FOUND)
+    add_definitions(-DHAVE_READLINE)
+    include_directories(${Readline_INCLUDE_DIR})
+    link_libraries(${Readline_LIBRARY})
+    message(STATUS "Found readline library at: ${Readline_ROOT_DIR}")
+else()
+    message(STATUS "Could not find readline library")
+endif()
 
 if(MSVC)
   add_definitions("/bigobj /MP /W3 /GS- /D_CRT_SECURE_NO_WARNINGS /wd4996 /wd4345 /D_WIN32_WINNT=0x0600 /DWIN32_LEAN_AND_MEAN /DGTEST_HAS_TR1_TUPLE=0 /D_VARIADIC_MAX=8 /D__SSE4_1__")
@@ -50,7 +75,7 @@ if(MSVC)
   include_directories(SYSTEM src/platform/msc)
 else()
   if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    # This option has no effect in glibc version less than 2.20.
+    # This option has no effect in glibc version less than 2.20. 
     # Since glibc 2.20 _BSD_SOURCE is deprecated, this macro is recomended instead
     add_definitions("-D_DEFAULT_SOURCE -D_GNU_SOURCE")
   endif()
@@ -58,9 +83,18 @@ else()
   if("${ARCH}" STREQUAL "default")
     set(ARCH_FLAG "")
   else()
-    set(ARCH_FLAG "-march=x86-64")
+    set(ARCH_FLAG "-march=${ARCH}")
   endif()
-  set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.4)
+find_file(DEBIAN_FOUND debian_version debconf.conf PATHS /etc)
+    if(DEBIAN_FOUND)
+        set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-unused-function -Wno-implicit-fallthrough -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result -Wno-error=unused-const-variable")
+    else()
+        set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-unused-function -Wno-implicit-fallthrough -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result -Wno-error=implicit-fallthrough -Wno-error=format-truncation -Wno-error=unused-const-variable")
+    endif()
+else()
+    set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result")
+  endif()
   if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
     set(WARNINGS "${WARNINGS} -Wno-error=mismatched-tags -Wno-error=null-conversion -Wno-overloaded-shift-op-parentheses -Wno-error=shift-count-overflow -Wno-error=tautological-constant-out-of-range-compare -Wno-error=unused-private-field -Wno-error=unneeded-internal-declaration -Wno-error=unused-function")
   else()
@@ -91,8 +125,27 @@ else()
   else()
     set(DEBUG_FLAGS "-g3 -O0")
   endif()
-  set(RELEASE_FLAGS "-g3 -O0")
-  
+  set(RELEASE_FLAGS "-Ofast -DNDEBUG -Wno-unused-variable")
+  if(NOT APPLE)
+    # There is a clang bug that does not allow to compile code that uses AES-NI intrinsics if -flto is enabled
+    if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_NAME STREQUAL "Linux" 
+        AND CMAKE_BUILD_TYPE STREQUAL "Release" AND ((CMAKE_C_COMPILER_VERSION VERSION_GREATER 4.9) OR (CMAKE_C_COMPILER_VERSION VERSION_EQUAL 4.9)))
+      # On linux, to build in lto mode, check that ld.gold linker is used: 'update-alternatives --install /usr/bin/ld ld /usr/bin/ld.gold HIGHEST_PRIORITY'
+      set(CMAKE_AR gcc-ar)
+      set(CMAKE_RANLIB gcc-ranlib)
+    endif()
+    set(RELEASE_FLAGS "${RELEASE_FLAGS} -flto")
+  endif()
+  #if(CMAKE_C_COMPILER_ID STREQUAL "GNU" AND NOT MINGW)
+  #  set(RELEASE_FLAGS "${RELEASE_FLAGS} -fno-fat-lto-objects")
+  #endif()
+  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${DEBUG_FLAGS}")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DEBUG_FLAGS}")
+  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${RELEASE_FLAGS}")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${RELEASE_FLAGS}")
+  if(STATIC AND NOT APPLE)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+  endif()
 endif()
 
 if(STATIC)
@@ -103,7 +156,6 @@ endif()
 #set(Boost_DEBUG on)
 find_package(Boost 1.55 REQUIRED COMPONENTS system filesystem thread date_time chrono regex serialization program_options)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
 if(MINGW)
   set(Boost_LIBRARIES "${Boost_LIBRARIES};ws2_32;mswsock")
 elseif(APPLE)
@@ -140,3 +192,4 @@ endif()
 
 add_subdirectory(external)
 add_subdirectory(src)
+#add_subdirectory(tests)
