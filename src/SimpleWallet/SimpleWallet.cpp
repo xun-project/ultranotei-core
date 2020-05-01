@@ -672,7 +672,7 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
   if (m_generate_new.empty() && m_wallet_file_arg.empty()) {
     std::cout << "  " << ENDL
     << "  " << ENDL
-      logger(INFO, BRIGHT_GREEN) <<                                                                                                                                                    XXXXXXX       XXXXXXXUUUUUUUU     UUUUUUUUNNNNNNNN        NNNNNNNNIIIIIIIIII
+      << "XXXXXXX       XXXXXXXUUUUUUUU     UUUUUUUUNNNNNNNN        NNNNNNNNIIIIIIIIII" << ENDL
       << "X:::::X       X:::::XU::::::U     U::::::UN:::::::N       N::::::NI::::::::I" << ENDL
       << "X:::::X       X:::::XU::::::U     U::::::UN::::::::N      N::::::NI::::::::I" << ENDL
       << "X::::::X     X::::::XUU:::::U     U:::::UUN:::::::::N     N::::::NII::::::II" << ENDL
