@@ -2,26 +2,26 @@ all: all-release
 
 cmake-debug:
 	mkdir -p build/debug
-	cd build/debug && cmake -D CMAKE_BUILD_TYPE=Debug ../..
+	cd build/debug && cmake -D CMAKE_BUILD_TYPE=Debug -DGTEST=ON ../..
 
 build-debug: cmake-debug
-	cd build/debug && $(MAKE)
+	cd build/debug -DGTEST=ON && $(MAKE)
 
 test-debug: build-debug
-	cd build/debug && $(MAKE) test
+	cd build/debug -DGTEST=ON && $(MAKE) test
 
 all-debug: build-debug
 
 cmake-release:
 	mkdir -p build/release
-	cd build/release && cmake ../..
+	cd build/release && cmake -D CMAKE_BUILD_TYPE=Release -DGTEST=OFF ../..
 
 build-release: cmake-release
 	cd build/release && $(MAKE)
 
-build-static: 
+build-static:
 	mkdir -p build/static
-	cd build/static && cmake ../..
+	cd build/static && cmake -D CMAKE_BUILD_TYPE=Release -DGTEST=OFF ../..
 	cd build/static && $(MAKE) SHARED=0 CC='gcc -static'
 
 test-release: build-release
