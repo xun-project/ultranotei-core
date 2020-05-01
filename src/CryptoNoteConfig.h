@@ -67,8 +67,8 @@ static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
 static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
-const uint64_t MULTIPLIER_FACTOR 							 = 1; /* legacy deposits */
-const uint32_t END_MULTIPLIER_BLOCK 						 = 200; /* legacy deposits */
+const uint64_t MULTIPLIER_FACTOR 							 = 10; /* legacy deposits */
+const uint32_t END_MULTIPLIER_BLOCK 						 = 43800; /* legacy deposits */
 
 const size_t   MAX_BLOCK_SIZE_INITIAL = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 10;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR 		 = 100 * 1024;
@@ -141,7 +141,7 @@ const int      RPC_DEFAULT_PORT = 43000;
 and the minimum version for communication between nodes */
 const uint8_t  P2P_CURRENT_VERSION = 1;
 const uint8_t  P2P_MINIMUM_VERSION = 1;
-const uint8_t  P2P_UPGRADE_WINDOW = 2;
+const uint8_t  P2P_UPGRADE_WINDOW  = 2;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT = 1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT = 5000;
