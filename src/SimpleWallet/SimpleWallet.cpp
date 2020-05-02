@@ -672,22 +672,22 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
   if (m_generate_new.empty() && m_wallet_file_arg.empty()) {
     std::cout << "  " << ENDL
     << "  " << ENDL
-      << "XXXXXXX       XXXXXXXUUUUUUUU     UUUUUUUUNNNNNNNN        NNNNNNNNIIIIIIIIII" << ENDL
-      << "X:::::X       X:::::XU::::::U     U::::::UN:::::::N       N::::::NI::::::::I" << ENDL
-      << "X:::::X       X:::::XU::::::U     U::::::UN::::::::N      N::::::NI::::::::I" << ENDL
-      << "X::::::X     X::::::XUU:::::U     U:::::UUN:::::::::N     N::::::NII::::::II" << ENDL
-      << "XXX:::::X   X:::::XXX U:::::U     U:::::U N::::::::::N    N::::::N  I::::I  " << ENDL
-      << "   X:::::X X:::::X    U:::::D     D:::::U N:::::::::::N   N::::::N  I::::I  " << ENDL
-      << "    X:::::X:::::X     U:::::D     D:::::U N:::::::N::::N  N::::::N  I::::I  " << ENDL
-      << "     X:::::::::X      U:::::D     D:::::U N::::::N N::::N N::::::N  I::::I  " << ENDL
-      << "     X:::::::::X      U:::::D     D:::::U N::::::N  N::::N:::::::N  I::::I  " << ENDL
-      << "    X:::::X:::::X     U:::::D     D:::::U N::::::N   N:::::::::::N  I::::I  " << ENDL
-      << "   X:::::X X:::::X    U:::::D     D:::::U N::::::N    N::::::::::N  I::::I  " << ENDL
-      << "XXX:::::X   X:::::XXX U::::::U   U::::::U N::::::N     N:::::::::N  I::::I  " << ENDL
-      << "X::::::X     X::::::X U:::::::UUU:::::::U N::::::N      N::::::::NII::::::II" << ENDL
-      << "X:::::X       X:::::X  UU:::::::::::::UU  N::::::N       N:::::::NI::::::::I" << ENDL
-      << "X:::::X       X:::::X    UU:::::::::UU    N::::::N        N::::::NI::::::::I" << ENDL
-      << "XXXXXXX       XXXXXXX      UUUUUUUUU      NNNNNNNN         NNNNNNNIIIIIIIIII" << ENDL
+      << "  XXXXXXX       XXXXXXXUUUUUUUU     UUUUUUUUNNNNNNNN        NNNNNNNNIIIIIIIIII" << ENDL
+      << "  X:::::X       X:::::XU::::::U     U::::::UN:::::::N       N::::::NI::::::::I" << ENDL
+      << "  X:::::X       X:::::XU::::::U     U::::::UN::::::::N      N::::::NI::::::::I" << ENDL
+      << "  X::::::X     X::::::XUU:::::U     U:::::UUN:::::::::N     N::::::NII::::::II" << ENDL
+      << "  XXX:::::X   X:::::XXX U:::::U     U:::::U N::::::::::N    N::::::N  I::::I  " << ENDL
+      << "     X:::::X X:::::X    U:::::D     D:::::U N:::::::::::N   N::::::N  I::::I  " << ENDL
+      << "      X:::::X:::::X     U:::::D     D:::::U N:::::::N::::N  N::::::N  I::::I  " << ENDL
+      << "       X:::::::::X      U:::::D     D:::::U N::::::N N::::N N::::::N  I::::I  " << ENDL
+      << "       X:::::::::X      U:::::D     D:::::U N::::::N  N::::N:::::::N  I::::I  " << ENDL
+      << "      X:::::X:::::X     U:::::D     D:::::U N::::::N   N:::::::::::N  I::::I  " << ENDL
+      << "     X:::::X X:::::X    U:::::D     D:::::U N::::::N    N::::::::::N  I::::I  " << ENDL
+      << "  XXX:::::X   X:::::XXX U::::::U   U::::::U N::::::N     N:::::::::N  I::::I  " << ENDL
+      << "  X::::::X     X::::::X U:::::::UUU:::::::U N::::::N      N::::::::NII::::::II" << ENDL
+      << "  X:::::X       X:::::X  UU:::::::::::::UU  N::::::N       N:::::::NI::::::::I" << ENDL
+      << "  X:::::X       X:::::X    UU:::::::::UU    N::::::N        N::::::NI::::::::I" << ENDL
+      << "  XXXXXXX       XXXXXXX      UUUUUUUUU      NNNNNNNN         NNNNNNNIIIIIIIIII" << ENDL
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     << "  " << ENDL
     << "  " << ENDL;
