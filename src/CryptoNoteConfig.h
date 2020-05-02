@@ -162,7 +162,7 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[] = "e9a5f0d30549afde49c9bfbaa52ac60afdc
 const std::initializer_list<const char*> SEED_NODES  = {
    "95.183.52.152:42000",
    "139.180.136.6:42000",
-   "185.92.220.39:42000",
+   "155.138.140.208:42000",
    "95.179.128.172:42000",
 };
 
@@ -192,8 +192,9 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {100, "ef7252d1ceaa43713e0339d916e2474fad981607f13f6d83ccc9041e061dfb4b"},
  {110, "3f0c1dc9350e2ea45ae27acbbd3f1bc3f2b2c363cbcfdfc8ec3f778642a294a1"},
  {120, "331f969bfa4238721602c84aa31908021e676dfec0e5bb1b78f9de42cd69a9ed"},
-
- 
+ {130, "20890464f93f892fe86f4865c82452367e9b1f8b5dc887a56d6ff890da0f5e8e"},
+ {140, "e8ba18c126d5b8e2105f9c269ed0a0be96e8b1b6c40f0b91f00b3a3c54e059aa"}, 
+  
 
 
 
