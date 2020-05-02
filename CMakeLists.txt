@@ -25,7 +25,7 @@ enable_testing()
 # copy CTestCustom.cmake to build dir to disable long running tests in 'make test'
 configure_file(${CMAKE_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_BINARY_DIR})
 
-project(UltraNote)
+project(UltraNoteI)
 
 set(GTEST_OS_SOLARIS 0)
 
