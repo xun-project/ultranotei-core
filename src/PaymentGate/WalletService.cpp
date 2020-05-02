@@ -99,7 +99,7 @@ Crypto::Hash parsePaymentId(const std::string &paymentIdStr)
   Crypto::Hash paymentId;
   bool r = Common::podFromHex(paymentIdStr, paymentId);
   assert(r);
-  std::ignore = r;
+  
 
   return paymentId;
 }
@@ -1315,7 +1315,7 @@ std::error_code WalletService::createIntegratedAddress(const CreateIntegrated::R
   const bool valid = CryptoNote::parseAccountAddressString(prefix,
                                                            addr,
                                                            address_str);
-  std::ignore = valid;
+  
   CryptoNote::BinaryArray ba;
   CryptoNote::toBinaryArray(addr, ba);
   std::string keys = Common::asString(ba);
