@@ -59,49 +59,31 @@ namespace Tools
     m_empty = true;
   }
 
-    bool PasswordContainer::read_password() {
-  	    return read_password(false);
-  }
-
-  bool PasswordContainer::read_password(bool verify) {
+   bool PasswordContainer::read_password()
+  {
     clear();
 
     bool r;
-        if (is_cin_tty()) {
+        if (is_cin_tty())
+    {
         
       std::cout << "password: ";
       
-           if (verify) {
-            std::string password1;
-            std::string password2;
-            r = read_from_tty(password1);
-        if (r) {
-          std::cout << "confirm password: ";
-          r = read_from_tty(password2);
-          if (r) {
-            if (password1 == password2) {
-              m_password = std::move(password2);
-              m_empty = false;
-	      return true;
-            } else {
-              std::cout << "Passwords do not match, try again." << std::endl;
-              clear();
-	      return read_password(true);
-            }
-          }
-	}
-      } else {
-	r = read_from_tty(m_password);
-      }
-    } else {
+               r = read_from_tty();
+    }
+    else
+    {
+ 
       r = read_from_file();
     }
 
-       if (r) {
+       if (r)
+    {
     
       m_empty = false;
     }
-        else {
+        else
+    {
         
       clear();
     }
@@ -142,7 +124,7 @@ namespace Tools
     }
   }
 
-    bool PasswordContainer::read_from_tty(std::string& password)
+    bool PasswordContainer::read_from_tty()
   {
     const char BACKSPACE = 8;
 
@@ -154,8 +136,8 @@ namespace Tools
     ::SetConsoleMode(h_cin, mode_new);
 
     bool r = true;
-       password.reserve(max_password_size);
-    while (password.size() < max_password_size)
+       m_password.reserve(max_password_size);
+    while (m_password.size() < max_password_size)
     {
       DWORD read;
       char ch;
@@ -172,10 +154,10 @@ namespace Tools
       }
       else if (ch == BACKSPACE)
       {
-        if (!password.empty())
+        if (!m_password.empty())
         {
-          password.back() = '\0';
-          password.resize(password.size() - 1);
+          m_password.back() = '\0';
+          m_password.resize(m_password.size() - 1);
           std::cout << "\b \b";
         }
       }
@@ -218,12 +200,12 @@ namespace Tools
     }
   }
 
-  bool PasswordContainer::read_from_tty(std::string& password)
+  bool PasswordContainer::read_from_tty()
   {
     const char BACKSPACE = 127;
 
-    password.reserve(max_password_size);
-    while (password.size() < max_password_size)
+    m_password.reserve(max_password_size);
+    while (m_password.size() < max_password_size)
     {
       int ch = getch();
       if (EOF == ch)
@@ -237,16 +219,16 @@ namespace Tools
       }
       else if (ch == BACKSPACE)
       {
-        if (!password.empty())
+        if (!m_password.empty())
         {
-          password.back() = '\0';
-          password.resize(password.size() - 1);
+          m_password.back() = '\0';
+          m_password.resize(m_password.size() - 1);
           std::cout << "\b \b";
         }
       }
       else
       {
-        password.push_back(ch);
+        m_password.push_back(ch);
         std::cout << '*';
       }
     }
