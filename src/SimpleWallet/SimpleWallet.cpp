@@ -1002,7 +1002,7 @@ bool simple_wallet::new_wallet(const std::string &wallet_file, const std::string
   std::cout << "" << std::endl
             << BrightGreenMsg("Congratulations, your wallet has been created!") << std::endl
             << "" << std::endl
-            << BrightYellowMsg("You should always use \"exit\" command when closing lithe-wallet to save") << std::endl
+            << BrightYellowMsg("You should always use \"exit\" command when closing UltraNote-Infinity wallet to save") << std::endl
             << BrightYellowMsg("your current session's state.") << std::endl
             << BrightYellowMsg("Otherwise, you will possibly need to re-synchronize your chain.") << std::endl
             << "" << std::endl
