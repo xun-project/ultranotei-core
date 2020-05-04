@@ -1,6 +1,7 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-// Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2011-2017 The Cryptonote developers
+// Copyright (c) 2014-2017 XDN developers
+// Copyright (c) 2016-2017 BXC developers
+// Copyright (c) 2017 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -45,6 +46,8 @@ namespace Crypto {
   class cn_context {
   public:
 
+    //cn_context();
+    //~cn_context();
     cn_context()
     {
         long_state = (uint8_t*)boost::alignment::aligned_alloc(4096, CN_PAGE_SIZE);
@@ -64,6 +67,8 @@ namespace Crypto {
 
      uint8_t* long_state = nullptr;
      uint8_t* hash_state = nullptr;
+     
+    void *data;
   };
 
   void cn_slow_hash(cn_context &context, const void *data, size_t length, Hash &hash);
