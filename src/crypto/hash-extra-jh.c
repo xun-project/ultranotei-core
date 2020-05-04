@@ -5,10 +5,16 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#pragma once
-
-#if !defined(__cplusplus)
+#include <assert.h>
 #include <stddef.h>
-#endif
+#include <stdint.h>
+#include <string.h>
 
-void generate_random_bytes(size_t n, void *result);
+#include "jh.h"
+#include "hash-ops.h"
+
+void hash_extra_jh(const void *data, size_t length, char *hash) {
+  int r = jh_hash(HASH_SIZE * 8, data, 8 * length, (uint8_t*)hash);
+  assert(SUCCESS == r);
+  r = 0; //disable warning
+}

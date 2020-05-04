@@ -5,10 +5,14 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#pragma once
-
-#if !defined(__cplusplus)
 #include <stddef.h>
-#endif
+#include <stdint.h>
 
-void generate_random_bytes(size_t n, void *result);
+#include "hash-ops.h"
+#include "skein.h"
+
+void hash_extra_skein(const void *data, size_t length, char *hash) {
+  int r = skein_hash(8 * HASH_SIZE, data, 8 * length, (uint8_t*)hash);
+  assert(SKEIN_SUCCESS == r);
+  r = 0; //disable warning
+}
