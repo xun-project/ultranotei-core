@@ -1,7 +1,6 @@
-// Copyright (c) 2011-2017 The Cryptonote developers
-// Copyright (c) 2014-2017 XDN developers
-// Copyright (c) 2016-2017 BXC developers
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
+// Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
+// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,14 +8,13 @@
 
 #if !defined(__cplusplus)
 
-#include "Common/int-util.h"
-#include "Common/static_assert.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-
+#include "../Common/static_assert.h"
+#include "Common/int-util.h"
 
 static inline void *padd(void *p, size_t i) {
   return (char *) p + i;
@@ -51,18 +49,10 @@ void hash_process(union hash_state *state, const uint8_t *buf, size_t count);
 enum {
   HASH_SIZE = 32,
   HASH_DATA_AREA = 136,
-  SLOW_HASH_CONTEXT_SIZE = 2097552,
-  SLOW_HASH_CONTEXT_LITE_SIZE = 1048976
+  SLOW_HASH_CONTEXT_SIZE = 2097552
 };
 
 void cn_fast_hash(const void *data, size_t length, char *hash);
-
-void cn_slow_hash_f(void *, const void *, size_t, void *, int, int);
-
-void hash_extra_blake(const void *data, size_t length, char *hash);
-void hash_extra_groestl(const void *data, size_t length, char *hash);
-void hash_extra_jh(const void *data, size_t length, char *hash);
-void hash_extra_skein(const void *data, size_t length, char *hash);
 
 void tree_hash(const char (*hashes)[HASH_SIZE], size_t count, char *root_hash);
 size_t tree_depth(size_t count);
