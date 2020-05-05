@@ -1,9 +1,9 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
-// Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2014-2017 XDN developers
+// Copyright (c) 2016-2017 BXC developers
+// Copyright (c) 2017 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #include <alloca.h>
 #include <cassert>
 #include <cstddef>
@@ -47,6 +47,13 @@ namespace Crypto {
 
 
   mutex random_lock;
+  struct s_comm_2
+  {
+      Hash msg;
+      EllipticCurvePoint D;
+      EllipticCurvePoint X;
+      EllipticCurvePoint Y;
+  };
 
   static inline void random_scalar(EllipticCurveScalar &res) {
     unsigned char tmp[64];
@@ -76,6 +83,34 @@ namespace Crypto {
     ge_p3_tobytes(reinterpret_cast<unsigned char*>(&pub), &point);
   }
 
+  void crypto_ops::generate_deterministic_keys(PublicKey &pub, SecretKey &sec, SecretKey& second) {
+    lock_guard<mutex> lock(random_lock);
+    ge_p3 point;
+    sec = second;
+    sc_reduce32(reinterpret_cast<unsigned char*>(&sec)); // reduce in case second round of keys (sendkeys)
+    ge_scalarmult_base(&point, reinterpret_cast<unsigned char*>(&sec));
+    ge_p3_tobytes(reinterpret_cast<unsigned char*>(&pub), &point);
+  }
+
+  SecretKey crypto_ops::generate_m_keys(PublicKey &pub, SecretKey &sec, const SecretKey& recovery_key, bool recover) {
+    lock_guard<mutex> lock(random_lock);
+    ge_p3 point;
+    SecretKey rng;
+    if (recover)
+    {
+     rng = recovery_key;
+    }
+    else
+    {
+      random_scalar(reinterpret_cast<EllipticCurveScalar&>(rng));
+   }
+    sec = rng;
+    sc_reduce32(reinterpret_cast<unsigned char*>(&sec)); // reduce in case second round of keys (sendkeys)
+    ge_scalarmult_base(&point, reinterpret_cast<unsigned char*>(&sec));
+    ge_p3_tobytes(reinterpret_cast<unsigned char*>(&pub), &point);
+
+    return rng;
+  }
   bool crypto_ops::check_key(const PublicKey &key) {
     ge_p3 point;
     return ge_frombytes_vartime(&point, reinterpret_cast<const unsigned char*>(&key)) == 0;
@@ -255,13 +290,6 @@ namespace Crypto {
     Hash h;
     EllipticCurvePoint key;
     EllipticCurvePoint comm;
-  };
-
-  struct s_comm_2 {
-    Hash msg;
-    EllipticCurvePoint D;
-    EllipticCurvePoint X;
-    EllipticCurvePoint Y;
   };
 
   void crypto_ops::generate_signature(const Hash &prefix_hash, const PublicKey &pub, const SecretKey &sec, Signature &sig) {
