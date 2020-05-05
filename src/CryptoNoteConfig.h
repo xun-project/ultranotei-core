@@ -59,7 +59,7 @@ static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDO
 
 const uint64_t DEPOSIT_MIN_AMOUNT 							= 1 * COIN; 
 const uint32_t DEPOSIT_MIN_TERM 							= 22000; /* one month */
-const uint32_t DEPOSIT_MAX_TERM 							= 1 * 12 * 21900; /* one year */
+const uint32_t DEPOSIT_MAX_TERM 							= 1 * 12 * 22000; /* one year */
 const uint64_t DEPOSIT_MIN_TOTAL_RATE_FACTOR 				= 0; /* constant rate */
 const uint64_t DEPOSIT_MAX_TOTAL_RATE 						= 3; /* legacy deposits */
 
@@ -68,7 +68,7 @@ static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
 const uint64_t MULTIPLIER_FACTOR 							 = 10; /* legacy deposits */
-const uint32_t END_MULTIPLIER_BLOCK 						 = 44000; /* legacy deposits */
+const uint32_t END_MULTIPLIER_BLOCK 						 = 3600; /* legacy deposits */
 
 const size_t   MAX_BLOCK_SIZE_INITIAL = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 10;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR 		 = 100 * 1024;
