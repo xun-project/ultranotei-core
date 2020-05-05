@@ -210,14 +210,13 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 
 uint64_t Currency::calculateInterestMaths(uint64_t amount, uint32_t term, uint32_t height) const {
 
-  /* deposits 3.0 */
-  if (term % 21900 == 0) {
-    return calculateInterest(amount, term);
-  }
+  assert(m_depositMinTerm <= term && term <= m_depositMaxTerm);
+  assert(static_cast<uint64_t>(term)* m_depositMaxTotalRate > m_depositMinTotalRateFactor);
 
   uint64_t a = static_cast<uint64_t>(term) * m_depositMaxTotalRate - m_depositMinTotalRateFactor;
   uint64_t bHi;
   uint64_t bLo = mul128(amount, a, &bHi);
+
   uint64_t cHi;
   uint64_t cLo;
   assert(std::numeric_limits<uint32_t>::max() / 100 > m_depositMaxTerm);
@@ -227,34 +226,16 @@ uint64_t Currency::calculateInterestMaths(uint64_t amount, uint32_t term, uint32
   /* early deposit multiplier */
   uint64_t interestHi;
   uint64_t interestLo;
-  if (height <= CryptoNote::parameters::END_MULTIPLIER_BLOCK) {
+  if (height <= CryptoNote::parameters::END_MULTIPLIER_BLOCK){
       interestLo = mul128(cLo, CryptoNote::parameters::MULTIPLIER_FACTOR, &interestHi);
       assert(interestHi == 0);
   } else {
       interestHi = cHi;
       interestLo = cLo;
   }
+
   return interestLo;
 }
-uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term) const
-{
-
-  uint64_t returnVal = 0;
-
-  /* Consensus 2019 - Monthly deposits */
-   
-  float months = static_cast<float>( term ) / 21900;
-  if (months > 12) {
-    months = 12;
-  }
-  float ear = static_cast<float>( (months - 1) * 0.001 );
-  float eir = (ear/12) * months;
-  returnVal = static_cast<uint64_t>(eir);
-
-  float interest = amount * eir;
-  returnVal = static_cast<uint64_t>(interest);
-  return returnVal;
-} /* Currency::calculateInterest */
 
 /* ---------------------------------------------------------------------------------------------------- */
 
