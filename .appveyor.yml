@@ -9,3 +9,4 @@ build_script:
     - cd build
     - cmake -G "Visual Studio 16 2019 Win64" ..
     - MSBuild ultranoteI.sln /p:Configuration=Release /m
+    
