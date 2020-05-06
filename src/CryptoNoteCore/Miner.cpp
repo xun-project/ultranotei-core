@@ -1,7 +1,8 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2020 Conceal Network & Conceal Devs
 // Copyright (c) 2017-2020 UltraNote developers
+
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,6 +21,7 @@
 #include <boost/utility/value_init.hpp>
 
 #include "crypto/crypto.h"
+#include "Common/Base64.h"
 #include "Common/CommandLine.h"
 #include "Common/StringTools.h"
 #include "Serialization/SerializationTools.h"
@@ -155,7 +157,7 @@ namespace CryptoNote
         boost::algorithm::trim(extra_vec[i]);
         if(!extra_vec[i].size())
           continue;
-        BinaryArray ba = Common::asBinaryArray(Common::base64Decode(extra_vec[i]));
+        BinaryArray ba = Common::asBinaryArray(Tools::Base64::decode(extra_vec[i]));
         if(buff != "0")
           m_extra_messages[i] = ba;
       }
@@ -168,6 +170,7 @@ namespace CryptoNote
       }
 
       logger(INFO, GREEN) << "Loaded " << m_extra_messages.size() << " extra messages, current index " << m_config.current_extra_message_index;
+
     }
 
     if(!config.startMining.empty()) {
