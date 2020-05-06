@@ -42,7 +42,6 @@
 #include <cstdint>
 #include <vector>
 #include <unordered_map>
-#include <boost/algorithm/string.hpp>
 #include "crypto/crypto.h"  // for declaration of crypto::secret_key
 #include <fstream>
 #include "Mnemonics/electrum-words.h"
@@ -50,22 +49,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/crc.hpp>
 #include <boost/algorithm/string/join.hpp>
-
-#include "chinese_simplified.h"
-#include "english.h"
-#include "dutch.h"
-#include "french.h"
-#include "italian.h"
-#include "german.h"
-#include "spanish.h"
-#include "portuguese.h"
-#include "japanese.h"
-#include "russian.h"
-#include "esperanto.h"
-#include "lojban.h"
-#include "english_old.h"
-#include "language_base.h"
-#include "singleton.h"
 
 namespace
 {
@@ -484,7 +467,5 @@ namespace crypto
       boost::split(word_list, seed, boost::is_any_of(" "), boost::token_compress_on);
       return word_list.size() != (seed_length + 1);
     }
-
   }
-
 }
