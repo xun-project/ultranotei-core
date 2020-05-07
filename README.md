@@ -1,4 +1,4 @@
-## Building UltraNote Infinity
+## Building UltraNote Infinity wallet
 
 On Apple or Linux and can't get readline installed? Run cmake with `cmake .. -DFORCE_READLINE=FALSE` to disable readline support.
 
