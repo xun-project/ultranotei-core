@@ -104,7 +104,7 @@ struct TransactionParameters {
   std::vector<WalletOrder> destinations;
   std::vector<WalletMessage> messages;
   uint64_t fee = CryptoNote::parameters::MINIMUM_FEE;
-  uint64_t mixIn = CryptoNote::parameters::MINIMUM_MIXIN;
+  uint64_t mixIn = 0;
   std::string extra;
   uint64_t unlockTimestamp = 0;
   DonationSettings donation;
