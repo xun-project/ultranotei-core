@@ -1862,9 +1862,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args) {
 
     WalletHelper::IWalletRemoveObserverGuard removeGuard(*m_wallet, sent);
 
-    /* set static mixin of 4*/
-    cmd.fake_outs_count = CryptoNote::parameters::MINIMUM_MIXIN;
-
+  
     /* force minimum fee */
     if (cmd.fee < CryptoNote::parameters::MINIMUM_FEE) {
       cmd.fee = CryptoNote::parameters::MINIMUM_FEE;
