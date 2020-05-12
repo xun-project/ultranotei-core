@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2020 UltraNote Devs
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +12,7 @@ namespace System {
 
 namespace {
 
-uint8_t readUint8(const std::string& source, size_t& offset) {
+uint8_t readUint8(const std::string& source, uint64_t& offset) {
   if (offset == source.size() || source[offset] < '0' || source[offset] > '9') {
     throw std::runtime_error("Unable to read value from string");
   }
@@ -47,7 +48,7 @@ Ipv4Address::Ipv4Address(uint32_t value) : value(value) {
 }
 
 Ipv4Address::Ipv4Address(const std::string& dottedDecimal) {
-  size_t offset = 0;
+  uint64_t offset = 0;
   value = readUint8(dottedDecimal, offset);
   if (offset == dottedDecimal.size() || dottedDecimal[offset] != '.') {
     throw std::runtime_error("Invalid Ipv4 address string");
@@ -104,11 +105,11 @@ bool Ipv4Address::isLoopback() const {
 bool Ipv4Address::isPrivate() const {
   return
     // 10.0.0.0/8
-    (value & 0xff000000) == static_cast<uint32_t>( (10 << 24) ) ||
+    (int)(value & 0xff000000) == (int)(10 << 24) ||
     // 172.16.0.0/12
-    (value & 0xfff00000) == static_cast<uint32_t>( ((172 << 24) | (16 << 16)) ) ||
+    (int)(value & 0xfff00000) == (int)((172 << 24) | (16 << 16)) ||
     // 192.168.0.0/16
-    (value & 0xffff0000) == static_cast<uint32_t>(  ((192 << 24) | (168 << 16)) );
+    (int)(value & 0xffff0000) == (int)((192 << 24) | (168 << 16));
 }
 
 }
