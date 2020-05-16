@@ -130,8 +130,7 @@ WalletLegacy::WalletLegacy(const CryptoNote::Currency& currency, INode& node, Lo
   m_lastNotifiedPendingBalance(0),
   m_lastNotifiedActualDepositBalance(0),
   m_lastNotifiedPendingDepositBalance(0),
-  m_lastNotifiedActualInvestmentBalance(0),
-  m_lastNotifiedPendingInvestmentBalance(0),  
+    
   m_blockchainSync(node, currency.genesisBlockHash()),
   m_transfersSync(currency, m_loggerGroup, m_blockchainSync, node),
   m_transferDetails(nullptr),
