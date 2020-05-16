@@ -458,19 +458,8 @@ uint64_t WalletLegacy::actualDepositBalance() {
   return calculateActualDepositBalance();
 }
 
-uint64_t WalletLegacy::actualInvestmentBalance() {
-  std::unique_lock<std::mutex> lock(m_cacheMutex);
-  throwIfNotInitialised();
 
-  return calculateActualInvestmentBalance();
-}
 
-uint64_t WalletLegacy::pendingInvestmentBalance() {
-  std::unique_lock<std::mutex> lock(m_cacheMutex);
-  throwIfNotInitialised();
-
-  return calculatePendingInvestmentBalance();
-}
 
 uint64_t WalletLegacy::pendingDepositBalance() {
   std::unique_lock<std::mutex> lock(m_cacheMutex);
@@ -1058,31 +1047,6 @@ std::unique_ptr<WalletLegacyEvent> WalletLegacy::getActualInvestmentBalanceChang
   return event;
 }
 
-std::unique_ptr<WalletLegacyEvent> WalletLegacy::getPendingInvestmentBalanceChangedEvent() {
-  auto pending = calculatePendingInvestmentBalance();
-  auto prevPending = m_lastNotifiedPendingInvestmentBalance.exchange(pending);
-
-  std::unique_ptr<WalletLegacyEvent> event;
-
-  if (pending != prevPending) {
-    event = std::unique_ptr<WalletLegacyEvent>(new WalletPendingInvestmentBalanceUpdatedEvent(pending));
-  }
-
-  return event;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 std::unique_ptr<WalletLegacyEvent> WalletLegacy::getActualBalanceChangedEvent() {
   auto actual = calculateActualBalance();
@@ -1137,12 +1101,6 @@ uint64_t WalletLegacy::calculateActualDepositBalance() {
   return calculateDepositsAmount(transfers, m_currency, heights) - m_transactionsCache.countUnconfirmedSpentDepositsTotalAmount();
 }
 
-uint64_t WalletLegacy::calculateActualInvestmentBalance() {
-  std::vector<TransactionOutputInformation> transfers;
-  m_transferDetails->getOutputs(transfers, ITransfersContainer::IncludeTypeDeposit | ITransfersContainer::IncludeStateUnlocked);
-  std::vector<uint32_t> heights = getTransactionHeights(transfers);
-  return calculateInvestmentsAmount(transfers, m_currency, heights);
-}
 
 std::vector<uint32_t> WalletLegacy::getTransactionHeights(const std::vector<TransactionOutputInformation> transfers){
   std::vector<uint32_t> heights;
@@ -1167,14 +1125,6 @@ uint64_t WalletLegacy::calculatePendingDepositBalance() {
   return calculateDepositsAmount(transfers, m_currency, heights);
 }
 
-uint64_t WalletLegacy::calculatePendingInvestmentBalance() {
-  std::vector<TransactionOutputInformation> transfers;
-  m_transferDetails->getOutputs(transfers, ITransfersContainer::IncludeTypeDeposit
-                                | ITransfersContainer::IncludeStateLocked
-                                | ITransfersContainer::IncludeStateSoftLocked);
-  std::vector<uint32_t> heights = getTransactionHeights(transfers);
-  return calculateInvestmentsAmount(transfers, m_currency, heights);
-}
 
 uint64_t WalletLegacy::calculateActualBalance() {
   return m_transferDetails->balance(ITransfersContainer::IncludeKeyUnlocked) -
@@ -1200,15 +1150,6 @@ void WalletLegacy::pushBalanceUpdatedEvents(std::deque<std::unique_ptr<WalletLeg
     eventsQueue.push_back(std::move(pendingDepositBalanceUpdated));
   }
 
-  auto actualInvestmentBalanceUpdated = getActualInvestmentBalanceChangedEvent();
-  if (actualInvestmentBalanceUpdated != nullptr) {
-    eventsQueue.push_back(std::move(actualInvestmentBalanceUpdated));
-  }
-
-  auto pendingInvestmentBalanceUpdated = getPendingInvestmentBalanceChangedEvent();
-  if (pendingInvestmentBalanceUpdated != nullptr) {
-    eventsQueue.push_back(std::move(pendingInvestmentBalanceUpdated));
-  }
 
   auto actualBalanceUpdated = getActualBalanceChangedEvent();
   if (actualBalanceUpdated != nullptr) {
