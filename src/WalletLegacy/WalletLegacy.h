@@ -62,9 +62,9 @@ public:
   virtual uint64_t actualBalance() override;
   virtual uint64_t pendingBalance() override;
   virtual uint64_t actualDepositBalance() override;
-  virtual uint64_t actualInvestmentBalance() override;  
+    
   virtual uint64_t pendingDepositBalance() override;
-  virtual uint64_t pendingInvestmentBalance() override;  
+   
 
   virtual size_t getTransactionCount() override;
   virtual size_t getTransferCount() override;

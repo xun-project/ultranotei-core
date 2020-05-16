@@ -93,29 +93,10 @@ private:
 uint64_t calculateDepositsAmount(const std::vector<CryptoNote::TransactionOutputInformation>& transfers, const CryptoNote::Currency& currency, const std::vector<uint32_t> heights) {
 	int index = 0;
   return std::accumulate(transfers.begin(), transfers.end(), static_cast<uint64_t>(0), [&currency, &index, heights] (uint64_t sum, const CryptoNote::TransactionOutputInformation& deposit) {
-    if (deposit.term % 64800 != 0) 
-    {
-      return sum + deposit.amount + currency.calculateInterestMaths(deposit.amount, deposit.term, heights[index++]);
-    }
-    else
-    {
-      return sum;
-    }
     
-  });
-}
-
-uint64_t calculateInvestmentsAmount(const std::vector<CryptoNote::TransactionOutputInformation>& transfers, const CryptoNote::Currency& currency, const std::vector<uint32_t> heights) {
-	int index = 0;
-  return std::accumulate(transfers.begin(), transfers.end(), static_cast<uint64_t>(0), [&currency, &index, heights] (uint64_t sum, const CryptoNote::TransactionOutputInformation& deposit) {
-    if (deposit.term % 64800 == 0) 
-    {
-      return sum + deposit.amount + currency.calculateInterestMaths(deposit.amount, deposit.term, heights[index++]);
-    }
-    else
-    {
-      return sum;
-    }
+    return sum + deposit.amount + currency.calculateInterestMaths(deposit.amount, deposit.term, heights[index++]);
+    
+    
     
   });
 }
@@ -149,8 +130,7 @@ WalletLegacy::WalletLegacy(const CryptoNote::Currency& currency, INode& node, Lo
   m_lastNotifiedPendingBalance(0),
   m_lastNotifiedActualDepositBalance(0),
   m_lastNotifiedPendingDepositBalance(0),
-  m_lastNotifiedActualInvestmentBalance(0),
-  m_lastNotifiedPendingInvestmentBalance(0),  
+    
   m_blockchainSync(node, currency.genesisBlockHash()),
   m_transfersSync(currency, m_loggerGroup, m_blockchainSync, node),
   m_transferDetails(nullptr),
@@ -458,19 +438,8 @@ uint64_t WalletLegacy::actualDepositBalance() {
   return calculateActualDepositBalance();
 }
 
-uint64_t WalletLegacy::actualInvestmentBalance() {
-  std::unique_lock<std::mutex> lock(m_cacheMutex);
-  throwIfNotInitialised();
 
-  return calculateActualInvestmentBalance();
-}
 
-uint64_t WalletLegacy::pendingInvestmentBalance() {
-  std::unique_lock<std::mutex> lock(m_cacheMutex);
-  throwIfNotInitialised();
-
-  return calculatePendingInvestmentBalance();
-}
 
 uint64_t WalletLegacy::pendingDepositBalance() {
   std::unique_lock<std::mutex> lock(m_cacheMutex);
@@ -944,7 +913,7 @@ void WalletLegacy::onTransfersUnlocked(ITransfersSubscription* object, const std
     m_observerManager.notify(&IWalletLegacyObserver::depositsUpdated, unlockedDeposits);
 
     notifyIfDepositBalanceChanged();
-    notifyIfInvestmentBalanceChanged();
+    
   }
 }
 
@@ -957,7 +926,7 @@ void WalletLegacy::onTransfersLocked(ITransfersSubscription* object, const std::
     m_observerManager.notify(&IWalletLegacyObserver::depositsUpdated, lockedDeposits);
 
     notifyIfDepositBalanceChanged();
-    notifyIfInvestmentBalanceChanged();
+    
   }
 }
 
@@ -1032,56 +1001,6 @@ std::unique_ptr<WalletLegacyEvent> WalletLegacy::getPendingDepositBalanceChanged
   return event;
 }
 
-void WalletLegacy::notifyIfInvestmentBalanceChanged() {
-  std::unique_ptr<WalletLegacyEvent> actualEvent = getActualInvestmentBalanceChangedEvent();
-  std::unique_ptr<WalletLegacyEvent> pendingEvent = getPendingInvestmentBalanceChangedEvent();
-
-  if (actualEvent) {
-    actualEvent->notify(m_observerManager);
-  }
-
-  if (pendingEvent) {
-    pendingEvent->notify(m_observerManager);
-  }
-}
-
-std::unique_ptr<WalletLegacyEvent> WalletLegacy::getActualInvestmentBalanceChangedEvent() {
-  auto actual = calculateActualInvestmentBalance();
-  auto prevActual = m_lastNotifiedActualInvestmentBalance.exchange(actual);
-
-  std::unique_ptr<WalletLegacyEvent> event;
-
-  if (actual != prevActual) {
-    event = std::unique_ptr<WalletLegacyEvent>(new WalletActualInvestmentBalanceUpdatedEvent(actual));
-  }
-
-  return event;
-}
-
-std::unique_ptr<WalletLegacyEvent> WalletLegacy::getPendingInvestmentBalanceChangedEvent() {
-  auto pending = calculatePendingInvestmentBalance();
-  auto prevPending = m_lastNotifiedPendingInvestmentBalance.exchange(pending);
-
-  std::unique_ptr<WalletLegacyEvent> event;
-
-  if (pending != prevPending) {
-    event = std::unique_ptr<WalletLegacyEvent>(new WalletPendingInvestmentBalanceUpdatedEvent(pending));
-  }
-
-  return event;
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 std::unique_ptr<WalletLegacyEvent> WalletLegacy::getActualBalanceChangedEvent() {
@@ -1137,12 +1056,6 @@ uint64_t WalletLegacy::calculateActualDepositBalance() {
   return calculateDepositsAmount(transfers, m_currency, heights) - m_transactionsCache.countUnconfirmedSpentDepositsTotalAmount();
 }
 
-uint64_t WalletLegacy::calculateActualInvestmentBalance() {
-  std::vector<TransactionOutputInformation> transfers;
-  m_transferDetails->getOutputs(transfers, ITransfersContainer::IncludeTypeDeposit | ITransfersContainer::IncludeStateUnlocked);
-  std::vector<uint32_t> heights = getTransactionHeights(transfers);
-  return calculateInvestmentsAmount(transfers, m_currency, heights);
-}
 
 std::vector<uint32_t> WalletLegacy::getTransactionHeights(const std::vector<TransactionOutputInformation> transfers){
   std::vector<uint32_t> heights;
@@ -1167,14 +1080,6 @@ uint64_t WalletLegacy::calculatePendingDepositBalance() {
   return calculateDepositsAmount(transfers, m_currency, heights);
 }
 
-uint64_t WalletLegacy::calculatePendingInvestmentBalance() {
-  std::vector<TransactionOutputInformation> transfers;
-  m_transferDetails->getOutputs(transfers, ITransfersContainer::IncludeTypeDeposit
-                                | ITransfersContainer::IncludeStateLocked
-                                | ITransfersContainer::IncludeStateSoftLocked);
-  std::vector<uint32_t> heights = getTransactionHeights(transfers);
-  return calculateInvestmentsAmount(transfers, m_currency, heights);
-}
 
 uint64_t WalletLegacy::calculateActualBalance() {
   return m_transferDetails->balance(ITransfersContainer::IncludeKeyUnlocked) -
@@ -1200,15 +1105,6 @@ void WalletLegacy::pushBalanceUpdatedEvents(std::deque<std::unique_ptr<WalletLeg
     eventsQueue.push_back(std::move(pendingDepositBalanceUpdated));
   }
 
-  auto actualInvestmentBalanceUpdated = getActualInvestmentBalanceChangedEvent();
-  if (actualInvestmentBalanceUpdated != nullptr) {
-    eventsQueue.push_back(std::move(actualInvestmentBalanceUpdated));
-  }
-
-  auto pendingInvestmentBalanceUpdated = getPendingInvestmentBalanceChangedEvent();
-  if (pendingInvestmentBalanceUpdated != nullptr) {
-    eventsQueue.push_back(std::move(pendingInvestmentBalanceUpdated));
-  }
 
   auto actualBalanceUpdated = getActualBalanceChangedEvent();
   if (actualBalanceUpdated != nullptr) {
