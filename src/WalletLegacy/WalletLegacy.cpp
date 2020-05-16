@@ -913,7 +913,7 @@ void WalletLegacy::onTransfersUnlocked(ITransfersSubscription* object, const std
     m_observerManager.notify(&IWalletLegacyObserver::depositsUpdated, unlockedDeposits);
 
     notifyIfDepositBalanceChanged();
-    notifyIfInvestmentBalanceChanged();
+    
   }
 }
 
@@ -926,7 +926,7 @@ void WalletLegacy::onTransfersLocked(ITransfersSubscription* object, const std::
     m_observerManager.notify(&IWalletLegacyObserver::depositsUpdated, lockedDeposits);
 
     notifyIfDepositBalanceChanged();
-    notifyIfInvestmentBalanceChanged();
+    
   }
 }
 
@@ -1001,31 +1001,6 @@ std::unique_ptr<WalletLegacyEvent> WalletLegacy::getPendingDepositBalanceChanged
   return event;
 }
 
-void WalletLegacy::notifyIfInvestmentBalanceChanged() {
-  std::unique_ptr<WalletLegacyEvent> actualEvent = getActualInvestmentBalanceChangedEvent();
-  std::unique_ptr<WalletLegacyEvent> pendingEvent = getPendingInvestmentBalanceChangedEvent();
-
-  if (actualEvent) {
-    actualEvent->notify(m_observerManager);
-  }
-
-  if (pendingEvent) {
-    pendingEvent->notify(m_observerManager);
-  }
-}
-
-std::unique_ptr<WalletLegacyEvent> WalletLegacy::getActualInvestmentBalanceChangedEvent() {
-  auto actual = calculateActualInvestmentBalance();
-  auto prevActual = m_lastNotifiedActualInvestmentBalance.exchange(actual);
-
-  std::unique_ptr<WalletLegacyEvent> event;
-
-  if (actual != prevActual) {
-    event = std::unique_ptr<WalletLegacyEvent>(new WalletActualInvestmentBalanceUpdatedEvent(actual));
-  }
-
-  return event;
-}
 
 
 std::unique_ptr<WalletLegacyEvent> WalletLegacy::getActualBalanceChangedEvent() {
