@@ -264,7 +264,7 @@ uint64_t Currency::calculateTotalTransactionInterest(const Transaction& tx, uint
     if (input.type() == typeid(MultisignatureInput)) {
       const MultisignatureInput& multisignatureInput = boost::get<MultisignatureInput>(input);
       if (multisignatureInput.term != 0) {
-        interest += calculateInterestMaths(multisignatureInput.amount, multisignatureInput.term, height);
+        interest += calculateInterest(multisignatureInput.amount, multisignatureInput.term, height);
       }
     }
   }
