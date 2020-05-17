@@ -113,7 +113,7 @@ private:
   bool m_isStoping;
   ITransfersContainer& m_transferDetails;
 
-  INode& m_node; //used solely to get last known block height for calculateInterestMaths
+  INode& m_node; //used solely to get last known block height for calculateInterest
 };
 
 } /* namespace CryptoNote */
