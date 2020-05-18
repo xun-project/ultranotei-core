@@ -208,7 +208,7 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 
 /* ---------------------------------------------------------------------------------------------------- */
 
-uint64_t Currency::calculateInterestMaths(uint64_t amount, uint32_t term, uint32_t height) const {
+uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term, uint32_t height) const {
 
   assert(m_depositMinTerm <= term && term <= m_depositMaxTerm);
   assert(static_cast<uint64_t>(term)* m_depositMaxTotalRate > m_depositMinTotalRateFactor);
@@ -243,7 +243,7 @@ uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term) const
 
   /* Consensus 2019 - Monthly deposits */
    
-  float months = static_cast<float>( term ) / 21900;
+  float months = static_cast<float>( term ) / 22000;
   if (months > 12) {
     months = 12;
   }
@@ -264,7 +264,7 @@ uint64_t Currency::calculateTotalTransactionInterest(const Transaction& tx, uint
     if (input.type() == typeid(MultisignatureInput)) {
       const MultisignatureInput& multisignatureInput = boost::get<MultisignatureInput>(input);
       if (multisignatureInput.term != 0) {
-        interest += calculateInterestMaths(multisignatureInput.amount, multisignatureInput.term, height);
+        interest += calculateInterest(multisignatureInput.amount, multisignatureInput.term, height);
       }
     }
   }
@@ -282,7 +282,7 @@ uint64_t Currency::getTransactionInputAmount(const TransactionInput& in, uint32_
     if (multisignatureInput.term == 0) {
       return multisignatureInput.amount;
     } else {
-      return multisignatureInput.amount + calculateInterestMaths(multisignatureInput.amount, multisignatureInput.term, height);
+      return multisignatureInput.amount + calculateInterest(multisignatureInput.amount, multisignatureInput.term, height);
     }
   } else if (in.type() == typeid(BaseInput)) {
     return 0;
