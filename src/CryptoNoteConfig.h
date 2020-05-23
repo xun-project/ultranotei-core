@@ -27,7 +27,7 @@ const uint64_t CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE = 10; /* 20 minutes */
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW = 30;
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1 = 11; /* changed for LWMA3 */
 
-const uint64_t MONEY_SUPPLY = UINT64_C(21000000000000); /* max supply: 21M (Consensus II) */
+const uint64_t MONEY_SUPPLY = UINT64_C(21000000000000); /* max supply: 21M */
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = 100000; /* size of block in bytes, after which reward is calculated using block size */
@@ -61,13 +61,13 @@ const uint64_t DEPOSIT_MIN_AMOUNT 							= 1 * COIN;
 const uint32_t DEPOSIT_MIN_TERM 							= 22000; /* one month */
 const uint32_t DEPOSIT_MAX_TERM 							= 1 * 12 * 22000; /* one year */
 const uint64_t DEPOSIT_MIN_TOTAL_RATE_FACTOR 				= 0; /* constant rate */
-const uint64_t DEPOSIT_MAX_TOTAL_RATE 						= 3; /* legacy deposits */
+const uint64_t DEPOSIT_MAX_TOTAL_RATE 						= 3; /* 3% per annual */
 
 static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
 static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
-const uint64_t MULTIPLIER_FACTOR 							 = 10; /* legacy deposits */
+const uint64_t MULTIPLIER_FACTOR 							 = 10; /* Early Adopters */
 const uint32_t END_MULTIPLIER_BLOCK 						 = 3600; /* legacy deposits */
 
 const size_t   MAX_BLOCK_SIZE_INITIAL = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 10;
@@ -109,10 +109,10 @@ const char     MINER_CONFIG_FILE_NAME[]                       = "miner_conf.json
 
 } // parameters
 
-const uint64_t START_BLOCK_REWARD 							  = (UINT64_C(5) * parameters::COIN); // start reward (Consensus I)
-const uint64_t FOUNDATION_TRUST 							  = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network  (Consensus II)
-const uint64_t MAX_BLOCK_REWARD 							  = (UINT64_C(10) * parameters::COIN); // max reward (Consensus I)
-const uint64_t REWARD_INCREASE_INTERVAL 					  = (UINT64_C(21900)); // aprox. 1 month (+ 0.4 xuni increment per month)
+const uint64_t START_BLOCK_REWARD 							  = (UINT64_C(5) * parameters::COIN); // start reward
+const uint64_t FOUNDATION_TRUST 							  = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network
+const uint64_t MAX_BLOCK_REWARD 							  = (UINT64_C(10) * parameters::COIN); // max reward after 12 months
+const uint64_t REWARD_INCREASE_INTERVAL 					  = (UINT64_C(22000)); // aprox. 1 month (+ 0.4 xuni increment per month)
 
 const char     CRYPTONOTE_NAME[] 							  = "ultranotei";
 const char     GENESIS_COINBASE_TX_HEX[] 					  = "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
@@ -122,12 +122,12 @@ const uint64_t GENESIS_TIMESTAMP 							  = 1587360548; // 20200420
 const uint8_t  TRANSACTION_VERSION_1 						  = 1; 
 const uint8_t  TRANSACTION_VERSION_2 						  = 2; 
 
-const uint8_t  BLOCK_MAJOR_VERSION_1 						  = 1; // (Consensus I) 
-const uint8_t  BLOCK_MAJOR_VERSION_2 						  = 2; // (Consensus II) 
-const uint8_t  BLOCK_MAJOR_VERSION_3 						  = 3; // (Consensus III)
+const uint8_t  BLOCK_MAJOR_VERSION_1 						  = 1; // (V1) 
+const uint8_t  BLOCK_MAJOR_VERSION_2 						  = 2; // (V2) 
+const uint8_t  BLOCK_MAJOR_VERSION_3 						  = 3; // (V3)
 
-const uint8_t  BLOCK_MINOR_VERSION_0 = 0; // important
-const uint8_t  BLOCK_MINOR_VERSION_1 = 1; // important
+const uint8_t  BLOCK_MINOR_VERSION_0 = 0; 
+const uint8_t  BLOCK_MINOR_VERSION_1 = 1; 
 
 const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT = 10000; // by default, blocks ids count in synchronizing
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT = 128; // by default, blocks count in blocks downloading
@@ -180,39 +180,31 @@ __attribute__((unused))
 const std::initializer_list<CheckpointData> CHECKPOINTS  = {
 
  {0, "b87145f2d92e8dbee77e431dfe1f6ce92fd91077e065cb042f751d3a9541ba62"},
- {10, "47266c029a66efef9441ecde446c1ffa708f14580b91f692003ea45c078daa0a"}, 
- {20, "bbeef61e486a5b8699ab3e2edec15f1f00a72f11d8de0bc067337385e8ed7556"},
- {30, "fc083b78a196f5ae901baff88963006c9469fcd6306d0b0795313c703f2b2bd5"},
- {40, "6a921a436e70725eb1707aad006a786b8684681a91da2aa9231014307253c2a1"},
- {50, "45a1ad0925d254b111a364d4b46d9d136dd6c00a53fae6d04647a176833e6da5"},
- {60, "d162c6cef7e68d5175090df27268a174daf3848f3bc82eb0d6a3606ed2aeedb0"},
- {70, "2b64a1a6be069d0ffaeae53fac29a5d8a83b0057778816553a52f7c70dc4a245"},
- {80, "ba9d57272bf56617c0c409ee012bd8ca8f5aa6c1914162a52e09842bac708962"},
- {90, "3916c7326773311765c45a98127a69e54aafb891c7540bcadbcf6c12190e81c1"},
  {100, "ef7252d1ceaa43713e0339d916e2474fad981607f13f6d83ccc9041e061dfb4b"},
- {110, "3f0c1dc9350e2ea45ae27acbbd3f1bc3f2b2c363cbcfdfc8ec3f778642a294a1"},
- {120, "331f969bfa4238721602c84aa31908021e676dfec0e5bb1b78f9de42cd69a9ed"},
- {130, "20890464f93f892fe86f4865c82452367e9b1f8b5dc887a56d6ff890da0f5e8e"},
- {140, "e8ba18c126d5b8e2105f9c269ed0a0be96e8b1b6c40f0b91f00b3a3c54e059aa"}, 
- {150, "612271d7a372bb601095675a42f16f81196f5777df8f676b8e4278821d1189f6"},
- {160, "db618b49614323ca9e01c69c921bbb5d1deac33382c21b62754f580470b048aa"}, 
- {170, "98fec282d0701a7a6594afff6350fc50fe3cf4c7d86565b4e619b33e0e65e777"},
- {180, "14472ea39ebb674b6ce99e52339c68956a822b9e3c5d08e656f46244da52f701"},
- {190, "f6a99f2f3f2a5311dfb7798bb6facb6df2f66438520d3c1bd095cdc47158c082"},
  {200, "a6cd9ca92ef9628cef526f1e3dfb46eb6dab9c30f411afc57aee1c36a4bd30ce"},
- {210, "456dae0a03c567acbac87d180babb5b1cdca7fc542cb0f084ab51d00fecdef39"}, 
- {220, "7cee7e4b1372cfbdd1ef730f84414acbb83ed6a18ffc8e30d0040dc120c29401"},
- {230, "e8e9ce482429f05c9ccafa5f7a24aafd08b40dcda429f3a257554bc925fe0407"},
- {240, "9ec6bdebc31e66faa83aa49bc214b76989f2fbb6a173f00ca6a68e1c6335eb68"},
- {250, "c921a79ca4e1ce3b6829f4afdc595a0d9a11c79bef56e161465c3db77a1dc7b6"},
- {260, "5369c2feccbae767d5999bb9b5b0273cb7348ebf2cf801af8c5e749f618987fe"},
- {270, "7584012e230d4e5ef359d4208ab15ef85df3c58c463af74d2fbe1df9584b19c1"}, 
- {280, "6c2b76ab17014fc59143a67d9deb24abb5ab1cd61b114f475aa7809d7a02f021"},
- {290, "b2cb28b6ae23454a8ff62658abdfcd8e7ba633529fa1df9d9fd4515db68b157a"},
  {300, "6f1e09e9f0aa81fa17c7ee2f0e048d4075bde3977977c1a63cf2945ccb14980d"},
- {310, "5106f42d45922d86b668fa0434035940a804195f9d1705dfe6d1b0e85720ffae"},
-  
-
+ {400, "f9cf88eaed1568fb0bba3582c5c2d123a77c955408fc7c59603184978073c428"},
+ {500, "7ad64134fdd48645766f9969cd920ff70697984396c252fb5caa41d4e866d507"},
+ {600, "559f4f955abac0863d8cd86b853a8c06f370f647b4f269c90be5a289d92586e3"},
+ {700, "2c9c9caa77d73bb15518d9575fdd1474cb42e4b5bd0af7189347237758e9dca5"},
+ {800, "2500fdf6296bc969084a4030f9dd984191fe434ad2ec507ed91b88387b72c42f"},
+ {900, "fcd7cda2222017c71531648c23748c9f9ca5c6641a7c8a5648ae0d3621055fd6"},
+ {1000, "083729e0be52246f19d1da23fbe5f96b4e3948e5effd705179d38131041a96d5"},
+ {1100, "2013046da15f95438051245de36c18a0fd255602e5853f59fcbd7eb5320bee7e"},
+ {1200, "5cb33176955a9d0e95da9344388c7c7ce8faa10d873b6741cf1686a7e79690c7"},
+ {1300, "09aca2fa9db0f60fbffa93fdeba6877b025028b634a0dea86bef6e7a167eb6fe"},
+ {1400, "47ebd593c67fff7f0e6f012e9bdb95c4c391cd6a4065c8e346c8e2af5cb730b9"},
+ {1500, "b302f1c1a178edbca58f417b550d85509f50c580978466c354cdce47bbd4bc3b"},
+ {1600, "75ea12dd8fd48e0580d57240ffd7e8c2fb70e51ba3b22d56d8b93cbe55dcfa3a"},
+ {1700, "ff28e386bfce53947e20447bdcea88f9a10d44a29d90aee819613e4e596a721b"},
+ {1800, "b96f3cd89b5a55d8b558e799b226d4e6f23cd56de8f7ef3ae58183318cedb298"},
+ {1900, "2efdf8be3418fab6bd23a0bd16c89cfc16eb1387f8353714940876a8833dd8c9"},
+ {2000, "f3433995e2203a1908133622ef0802b152955c7a1ce605f1e9251bc817e38b09"},
+ {2100, "2625f8b4a50a89d299d07132ac0615630906ecbbbb6b55e11121698573c6091a"},
+ {2200, "527b725f307b4b8074ea6ccfa73932a1cb07ec08bf80e72677aae9941fac44b1"},
+ {2300, "d1294ea4fbb10c97c713c6c50a2b0650a9d0422eed03dab202b2c9555529788e"},
+ {2400, "4c2e6418f1df84d11f32edc2ff62452230d5ee16a27e649d5146cd7d76bd4d18"},
+ {2500, "267af42ac6239a316701eab3cbacb2d2b60fd38ce5a107092e304456672d8be5"},
 
 
 };
