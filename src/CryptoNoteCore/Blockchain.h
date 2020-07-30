@@ -47,6 +47,9 @@ namespace CryptoNote {
 
     bool addObserver(IBlockchainStorageObserver* observer);
     bool removeObserver(IBlockchainStorageObserver* observer);
+    
+    void rebuildCache();
+    bool storeCache();
 
     // ITransactionValidator
     virtual bool checkTransactionInputs(const CryptoNote::Transaction& tx, BlockInfo& maxUsedBlock) override;
@@ -276,8 +279,7 @@ bool have_tx_keyimg_as_spent(const Crypto::KeyImage &key_im);
 
     Logging::LoggerRef logger;
 
-    void rebuildCache();
-    bool storeCache();
+
     bool switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::iterator>& alt_chain, bool discard_disconnected_chain);
     bool handle_alternative_block(const Block& b, const Crypto::Hash& id, block_verification_context& bvc, bool sendNewAlternativeBlockMessage = true);
     difficulty_type get_next_difficulty_for_alternative_chain(const std::list<blocks_ext_by_hash::iterator>& alt_chain, BlockEntry& bei);
