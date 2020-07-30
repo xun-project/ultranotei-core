@@ -1,0 +1,13 @@
+[Unit]
+Description=UltraNote Infinity Daemon
+After=network.target
+
+[Service]
+User=YOUR_USER
+Group=YOUR_USER
+
+ExecStart=/usr/bin/ultranoteid --data-dir=/home/YOUR_USER/.ultranotei
+GuessMainPID=no
+
+[Install]
+WantedBy=multi-user.target

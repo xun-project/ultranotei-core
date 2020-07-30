@@ -1,0 +1,14 @@
+[Unit]
+Description=UltraNote Infinity Walletd
+After=ultranoteid.service
+
+[Service]
+User=YOUR_USER
+Group=YOUR_USER
+
+WorkingDirectory=/home/YOUR_USER/.ultranotei
+ExecStart=/usr/bin/ultranotei-walletd --data-dir /home/YOUR_USER/.ultranotei --rpc-user RPC_USER --rpc-password RPC_PASSWORD -w /path/to/wallet/file -p PASSWORD --daemon-port 43000
+GuessMainPID=no
+
+[Install]
+WantedBy=multi-user.target
