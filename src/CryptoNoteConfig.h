@@ -111,8 +111,8 @@ const char     MINER_CONFIG_FILE_NAME[]                       = "miner_conf.json
 
 const uint64_t START_BLOCK_REWARD 							  = (UINT64_C(5) * parameters::COIN); // start reward
 const uint64_t FOUNDATION_TRUST 							  = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network
-const uint64_t MAX_BLOCK_REWARD 							  = (UINT64_C(10) * parameters::COIN); // max reward after 12 months
-const uint64_t REWARD_INCREASE_INTERVAL 					  = (UINT64_C(22000)); // aprox. 1 month (+ 0.4 xuni increment per month)
+const uint64_t MAX_BLOCK_REWARD 							  = (UINT64_C(10) * parameters::COIN); // max reward after aprox. 20 months
+const uint64_t REWARD_INCREASE_INTERVAL 					  = (UINT64_C(22000)); // aprox. 1 month (+ 0.25 xuni increment per month)
 
 const char     CRYPTONOTE_NAME[] 							  = "ultranotei";
 const char     GENESIS_COINBASE_TX_HEX[] 					  = "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
@@ -249,6 +249,13 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {64000, "e2377f67708a838e8f4f0a01be6d9bd7a075358f9575ad000ad42399d586bd68"},
  {65000, "62f627d96692f565b908e878a8649a6dfc888065e890d318e9e5cc839ff18250"},
  {66000, "e2a4043720a8b1dba7cda4c34f6b66065c6959ab9d25e90bf35d869660499d67"},
+ {67000, "73976a287cbc37f2355e81578263224cfc9048ddd5ac25bca455473f51d26e11"},
+ {68000, "88bd77491bd0d7d40d443b6042de1742d30f0701bed927eab23c64ec8de62a13"},
+ {69000, "cdab9953c77232739d6dcb050661fa24a07fb1143e13b8e3d04fd3c83f74d06d"},
+ {70000, "aa878b2c1c94a858162753af7bb55183d640479daa363ce21aceb3ca96dbf227"},
+ {71000, "a3a3e0ca80470abbc23b21558cedf009fe6443873fcf74a645349283900638ef"},
+ 
+ 
  
 };
 
