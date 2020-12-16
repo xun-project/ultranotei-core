@@ -12,7 +12,7 @@ pipelines:
         script: # Modify the commands below to build your repository.
         
           - apt update && apt upgrade -y 
-          - sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
+          - sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev -y
           - mkdir build
           - cd build
           - cmake ..
