@@ -9,6 +9,9 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
+        
+          - apt update && apt upgrade -y 
+          - sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
           - mkdir build
           - cd build
           - cmake ..
