@@ -4,7 +4,8 @@
 # The workflow allows running tests and code linting on the default branch.
 
 
-image: gcc:6.1
+image: pyguerder/bitbucket-pipelines-php72
+
 pipelines:
   default:
     - step:
