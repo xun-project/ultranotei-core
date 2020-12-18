@@ -160,10 +160,13 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[] = "e9a5f0d30549afde49c9bfbaa52ac60afdc
 
 // Seed Nodes
 const std::initializer_list<const char*> SEED_NODES  = {
-   "45.63.58.18:42000",
-   "139.180.136.6:42000",
-   "155.138.140.208:42000",
-   "45.32.206.198:42000",
+   "45.63.58.18:42000",     // seed1.ultranote.org
+   "139.180.136.6:42000",   // seed2.ultranote.org
+   "62.171.173.164:42000",  // seed3.ultranote.org
+   "207.244.227.124:42000", // seed4.ultranote.org
+   "155.138.140.208:42000", // seed5.ultranote.org
+   "45.32.206.198:42000",   // seed6.ultranote.org
+   
 };
 
 struct CheckpointData {
