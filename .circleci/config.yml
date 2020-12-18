@@ -4,7 +4,7 @@ version: 2.1
    build-linux:
      machine:
        image: ubuntu-2004:202010-01
-     steps:
+#     steps:
        - checkout
        - run:
            name: Install Dependencies
