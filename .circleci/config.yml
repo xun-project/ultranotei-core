@@ -1,84 +1,85 @@
 version: 2.1
 
 # jobs:
-   build-linux:
-     machine:
-       image: ubuntu-2004:202010-01
+#   build-linux:
+#     machine:
+#       image: ubuntu-2004:202010-01
 #     steps:
-       - checkout
-       - run:
-           name: Install Dependencies
-           command: |
-             echo "install deps"
-             # sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-             # sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
-       - run:
-           name: Build
-           command: |
-             echo "build"
-             # mkdir build
-             # cd build
-             # cmake ..
-             # cd ..
-             # make
-       - run:
-           name: Build Success
-           when: on_success
-           command: |
-             chmod +x .circleci/send.sh
-             .circleci/send.sh success https://discordapp.com/api/webhooks/787452879706652733/zldJgqXZO5RpO7FRtYBzeC-eXaF6iQQHMqegopCV5Mv2Ee0WMwIQySm0reab7C2JC91E linux
-       - run:
-           name: Build Failed
-           when: on_fail
-           command: |
-             chmod +x .circleci/send.sh
-             .circleci/send.sh failure https://discordapp.com/api/webhooks/787452879706652733/zldJgqXZO5RpO7FRtYBzeC-eXaF6iQQHMqegopCV5Mv2Ee0WMwIQySm0reab7C2JC91E linux
+#       - checkout
+#       - run:
+#           name: Install Dependencies
+#           command: |
+#             echo "install deps"
+#             # sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+#             # sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
+#       - run:
+#           name: Build
+#           command: |
+#             echo "build"
+#             # mkdir build
+#             # cd build
+#             # cmake ..
+#             # cd ..
+#             # make
+#       - run:
+#           name: Build Success
+#           when: on_success
+#           command: |
+#             chmod +x .circleci/send.sh
+#             .circleci/send.sh success https://discordapp.com/api/webhooks/787423654517669889/VD5lW_-EM73slVk9nHIldrzUaavdtFihCz09OOTpUKrP2-CssU5oEZ4PSOQVR3ufeU9h linux
+#       - run:
+#           name: Build Failed
+#           when: on_fail
+#           command: |
+#             chmod +x .circleci/send.sh
+#             .circleci/send.sh failure https://discordapp.com/api/webhooks/787423654517669889/VD5lW_-EM73slVk9nHIldrzUaavdtFihCz09OOTpUKrP2-CssU5oEZ4PSOQVR3ufeU9h linux
 
-# orbs:
-#  win: circleci/windows@2.2.0 
+orbs:
+  win: circleci/windows@2.2.0 
 
-# jobs:
-#  build-windows:
-#    executor:
-#      name: win/default
-#      shell: cmd.exe
-#    steps:
-#      - checkout
-#      - run:
-#          name: Install Dependencies
-#          command: 
-#            choco install wget && 
-#            wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.7z && 
-#            7z x boost_1_66_0.7z -oC:\local && 
-#            cd C:\local\boost_1_66_0 &&
-#            bootstrap --prefix=C:\local\boost_1_66_0\build && 
-#            b2 install
-#      - run:
-#          name: Build
-#          command: |  
-#            mkdir build
-#            cd build
-#            PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;%PATH%
-#            PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin;%PATH%
-#            PATH=C:\local\boost_1_66_0\build;%PATH%
-#            cmake -G "Visual Studio 16 2019" ..
-#            MSBuild UltraNoteI.sln /p:Configuration=Release /m
-#      - run:
-#          name: Build Success
-#          when: on_success
-#          shell: bash.exe
-#          command: |
-#            chmod +x .circleci/send.sh
-#            .circleci/send.sh success windows https://discordapp.com/api/webhooks/787452879706652733/zldJgqXZO5RpO7FRtYBzeC-eXaF6iQQHMqegopCV5Mv2Ee0WMwIQySm0reab7C2JC91E
-#      - run:
-#          name: Build Failed
-#          when: on_fail
-#          shell: bash.exe
-#          command: |
-#            chmod +x .circleci/send.sh
-#            .circleci/send.sh failure windows https://discordapp.com/api/webhooks/787452879706652733/zldJgqXZO5RpO7FRtYBzeC-eXaF6iQQHMqegopCV5Mv2Ee0WMwIQySm0reab7C2JC91E
+jobs:
+  build-windows:
+    executor:
+      name: win/default
+      shell: cmd.exe
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            choco install wget
+            wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.7z
+            7z x boost_1_66_0.7z -oC:\local
+            mkdir C:\local
+            cd C:\local\boost_1_66_0
+            ./bootstrap.sh --prefix=C:\local\boost_1_66_0\build
+            ./b2 install
+      - run:
+          name: Build
+          command: |  
+            mkdir build
+            cd build
+            PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;%PATH%
+            PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin;%PATH%
+            PATH=C:\local\boost_1_66_0\build;%PATH%
+            cmake -G "Visual Studio 16 2019" ..
+            MSBuild UltraNoteI.sln /p:Configuration=Release /m
+      - run:
+          name: Build Success
+          when: on_success
+          shell: bash.exe
+          command: |
+            chmod +x .circleci/send.sh
+            .circleci/send.sh success windows https://discordapp.com/api/webhooks/787423654517669889/VD5lW_-EM73slVk9nHIldrzUaavdtFihCz09OOTpUKrP2-CssU5oEZ4PSOQVR3ufeU9h
+      - run:
+          name: Build Failed
+          when: on_fail
+          shell: bash.exe
+          command: |
+            chmod +x .circleci/send.sh
+            .circleci/send.sh failure windows https://discordapp.com/api/webhooks/787423654517669889/VD5lW_-EM73slVk9nHIldrzUaavdtFihCz09OOTpUKrP2-CssU5oEZ4PSOQVR3ufeU9h
 
-# workflows:
-#  build:
-#    jobs:
-#      - build-windows 
+ workflows:
+  build:
+    jobs:
+      - build-windows 
