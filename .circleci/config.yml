@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  build-linux:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
+      - run:
+          name: Build
+          command: |
+            mkdir build
+            cd build
+            cmake ..
+            cd ..
+            make
+      - run:
+          name: Build Success
+          when: on_success
+          command: |
+            chmod +x .circleci/send.sh
+            .circleci/send.sh success $WEBHOOK
+      - run:
+          name: Build Failed
+          when: on_fail
+          command: |
+            chmod +x .circleci/send.sh
+            .circleci/send.sh failure $WEBHOOK
+            
+workflows:
+  build:
+    jobs:
+      - build-linux
