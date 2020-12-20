@@ -54,7 +54,7 @@ struct NativeContextGroup {
 struct OperationContext {
   NativeContext *context;
   bool interrupted;
-  uint32_t events;
+  
   std::uint32_t events;
 };
 
