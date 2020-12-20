@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <boost/functional.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/uuid/random_generator.hpp>
@@ -47,6 +48,7 @@
 using namespace Common;
 using namespace Logging;
 using namespace CryptoNote;
+using namespace boost::placeholders;
 
 namespace {
 
