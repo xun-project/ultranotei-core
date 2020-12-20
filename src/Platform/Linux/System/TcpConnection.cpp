@@ -1,4 +1,5 @@
 // Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
+// Copyright (c) 2018-2020 UltraNote Network & UlraNote Devs
 //
 // This file is part of Bytecoin.
 //
@@ -21,6 +22,7 @@
 #include <cassert>
 #include <sys/epoll.h>
 #include <unistd.h>
+#include <stdexcept>
 
 #include <System/ErrorMessage.h>
 #include <System/InterruptedException.h>
