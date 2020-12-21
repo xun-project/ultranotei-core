@@ -1,4 +1,5 @@
 // Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
+// Copyright (c) 2018-2020 UltraNote Network & UlraNote Devs
 //
 // This file is part of Bytecoin.
 //
@@ -18,6 +19,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cinttypes>
 #include <functional>
 #include <queue>
 #include <stack>
@@ -52,7 +54,8 @@ struct NativeContextGroup {
 struct OperationContext {
   NativeContext *context;
   bool interrupted;
-  uint32_t events;
+  
+  std::uint32_t events;
 };
 
 struct ContextPair {
