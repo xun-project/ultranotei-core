@@ -1,12 +1,12 @@
 [Unit]
-Description=UltraNote Infinity Wallet
+Description=UltraNote Infinity Walletd
 After=network.target
 
 [Service]
 User=YOUR_USER
 Group=YOUR_USER
 
-ExecStart=/usr/bin/walletd --config=/ext/XUNI/paymentgate.conf
+ExecStart=/usr/bin/walletd --config=/etc/XUNI/paymentgate.conf
 GuessMainPID=no
 
 [Install]
