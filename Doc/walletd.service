@@ -6,6 +6,9 @@ After=network.target
 User=YOUR_USER
 Group=YOUR_USER
 
+Restart=on-failure
+RestartSec=5s
+
 ExecStart=/usr/bin/walletd --config=/etc/XUNI/paymentgate.conf
 GuessMainPID=no
 
