@@ -1226,7 +1226,7 @@ std::error_code WalletService::sendTransaction(const SendTransaction::Request &r
     sendParams.destinations = convertWalletRpcOrdersToWalletOrders(request.transfers);
     sendParams.messages = convertWalletRpcMessagesToWalletMessages(messages);
     sendParams.fee = 1000;
-    sendParams.mixIn = parameters::MINIMUM_MIXIN;
+    sendParams.mixIn = request.anonymity;
     sendParams.unlockTimestamp = request.unlockTime;
     sendParams.changeDestination = request.changeAddress;
 
