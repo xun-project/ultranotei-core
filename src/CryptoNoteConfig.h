@@ -165,6 +165,7 @@ const std::initializer_list<const char*> SEED_NODES  = {
    "62.171.173.164:42000",  // seed3.ultranote.org
    "207.244.227.124:42000", // seed4.ultranote.org
    "209.126.13.23:42000",   // node1.ultranote.org
+   ":42000",   // node2.ultranote.org
 
    
 };
@@ -411,6 +412,8 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {370000, "10420ed107fb16d0c526efe5b62b94c85659b690dd329ad143e7cac11a835252"},
  {380000, "b86e7acab1293746d05c2d18998d8ff73dd9dfaf351bf12d24ce421d06a08251"},
  {390000, "8de2fcebafb964e47b83069bb78c94ba3b0c3e226ce13b27405d9cd0f70a4f49"},
+ {400000, "26670043242de92a7144b1b973aeeff3fa68ef0e5483d66fd24c36b45cd6eb47"},
+ {410000, "62ca9e2eb2ccfffd7e8a605ce37ab35ef7bdaf43902fa49cfae5c5ccbb018471"},
  
 };
 
