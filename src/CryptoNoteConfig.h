@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote Developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2020 UltraNote Network & UlraNote Devs
+// Copyright (c) 2018-2021 UltraNote Network & UlraNote Devs
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -164,6 +164,8 @@ const std::initializer_list<const char*> SEED_NODES  = {
    "139.180.136.6:42000",   // seed2.ultranote.org
    "62.171.173.164:42000",  // seed3.ultranote.org
    "207.244.227.124:42000", // seed4.ultranote.org
+   "209.126.13.23:42000",   // node1.ultranote.org
+   "75.119.146.144:42000",   // node2.ultranote.org
 
    
 };
@@ -387,6 +389,31 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {191000, "4405b57af8d86112e80da0d3a128bb2c05e0b2661ee030abb83f9946ae6f50c9"},
  {192000, "7ceda62d9263c22929bfdcf1198ce20a795d8caf49090f10a78c10f2c20e9bf2"},
  {193000, "bbbc3fdc82ea2a6a67534a34db45baaa186847a0fdef876b748b88c212b569aa"},
+   
+   // version 1.0.6
+
+ {200000, "3332bde1baaa5190e5c91eea52dbd78a4ecc6501306a136cf4866ebbba50b4bc"},
+ {210000, "96529cb8edd5164fca39ad9f1d826a0c3f4336ef15a529d159bcfa85a25bae70"},
+ {220000, "be338117eb35037a6f4bb2a386e7f98649ed12d7ddf9c450c84f0ddd992c85a1"},
+ {230000, "e0b5f0ae31f9ee364b1133d0c99d979529e9da36d607c38c2417d4920955f8ce"},
+ {240000, "45dfcd2cd62ed39234369b6eccb38464b4e3cb03b7577f5e7f199300a8e7421d"},
+ {250000, "0da31d1bbd3202b8622523a72b19dbd0d080294a819d5847a28d0dc46313545d"},
+ {260000, "5120709409215bbe9b1b1820e7c1b3236a66280fca850873a433ed1185c9dbb7"},
+ {270000, "f69e485637e9713f33e9992edfc40271acc2f53be03cfbd917b2d95f40dbdf20"},
+ {280000, "653a1242ddc8224af4489f9fdabd155c52e712c23d8e79b8ddcae00f7421eae4"},
+ {290000, "9583dd6ad6fe7dbf6179724584bbe637075d284e5d635875a3b184b3f9457b68"},
+ {300000, "eb1fba52c0060248c929c375daaf9a2095e391fedf487d2092024a9e87ab15da"},
+ {310000, "9dc11bdbc2a7cdb0185428a12797032c8dde578d38b07688f9476075ecbd0f45"},
+ {320000, "13fb67045df17f278d575af8441784e0494b1f0b7e6b64d6592de848bdb03798"},
+ {330000, "5daadf363a76d869031c83541cf712ce0183553da2859256a0dffa27f1df04a8"},
+ {340000, "356de0f1d7df1579522c28dcc44ea99a32c61f599ceadf9c86c60b229c0b69c2"},
+ {350000, "154aa25c550971459980920e56105be1ef7924ae0845f84e9694815f4b391557"},
+ {360000, "e2d35ce96eb9baa32d05287573bcfff11ce4dcd917a977532ca9fce628812b86"},
+ {370000, "10420ed107fb16d0c526efe5b62b94c85659b690dd329ad143e7cac11a835252"},
+ {380000, "b86e7acab1293746d05c2d18998d8ff73dd9dfaf351bf12d24ce421d06a08251"},
+ {390000, "8de2fcebafb964e47b83069bb78c94ba3b0c3e226ce13b27405d9cd0f70a4f49"},
+ {400000, "26670043242de92a7144b1b973aeeff3fa68ef0e5483d66fd24c36b45cd6eb47"},
+ {410000, "62ca9e2eb2ccfffd7e8a605ce37ab35ef7bdaf43902fa49cfae5c5ccbb018471"},
  
 };
 

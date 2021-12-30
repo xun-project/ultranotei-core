@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2018 The Circle Foundation
+// Copyright (c) 2017-2021 UltraNote developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <string.h>
-#include "context.h"
+#include "Context.h"
 
 void
 makecontext(uctx *ucp, void (*func)(void), intptr_t arg)
