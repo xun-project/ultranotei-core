@@ -165,7 +165,7 @@ const std::initializer_list<const char*> SEED_NODES  = {
    "62.171.173.164:42000",  // seed3.ultranote.org
    "207.244.227.124:42000", // seed4.ultranote.org
    "209.126.13.23:42000",   // node1.ultranote.org
-   ":42000",   // node2.ultranote.org
+   "75.119.146.144:42000",   // node2.ultranote.org
 
    
 };
