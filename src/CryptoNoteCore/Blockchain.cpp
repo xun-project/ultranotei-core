@@ -535,7 +535,7 @@ void Blockchain::rebuildCache() {
     Crypto::Hash blockHash = get_block_hash(block.bl);
     m_blockIndex.push(blockHash);
     uint64_t interest = 0;
-    for (uint32_t t = 0; t < block.transactions.size(); ++t) {
+    for (uint16_t t = 0; t < block.transactions.size(); ++t) {
       const TransactionEntry& transaction = block.transactions[t];
       Crypto::Hash transactionHash = getObjectHash(transaction.tx);
       TransactionIndex transactionIndex = { b, t };
@@ -552,7 +552,7 @@ void Blockchain::rebuildCache() {
       }
 
       // process outputs
-      for (uint32_t o = 0; o < transaction.tx.outputs.size(); ++o) {
+      for (uint16_t o = 0; o < transaction.tx.outputs.size(); ++o) {
         const auto& out = transaction.tx.outputs[o];
         if (out.target.type() == typeid(KeyOutput)) {
           m_outputs[out.amount].push_back(std::make_pair<>(transactionIndex, o));
@@ -2262,7 +2262,7 @@ bool Blockchain::pushTransaction(BlockEntry& block, const Crypto::Hash& transact
   }
 
   transaction.m_global_output_indexes.resize(transaction.tx.outputs.size());
-  for (uint32_t output = 0; output < transaction.tx.outputs.size(); ++output) {
+  for (uint16_t output = 0; output < transaction.tx.outputs.size(); ++output) {
     if (transaction.tx.outputs[output].target.type() == typeid(KeyOutput)) {
       auto& amountOutputs = m_outputs[transaction.tx.outputs[output].amount];
       transaction.m_global_output_indexes[output] = static_cast<uint32_t>(amountOutputs.size());
@@ -2632,7 +2632,7 @@ bool Blockchain::loadBlockchainIndices() {
       const BlockEntry& block = m_blocks[b];
       m_timestampIndex.add(block.bl.timestamp, get_block_hash(block.bl));
       m_generatedTransactionsIndex.add(block.bl);
-      for (size_t t = 0; t < block.transactions.size(); ++t) {
+      for (unit16_t t = 0; t < block.transactions.size(); ++t) {
         const TransactionEntry& transaction = block.transactions[t];
         m_paymentIdIndex.add(transaction.tx);
       }
