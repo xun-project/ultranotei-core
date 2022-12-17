@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote Developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2021 UltraNote Network & UlraNote Devs
+// Copyright (c) 2018-2022 UltraNote Infinity developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -132,6 +132,7 @@ const uint8_t  BLOCK_MINOR_VERSION_1 = 1;
 const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT = 10000; // by default, blocks ids count in synchronizing
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT = 128; // by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT = 1000;
+const size_t COMMAND_RPC_GET_OBJECTS_MAX_COUNT = 1000;
 
 const int      P2P_DEFAULT_PORT = 42000;
 const int      RPC_DEFAULT_PORT = 43000;
