@@ -2632,7 +2632,7 @@ bool Blockchain::loadBlockchainIndices() {
       const BlockEntry& block = m_blocks[b];
       m_timestampIndex.add(block.bl.timestamp, get_block_hash(block.bl));
       m_generatedTransactionsIndex.add(block.bl);
-      for (unit16_t t = 0; t < block.transactions.size(); ++t) {
+      for (uint16_t t = 0; t < block.transactions.size(); ++t) {
         const TransactionEntry& transaction = block.transactions[t];
         m_paymentIdIndex.add(transaction.tx);
       }
