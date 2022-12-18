@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote Developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2021 UltraNote Network & UlraNote Devs
+// Copyright (c) 2018-2022 UltraNote Infinity developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -132,6 +132,7 @@ const uint8_t  BLOCK_MINOR_VERSION_1 = 1;
 const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT = 10000; // by default, blocks ids count in synchronizing
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT = 128; // by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT = 1000;
+const size_t COMMAND_RPC_GET_OBJECTS_MAX_COUNT = 1000;
 
 const int      P2P_DEFAULT_PORT = 42000;
 const int      RPC_DEFAULT_PORT = 43000;
@@ -414,6 +415,34 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {390000, "8de2fcebafb964e47b83069bb78c94ba3b0c3e226ce13b27405d9cd0f70a4f49"},
  {400000, "26670043242de92a7144b1b973aeeff3fa68ef0e5483d66fd24c36b45cd6eb47"},
  {410000, "62ca9e2eb2ccfffd7e8a605ce37ab35ef7bdaf43902fa49cfae5c5ccbb018471"},
+ 
+    // version 1.0.7
+	
+ {420000, "c123229377d6dbbc1c6957bb98d6f2c1732cff7f81796eed2237d172664a6a3c"},
+ {430000, "bc537bb1395f87d56a7f0400bc00d9d6a4cdcb8bbf5bcf67c875bb9085d8fa81"},
+ {440000, "56a7c12b2ee2e5ac246c4b9a581aa121f58a3f9f774cfe83847115406122a156"},
+ {450000, "0d629e7058f4035b13dcb6110c3c9e768bdca7987c2ff95b4147c9e8f1fdc2fd"},
+ {460000, "20f911c5e9815379ab1de9be7cbde71054f4936243e8d4a872dfc2a6912fe168"},
+ {470000, "83ea954fcb7a9be466451f210341b210fa74497039490704c9953ae046e0531e"},
+ {480000, "17c02822b35d70185703c28312ae985724d53156652ce1eeb0254c0d66c3d08f"},
+ {490000, "1cfea44d9984281968f3940c400fa79756623652a97e0918ef211e9a040784ce"},
+ {500000, "d9d03c6c3979e8d68a861c5f97823862121a1199be20610529c03ac8d348837c"},
+ {510000, "aedde71dd6948f7ea03852311249061ef2015abc442149d86ee99571933213ed"},
+ {520000, "40be007cc16b040c9ffb0dcf6d0f18920baa7d45e601d56fda4dfadbd0fc65ce"},
+ {530000, "03f283ad28e87a293b18592eb439c27ece831ca419404bda1ba3017f7e2d58f1"},
+ {540000, "e6bc97946a61292db81327d4c995f5fc2df54eb7d7a472dfa2b1dd39f9b0d865"},
+ {550000, "fa7a2ebb6d00afc6df05bcd5f8352821c978d85d42f9f25975d0ea2749829520"},
+ {560000, "53b84b36b49e8ea3dd684b301c598097ab80c81e2bd28a9eeabfc9144056149c"},
+ {570000, "30b094db5599da4292542b8f52489fdb9488a7063e23b1c190ec409e534c1359"},
+ {580000, "6c685dd9d873466f6970394f6872ce34320f51865a39da47fbec26a4f8f76761"},
+ {590000, "4bc720f22bb5d34ef690c66a7e63c8b63caf929a53c6b102283759f2b28368bf"},
+ {600000, "f0b1911cb45bbea0e1b1ac32d6536736c02b2d85a741b937a9dda46ed8574dd0"},
+ {610000, "d45cb5405036e2685ef336a41b7296ba5499d86d5c8ae457f1c4475187f4ad2b"},
+ {620000, "7b67f78b35b895eeaea34f1dfa09515ee205595e29ae6e7afac0da79cbc1b209"},
+ {630000, "19c5b4a6ca89092dd70c36c8b92ce88db99ac2452768949635581877396869ac"},
+ {640000, "d4627c0b35b4059a3b8cedb0e11e0ed2162ac4cb017fb52bd845031266b876a2"},
+ {650000, "c9d7761fd75dd1f9d103315a3d2ff77e20ee15a3ce2f4bf1ef7eeca0fb6ed255"},
+ 
  
 };
 

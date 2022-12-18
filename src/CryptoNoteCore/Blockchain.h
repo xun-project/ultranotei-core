@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2022 UltraNote Infinity developers
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -43,7 +45,8 @@ namespace CryptoNote {
   using CryptoNote::BlockInfo;
   class Blockchain : public CryptoNote::ITransactionValidator {
   public:
-    Blockchain(const Currency& currency, tx_memory_pool& tx_pool, Logging::ILogger& logger);
+    
+    Blockchain(const Currency& currency, tx_memory_pool& tx_pool, Logging::ILogger& logger, bool blockchainIndexesEnabled);
 
     bool addObserver(IBlockchainStorageObserver* observer);
     bool removeObserver(IBlockchainStorageObserver* observer);
@@ -269,7 +272,8 @@ bool have_tx_keyimg_as_spent(const Crypto::KeyImage &key_im);
     UpgradeDetector m_upgradeDetectorV2;
     UpgradeDetector m_upgradeDetectorV3;
   
-  
+    bool m_blockchainIndexesEnabled;
+    
     PaymentIdIndex m_paymentIdIndex;
     TimestampBlocksIndex m_timestampIndex;
     GeneratedTransactionsIndex m_generatedTransactionsIndex;

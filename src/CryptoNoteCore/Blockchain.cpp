@@ -2,8 +2,7 @@
 // Copyright (c) 2016-2019, The Karbo developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
-
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -312,12 +311,13 @@ private:
 };
 
 
-Blockchain::Blockchain(const Currency& currency, tx_memory_pool& tx_pool, ILogger& logger) :
+Blockchain::Blockchain(const Currency& currency, tx_memory_pool& tx_pool, ILogger& logger, bool blockchainIndexesEnabled) :
 logger(logger, "Blockchain"),
 m_currency(currency),
 m_tx_pool(tx_pool),
 m_current_block_cumul_sz_limit(0),
 m_checkpoints(logger),
+m_blockchainIndexesEnabled(blockchainIndexesEnabled),
 m_upgradeDetectorV2(currency, m_blocks, BLOCK_MAJOR_VERSION_2, logger),
 m_upgradeDetectorV3(currency, m_blocks, BLOCK_MAJOR_VERSION_3, logger)
 
@@ -431,6 +431,11 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
     if (!loader.loaded()) {
       logger(WARNING, BRIGHT_YELLOW) << "<< Blockchain.cpp << No actual blockchain cache found, rebuilding internal structures";
       rebuildCache();
+    }
+    
+        /* Load (or generate) the indices only if Explorer mode is enabled */
+    if (m_blockchainIndexesEnabled) {
+      loadBlockchainIndices();
     }
 
     loadBlockchainIndices();
@@ -589,7 +594,11 @@ logger(INFO, BRIGHT_GREEN) << "The Blockchain was successfully saved.";
 
 bool Blockchain::deinit() {
   storeCache();
-  storeBlockchainIndices();
+  
+    if (m_blockchainIndexesEnabled) {
+    storeBlockchainIndices();
+  }
+  
   assert(m_messageQueueList.empty());
   return true;
 }
@@ -1499,10 +1508,8 @@ void Blockchain::print_blockchain(uint64_t start_index, uint64_t end_index) {
       << "\nid\t\t" << get_block_hash(m_blocks[i].bl)
       << "\ndifficulty\t\t" << blockDifficulty(i) << ", nonce " << m_blocks[i].bl.nonce << ", tx_count " << m_blocks[i].bl.transactionHashes.size() << ENDL;
   }
-  logger(DEBUGGING) <<
-    "Current blockchain:" << ENDL << ss.str();
-  logger(INFO, BRIGHT_WHITE) <<
-    "Blockchain printed with log level 1";
+     logger(INFO) << "Blockchain:\n"
+                 << ss.str();
 }
 
 void Blockchain::print_blockchain_index() {

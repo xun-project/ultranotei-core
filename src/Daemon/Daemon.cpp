@@ -2,7 +2,7 @@
 // Copyright (c) 2016-2018, The Karbo developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2017-2022 UltraNote Infinity developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -70,48 +70,7 @@ void print_genesis_tx_hex() {
   return;
 }
 
-// void print_genesis_tx_hex(const po::variables_map& vm) {
-  // std::vector<CryptoNote::AccountPublicAddress> targets;
- //  auto genesis_block_reward_addresses = command_line::get_arg(vm, arg_genesis_block_reward_address);
 
-//   Logging::ConsoleLogger logger;
-//   CryptoNote::CurrencyBuilder currencyBuilder(logger);
-
- //  CryptoNote::Currency currency = currencyBuilder.currency();
-
- //  for (const auto& address_string : genesis_block_reward_addresses) {
- //     CryptoNote::AccountPublicAddress address;
-   //  if (!currency.parseAccountAddressString(address_string, address)) {
-   //    std::cout << "Failed to parse address: " << address_string << std::endl;
-   //    return;
-  //   }
- //	//Print GENESIS_BLOCK_REWARD Mined Address
- //	std::cout << "Your SDN Pre-mined Address String is:  " << address_string << std::endl;
- //    targets.emplace_back(std::move(address));
-//   }
-
- //  if (targets.empty()) {
- //    if (CryptoNote::parameters::GENESIS_BLOCK_REWARD > 0) {
- //      std::cout << "Error: genesis block reward addresses are not defined" << std::endl;
- //    } else {
-
- //	  CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logger).generateGenesisTransaction();
- //	  CryptoNote::BinaryArray txb = CryptoNote::toBinaryArray(tx);
- //	  std::string tx_hex = Common::toHex(txb);
-
-// 	  std::cout << "Insert this line into your coin configuration file as is: " << std::endl;
- //	  std::cout << "const char GENESIS_COINBASE_TX_HEX[] = \"" << tx_hex << "\";" << std::endl;
- //	}
-//   } else {
- //	CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logger).generateGenesisTransaction(targets);
- //	CryptoNote::BinaryArray txb = CryptoNote::toBinaryArray(tx);
- //	std::string tx_hex = Common::toHex(txb);
-
- //	std::cout << "Modify this line into your ultranoteI configuration file as is:  " << std::endl;
- //	std::cout << "const char GENESIS_COINBASE_TX_HEX[] = \"" << tx_hex << "\";" << std::endl;
-//   }
-//   return;
-// }
 
 JsonValue buildLoggerConfiguration(Level level, const std::string& logfile) {
   JsonValue loggerConfiguration(JsonValue::OBJECT);
@@ -167,6 +126,9 @@ int main(int argc, char* argv[])
 
     po::options_description desc_cmd_only("Command line options");
     po::options_description desc_cmd_sett("Command line options and settings options");
+	
+	   desc_cmd_sett.add_options() 
+      ("enable-blockchain-indexes,i", po::bool_switch()->default_value(false), "Enable blockchain indexes");
 
     command_line::add_arg(desc_cmd_only, command_line::arg_help);
     command_line::add_arg(desc_cmd_only, command_line::arg_version);
@@ -180,6 +142,7 @@ int main(int argc, char* argv[])
   	command_line::add_arg(desc_cmd_sett, arg_set_view_key);
     command_line::add_arg(desc_cmd_sett, arg_testnet_on);
     command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);
+	command_line::add_arg(desc_cmd_sett, command_line::arg_data_dir);
     command_line::add_arg(desc_cmd_sett, arg_enable_cors);
     command_line::add_arg(desc_cmd_sett, arg_blockexplorer_on);
     
@@ -276,7 +239,8 @@ int main(int argc, char* argv[])
     }
 
     CryptoNote::Currency currency = currencyBuilder.currency();
-    CryptoNote::core ccore(currency, nullptr, logManager);
+    
+    CryptoNote::core ccore(currency, nullptr, logManager, vm["enable-blockchain-indexes"].as<bool>());
 
      CoreConfig coreConfig;
     coreConfig.init(vm);
