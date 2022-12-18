@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
 
     CryptoNote::Currency currency = currencyBuilder.currency();
     
-	CryptoNote::core ccore(currency, nullptr, logManager, vm["enable-blockchain-indexes"].as<bool>());
+    CryptoNote::core ccore(currency, nullptr, logManager, vm["enable-blockchain-indexes"].as<bool>());
 
      CoreConfig coreConfig;
     coreConfig.init(vm);
