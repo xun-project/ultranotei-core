@@ -139,6 +139,8 @@ namespace CryptoNote {
       time_t receiveTime;
     };
 
+    std::list<CryptoNote::tx_memory_pool::TransactionDetails> getMemoryPool() const;
+
   private:
 
     struct TransactionPriorityComparator {
