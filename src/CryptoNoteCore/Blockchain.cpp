@@ -439,10 +439,6 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
     }
 
     loadBlockchainIndices();
-    m_checkpoints.load_checkpoints();
-    logger(Logging::INFO) << "Loading checkpoints";
-    m_checkpoints.load_checkpoints_from_dns();    
-    logger(Logging::INFO) << "Loading DNS checkpoints";
 
   } else {
     m_blocks.clear();
