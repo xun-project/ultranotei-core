@@ -16,6 +16,8 @@
 #include "Common/SignalHandler.h"
 #include "Common/PathTools.h"
 #include "crypto/hash.h"
+#include "CryptoNoteConfig.h"
+#include "CryptoNoteCore/Checkpoints.h"
 #include "CryptoNoteCore/Core.h"
 #include "CryptoNoteCore/CoreConfig.h"
 #include "CryptoNoteCore/CryptoNoteTools.h"
@@ -241,6 +243,17 @@ int main(int argc, char* argv[])
     CryptoNote::Currency currency = currencyBuilder.currency();
     
     CryptoNote::core ccore(currency, nullptr, logManager, vm["enable-blockchain-indexes"].as<bool>());
+
+    CryptoNote::Checkpoints checkpoints(logManager);
+    for (const auto& cp : CryptoNote::CHECKPOINTS) {
+      checkpoints.add_checkpoint(cp.height, cp.blockId);
+    }
+
+    checkpoints.load_checkpoints_from_dns();
+
+    if (!testnet_mode) {
+      ccore.set_checkpoints(std::move(checkpoints));
+    }
 
      CoreConfig coreConfig;
     coreConfig.init(vm);
