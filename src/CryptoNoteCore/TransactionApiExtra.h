@@ -11,7 +11,7 @@
 #include "CryptoNoteFormatUtils.h"
 #include "TransactionExtra.h"
 
-namespace CryptoNote {
+namespace cn {
 
   class TransactionExtra {
   public:
@@ -22,7 +22,7 @@ namespace CryptoNote {
 
     bool parse(const std::vector<uint8_t>& extra) {
       fields.clear();
-      return CryptoNote::parseTransactionExtra(extra, fields);
+      return cn::parseTransactionExtra(extra, fields);
     }
 
     template <typename T>
@@ -50,8 +50,8 @@ namespace CryptoNote {
       fields.push_back(value);
     }
 
-    bool getPublicKey(Crypto::PublicKey& pk) const {
-      CryptoNote::TransactionExtraPublicKey extraPk;
+    bool getPublicKey(crypto::PublicKey& pk) const {
+      cn::TransactionExtraPublicKey extraPk;
       if (!get(extraPk)) {
         return false;
       }
@@ -67,15 +67,15 @@ namespace CryptoNote {
 
   private:
 
-    std::vector<CryptoNote::TransactionExtraField>::const_iterator find(const std::type_info& t) const {
-      return std::find_if(fields.begin(), fields.end(), [&t](const CryptoNote::TransactionExtraField& f) { return t == f.type(); });
+    std::vector<cn::TransactionExtraField>::const_iterator find(const std::type_info& t) const {
+      return std::find_if(fields.begin(), fields.end(), [&t](const cn::TransactionExtraField& f) { return t == f.type(); });
     }
 
-    std::vector<CryptoNote::TransactionExtraField>::iterator find(const std::type_info& t) {
-      return std::find_if(fields.begin(), fields.end(), [&t](const CryptoNote::TransactionExtraField& f) { return t == f.type(); });
+    std::vector<cn::TransactionExtraField>::iterator find(const std::type_info& t) {
+      return std::find_if(fields.begin(), fields.end(), [&t](const cn::TransactionExtraField& f) { return t == f.type(); });
     }
 
-    std::vector<CryptoNote::TransactionExtraField> fields;
+    std::vector<cn::TransactionExtraField> fields;
   };
 
 }

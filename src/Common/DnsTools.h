@@ -20,6 +20,6 @@
 #include <string>
 #include <vector>
 
-namespace Common {
+namespace common {
   bool fetch_dns_txt(const std::string domain, std::vector<std::string>&records);
 }

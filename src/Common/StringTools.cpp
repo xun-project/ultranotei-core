@@ -8,7 +8,7 @@
 #include "StringTools.h"
 #include <fstream>
 
-namespace Common {
+namespace common {
 
 namespace {
 

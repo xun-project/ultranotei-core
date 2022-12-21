@@ -54,7 +54,7 @@ extern "C" {
 //for printing large ints
 
 using namespace std;
-using namespace Crypto;
+using namespace crypto;
 
 //Namespace specifically for ring ct code
 namespace rct {
@@ -171,23 +171,23 @@ struct rctSig: public rctSigBase {
   rctSigPrunable p;
 };
 
-static inline const rct::key pk2rct(const Crypto::PublicKey &pk) { return (const rct::key&)pk; }
-static inline const rct::key sk2rct(const Crypto::SecretKey &sk) { return (const rct::key&)sk; }
-static inline const rct::key ki2rct(const Crypto::KeyImage &ki) { return (const rct::key&)ki; }
-static inline const rct::key hash2rct(const Crypto::Hash &h) { return (const rct::key&)h; }
-static inline const Crypto::PublicKey rct2pk(const rct::key &k) { return (const Crypto::PublicKey&)k; }
-static inline const Crypto::SecretKey rct2sk(const rct::key &k) { return (const Crypto::SecretKey&)k; }
-static inline const Crypto::KeyImage rct2ki(const rct::key &k) { return (const Crypto::KeyImage&)k; }
-static inline const Crypto::Hash rct2hash(const rct::key &k) { return (const Crypto::Hash&)k; }
-static inline bool operator==(const rct::key &k0, const Crypto::PublicKey &k1) { return memcmp(&k0, &k1, 32) == 0; }
-static inline bool operator!=(const rct::key &k0, const Crypto::PublicKey &k1) { return memcmp(&k0, &k1, 32) != 0; }
+static inline const rct::key pk2rct(const crypto::PublicKey &pk) { return (const rct::key&)pk; }
+static inline const rct::key sk2rct(const crypto::SecretKey &sk) { return (const rct::key&)sk; }
+static inline const rct::key ki2rct(const crypto::KeyImage &ki) { return (const rct::key&)ki; }
+static inline const rct::key hash2rct(const crypto::Hash &h) { return (const rct::key&)h; }
+static inline const crypto::PublicKey rct2pk(const rct::key &k) { return (const crypto::PublicKey&)k; }
+static inline const crypto::SecretKey rct2sk(const rct::key &k) { return (const crypto::SecretKey&)k; }
+static inline const crypto::KeyImage rct2ki(const rct::key &k) { return (const crypto::KeyImage&)k; }
+static inline const crypto::Hash rct2hash(const rct::key &k) { return (const crypto::Hash&)k; }
+static inline bool operator==(const rct::key &k0, const crypto::PublicKey &k1) { return memcmp(&k0, &k1, 32) == 0; }
+static inline bool operator!=(const rct::key &k0, const crypto::PublicKey &k1) { return memcmp(&k0, &k1, 32) != 0; }
 }
 
 namespace cryptonote {
-static inline bool operator==(const Crypto::PublicKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) == 0; }
-static inline bool operator!=(const Crypto::PublicKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) != 0; }
-static inline bool operator==(const Crypto::SecretKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) == 0; }
-static inline bool operator!=(const Crypto::SecretKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) != 0; }
+static inline bool operator==(const crypto::PublicKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) == 0; }
+static inline bool operator!=(const crypto::PublicKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) != 0; }
+static inline bool operator==(const crypto::SecretKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) == 0; }
+static inline bool operator!=(const crypto::SecretKey &k0, const rct::key &k1) { return memcmp(&k0, &k1, 32) != 0; }
 }
 
 template<typename T> std::ostream &print256(std::ostream &o, const T &v);

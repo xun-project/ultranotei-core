@@ -8,10 +8,10 @@
 
 #include "CryptoNote.h"
 
-namespace CryptoNote {
+namespace cn {
 
-bool validateAddress(const std::string& address, const CryptoNote::Currency& currency) {
-  CryptoNote::AccountPublicAddress ignore;
+bool validateAddress(const std::string& address, const cn::Currency& currency) {
+  cn::AccountPublicAddress ignore;
   return currency.parseAccountAddressString(address, ignore);
 }
 

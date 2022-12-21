@@ -17,7 +17,7 @@
 #include "CryptoNoteBasic.h"
 #include "Difficulty.h"
 
-namespace CryptoNote {
+namespace cn {
 
 class AccountBase;
 
@@ -85,7 +85,7 @@ public:
     }
   };
   size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }
-  size_t difficultyBlocksCount2() const { return CryptoNote::parameters::DIFFICULTY_BLOCKS_COUNT; }
+  size_t difficultyBlocksCount2() const { return cn::parameters::DIFFICULTY_BLOCKS_COUNT; }
 
 
   uint64_t depositMinAmount() const { return m_depositMinAmount; }
@@ -127,7 +127,7 @@ public:
   bool isTestnet() const { return m_testnet; }
 
   const Block& genesisBlock() const { return m_genesisBlock; }
-  const Crypto::Hash& genesisBlockHash() const { return m_genesisBlockHash; }
+  const crypto::Hash& genesisBlockHash() const { return m_genesisBlockHash; }
 
   bool getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins, uint64_t fee, uint32_t height,
   uint64_t& reward, int64_t& emissionChange) const;
@@ -161,12 +161,12 @@ public:
   difficulty_type nextDifficulty(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   difficulty_type nextDifficultyLWMA3(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
 
-  bool checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDifficulty, Crypto::Hash& proofOfWork) const;
+  bool checkProofOfWork(crypto::cn_context& context, const Block& block, difficulty_type currentDifficulty, crypto::Hash& proofOfWork) const;
 
   size_t getApproximateMaximumInputCount(size_t transactionSize, size_t outputCount, size_t mixinCount) const;
 
 private:
-  Currency(Logging::ILogger& log) : logger(log, "currency") {
+  Currency(logging::ILogger& log) : logger(log, "currency") {
   }
 
   bool init();
@@ -252,16 +252,16 @@ private:
   std::string m_genesisCoinbaseTxHex;
 
   Block m_genesisBlock;
-  Crypto::Hash m_genesisBlockHash;
+  crypto::Hash m_genesisBlockHash;
 
-  Logging::LoggerRef logger;
+  logging::LoggerRef logger;
 
   friend class CurrencyBuilder;
 };
 
 class CurrencyBuilder : boost::noncopyable {
 public:
-  CurrencyBuilder(Logging::ILogger& log);
+  CurrencyBuilder(logging::ILogger& log);
 
   Currency currency() {
     if (!m_currency.init()) {
