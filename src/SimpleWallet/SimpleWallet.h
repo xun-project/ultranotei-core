@@ -51,6 +51,8 @@ namespace CryptoNote
 
     const CryptoNote::Currency& currency() const { return m_currency; }
 
+    std::string m_remote_node_address;
+    
   private:
 
     Logging::LoggerMessage success_msg_writer(bool color = false) {

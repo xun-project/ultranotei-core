@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -672,6 +672,11 @@ void WalletGreen::deleteAddress(const std::string& address) {
   deleteFromUncommitedTransactions(deletedTransactions);
 
   m_walletsContainer.get<KeysIndex>().erase(it);
+	
+//    auto addressIndex = std::distance(
+//        m_walletsContainer.get<RandomAccessIndex>().begin(), m_walletsContainer.project<RandomAccessIndex>(it));
+
+//    m_containerStorage.erase(std::next(m_containerStorage.begin(), addressIndex));	
 
   if (m_walletsContainer.get<RandomAccessIndex>().size() != 0) {
     startBlockchainSynchronizer();

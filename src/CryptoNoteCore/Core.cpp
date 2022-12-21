@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -899,6 +899,17 @@ bool core::scanOutputkeysForIndices(const KeyInput& txInToKey, std::list<std::pa
 
 bool core::getBlockDifficulty(uint32_t height, difficulty_type& difficulty) {
   difficulty = m_blockchain.blockDifficulty(height);
+  return true;
+}
+
+bool core::getBlockTimestamp(uint32_t height, uint64_t &timestamp)
+{
+  if (height > get_current_blockchain_height())
+  {
+    return false;
+  }
+
+  timestamp = m_blockchain.getBlockTimestamp(height);
   return true;
 }
 
