@@ -51,6 +51,8 @@ namespace cn
 
     const cn::Currency& currency() const { return m_currency; }
 
+    std::string m_remote_node_address;
+    
   private:
 
     logging::LoggerMessage success_msg_writer(bool color = false) {

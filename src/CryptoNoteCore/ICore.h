@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -100,6 +100,7 @@ public:
   virtual bool scanOutputkeysForIndices(const KeyInput& txInToKey, std::list<std::pair<crypto::Hash, size_t>>& outputReferences) = 0;
   virtual bool getBlockDifficulty(uint32_t height, difficulty_type& difficulty) = 0;
   virtual bool getBlockContainingTx(const crypto::Hash& txId, crypto::Hash& blockId, uint32_t& blockHeight) = 0;
+  virtual bool getBlockTimestamp(uint32_t height, uint64_t &timestamp) = 0;
   virtual bool getMultisigOutputReference(const MultisignatureInput& txInMultisig, std::pair<crypto::Hash, size_t>& outputReference) = 0;
 
   virtual bool getGeneratedTransactionsNumber(uint32_t height, uint64_t& generatedTransactions) = 0;

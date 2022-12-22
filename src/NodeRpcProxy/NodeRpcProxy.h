@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -90,7 +91,8 @@ private:
   std::error_code doGetNewBlocks(std::vector<crypto::Hash>& knownBlockIds,
     std::vector<cn::block_complete_entry>& newBlocks, uint32_t& startHeight);
   std::error_code doGetTransactionOutsGlobalIndices(const crypto::Hash& transactionHash,
-                                                    std::vector<uint32_t>& outsGlobalIndices);
+                                           std::vector<uint32_t>& outsGlobalIndices);
+  std::error_code doGetBlock(const uint32_t blockHeight, f_block_details_response& block);                                      
   std::error_code doQueryBlocksLite(const std::vector<crypto::Hash>& knownBlockIds, uint64_t timestamp,
     std::vector<cn::BlockShortEntry>& newBlocks, uint32_t& startHeight);
   std::error_code doGetPoolSymmetricDifference(std::vector<crypto::Hash>&& knownPoolTxIds, crypto::Hash knownBlockId, bool& isBcActual,
