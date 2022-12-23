@@ -284,5 +284,11 @@ std::string timeIntervalToString(uint64_t intervalInSeconds) {
     ".s" + std::to_string(seconds);
 }
 
+std::string makeCenteredString(size_t width, const std::string& text) {
+  if (text.size() >= width) {
+    return text;
+  }
+}
+
 
 }
