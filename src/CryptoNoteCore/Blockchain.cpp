@@ -2,7 +2,7 @@
 // Copyright (c) 2016-2019, The Karbo developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-//
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -847,6 +847,16 @@ bool Blockchain::switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::
     }
   }
 
+    // Check block major version matches
+    for (auto alt_ch_iter2 = alt_chain.begin(); alt_ch_iter2 != alt_chain.end(); alt_ch_iter2++)
+    {
+      auto ch_ent = *alt_ch_iter2;
+      Block b = ch_ent->second.bl;
+      if (!checkBlockVersion(b, get_block_hash(ch_ent->second.bl)))
+      {
+        return false;
+      }
+    }
 
   //disconnecting old chain
   std::list<Block> disconnected_chain;
