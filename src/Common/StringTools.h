@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace Common {
+namespace common {
 
 std::string asString(const void* data, size_t size); // Does not throw
 std::string asString(const std::vector<uint8_t>& data); // Does not throw
@@ -102,5 +102,8 @@ std::string ipAddressToString(uint32_t ip);
 bool parseIpAddressAndPort(uint32_t& ip, uint32_t& port, const std::string& addr);
 
 std::string timeIntervalToString(uint64_t intervalInSeconds);
+
+std::string makeCenteredString(size_t width, const std::string& text);
+
 
 }

@@ -29,7 +29,7 @@
 #include <stdexcept>
 #include "ErrorMessage.h"
 
-namespace System {
+namespace platform_system {
 
 namespace {
 

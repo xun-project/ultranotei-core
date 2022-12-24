@@ -24,8 +24,8 @@
 #include "TransactionExtra.h"
 #include "CryptoNoteConfig.h"
 
-using namespace Logging;
-using namespace Common;
+using namespace logging;
+using namespace common;
 
 namespace {
 
@@ -42,11 +42,11 @@ std::string appendPath(const std::string& path, const std::string& fileName) {
 }
 
 namespace std {
-bool operator<(const Crypto::Hash& hash1, const Crypto::Hash& hash2) {
-  return memcmp(&hash1, &hash2, Crypto::HASH_SIZE) < 0;
+bool operator<(const crypto::Hash& hash1, const crypto::Hash& hash2) {
+  return memcmp(&hash1, &hash2, crypto::HASH_SIZE) < 0;
 }
 
-bool operator<(const Crypto::KeyImage& keyImage1, const Crypto::KeyImage& keyImage2) {
+bool operator<(const crypto::KeyImage& keyImage1, const crypto::KeyImage& keyImage2) {
   return memcmp(&keyImage1, &keyImage2, 32) < 0;
 }
 }
@@ -54,20 +54,20 @@ bool operator<(const Crypto::KeyImage& keyImage1, const Crypto::KeyImage& keyIma
 #define CURRENT_BLOCKCACHE_STORAGE_ARCHIVE_VER 3
 #define CURRENT_BLOCKCHAININDICES_STORAGE_ARCHIVE_VER 1
 
-namespace CryptoNote {
+namespace cn {
   class BlockCacheSerializer;
   class BlockchainIndicesSerializer;
 }
 
-namespace CryptoNote {
+namespace cn {
 
 template<typename K, typename V, typename Hash>
-bool serialize(google::sparse_hash_map<K, V, Hash>& value, Common::StringView name, CryptoNote::ISerializer& serializer) {
+bool serialize(google::sparse_hash_map<K, V, Hash>& value, common::StringView name, cn::ISerializer& serializer) {
   return serializeMap(value, name, serializer, [&value](size_t size) { value.resize(size); });
 }
 
 template<typename K, typename Hash>
-bool serialize(google::sparse_hash_set<K, Hash>& value, Common::StringView name, CryptoNote::ISerializer& serializer) {
+bool serialize(google::sparse_hash_set<K, Hash>& value, common::StringView name, cn::ISerializer& serializer) {
   size_t size = value.size();
   if (!serializer.beginArray(size, name)) {
     return false;
@@ -91,7 +91,7 @@ bool serialize(google::sparse_hash_set<K, Hash>& value, Common::StringView name,
 }
 
 // custom serialization to speedup cache loading
-bool serialize(std::vector<std::pair<Blockchain::TransactionIndex, uint16_t>>& value, Common::StringView name, CryptoNote::ISerializer& s) {
+bool serialize(std::vector<std::pair<Blockchain::TransactionIndex, uint16_t>>& value, common::StringView name, cn::ISerializer& s) {
   const size_t elementSize = sizeof(std::pair<Blockchain::TransactionIndex, uint16_t>);
   size_t size = value.size() * elementSize;
 
@@ -99,7 +99,7 @@ bool serialize(std::vector<std::pair<Blockchain::TransactionIndex, uint16_t>>& v
     return false;
   }
 
-  if (s.type() == CryptoNote::ISerializer::INPUT) {
+  if (s.type() == cn::ISerializer::INPUT) {
     if (size % elementSize != 0) {
       throw std::runtime_error("Invalid vector size");
     }
@@ -122,7 +122,7 @@ void serialize(Blockchain::TransactionIndex& value, ISerializer& s) {
 class BlockCacheSerializer {
 
 public:
-  BlockCacheSerializer(Blockchain& bs, const Crypto::Hash lastBlockHash, ILogger& logger) :
+  BlockCacheSerializer(Blockchain& bs, const crypto::Hash lastBlockHash, ILogger& logger) :
     m_bs(bs), m_lastBlockHash(lastBlockHash), m_loaded(false), logger(logger, "BlockCacheSerializer") {
   }
 
@@ -135,7 +135,7 @@ public:
 
       StdInputStream stream(stdStream);
       BinaryInputStreamSerializer s(stream);
-      CryptoNote::serialize(*this, s);
+      cn::serialize(*this, s);
     } catch (std::exception& e) {
       logger(WARNING) << "loading failed: " << e.what();
     }
@@ -150,7 +150,7 @@ public:
 
       StdOutputStream stream(file);
       BinaryOutputStreamSerializer s(stream);
-      CryptoNote::serialize(*this, s);
+      cn::serialize(*this, s);
     } catch (std::exception&) {
       return false;
     }
@@ -172,7 +172,7 @@ public:
     std::string operation;
     if (s.type() == ISerializer::INPUT) {
       operation = "loading ";
-      Crypto::Hash blockHash;
+      crypto::Hash blockHash;
       s(blockHash, "last_block");
 
       if (blockHash != m_lastBlockHash) {
@@ -217,13 +217,13 @@ private:
   LoggerRef logger;
   bool m_loaded;
   Blockchain& m_bs;
-  Crypto::Hash m_lastBlockHash;
+  crypto::Hash m_lastBlockHash;
 };
 
 class BlockchainIndicesSerializer {
 
 public:
-  BlockchainIndicesSerializer(Blockchain& bs, const Crypto::Hash lastBlockHash, ILogger& logger) :
+  BlockchainIndicesSerializer(Blockchain& bs, const crypto::Hash lastBlockHash, ILogger& logger) :
     m_bs(bs), m_lastBlockHash(lastBlockHash), m_loaded(false), logger(logger, "BlockchainIndicesSerializer") {
   }
 
@@ -242,7 +242,7 @@ public:
     if (s.type() == ISerializer::INPUT) {
       operation = "loading ";
 
-      Crypto::Hash blockHash;
+      crypto::Hash blockHash;
       s(blockHash, "blockHash");
 
       if (blockHash != m_lastBlockHash) {
@@ -275,7 +275,7 @@ public:
     std::string operation;
     if (Archive::is_loading::value) {
       operation = "loading ";
-      Crypto::Hash blockHash;
+      crypto::Hash blockHash;
       ar & blockHash;
 
       if (blockHash != m_lastBlockHash) {
@@ -307,7 +307,7 @@ private:
   LoggerRef logger;
   bool m_loaded;
   Blockchain& m_bs;
-  Crypto::Hash m_lastBlockHash;
+  crypto::Hash m_lastBlockHash;
 };
 
 
@@ -325,7 +325,7 @@ m_upgradeDetectorV3(currency, m_blocks, BLOCK_MAJOR_VERSION_3, logger)
 
   m_outputs.set_deleted_key(0);
   m_multisignatureOutputs.set_deleted_key(0);
-  Crypto::KeyImage nullImage = boost::value_initialized<decltype(nullImage)>();
+  crypto::KeyImage nullImage = boost::value_initialized<decltype(nullImage)>();
   m_spent_keys.set_deleted_key(nullImage);
 }
 
@@ -337,11 +337,11 @@ bool Blockchain::removeObserver(IBlockchainStorageObserver* observer) {
   return m_observerManager.remove(observer);
 }
 
-bool Blockchain::checkTransactionInputs(const CryptoNote::Transaction& tx, BlockInfo& maxUsedBlock) {
+bool Blockchain::checkTransactionInputs(const cn::Transaction& tx, BlockInfo& maxUsedBlock) {
   return checkTransactionInputs(tx, maxUsedBlock.height, maxUsedBlock.id) && check_tx_outputs(tx);
 }
 
-bool Blockchain::checkTransactionInputs(const CryptoNote::Transaction& tx, BlockInfo& maxUsedBlock, BlockInfo& lastFailed) {
+bool Blockchain::checkTransactionInputs(const cn::Transaction& tx, BlockInfo& maxUsedBlock, BlockInfo& lastFailed) {
 
   BlockInfo tail;
   //not the best implementation at this time, sorry :(
@@ -378,7 +378,7 @@ bool Blockchain::checkTransactionInputs(const CryptoNote::Transaction& tx, Block
   return true;
 }
 
-bool Blockchain::haveSpentKeyImages(const CryptoNote::Transaction& tx) {
+bool Blockchain::haveSpentKeyImages(const cn::Transaction& tx) {
   return this->haveTransactionKeyImagesAsSpent(tx);
 }
 
@@ -395,12 +395,12 @@ bool Blockchain::checkTransactionSize(size_t blobSize) {
   return true;
 }
 
-bool Blockchain::haveTransaction(const Crypto::Hash &id) {
+bool Blockchain::haveTransaction(const crypto::Hash &id) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return m_transactionMap.find(id) != m_transactionMap.end();
 }
 
-bool Blockchain::have_tx_keyimg_as_spent(const Crypto::KeyImage &key_im) {
+bool Blockchain::have_tx_keyimg_as_spent(const crypto::KeyImage &key_im) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return  m_spent_keys.find(key_im) != m_spent_keys.end();
 }
@@ -412,7 +412,7 @@ uint32_t Blockchain::getCurrentBlockchainHeight() {
 
 bool Blockchain::init(const std::string& config_folder, bool load_existing) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
-  if (!config_folder.empty() && !Tools::create_directories_if_necessary(config_folder)) {
+  if (!config_folder.empty() && !tools::create_directories_if_necessary(config_folder)) {
     logger(ERROR, BRIGHT_RED) << "<< Blockchain.cpp << Failed to create data directory: " << m_config_folder;
     return false;
   }
@@ -439,10 +439,6 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
     }
 
     loadBlockchainIndices();
-    m_checkpoints.load_checkpoints();
-    logger(Logging::INFO) << "Loading checkpoints";
-    m_checkpoints.load_checkpoints_from_dns();    
-    logger(Logging::INFO) << "Loading DNS checkpoints";
 
   } else {
     m_blocks.clear();
@@ -459,7 +455,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
       return false;
     }
   } else {
-    Crypto::Hash firstBlockHash = get_block_hash(m_blocks[0].bl);
+    crypto::Hash firstBlockHash = get_block_hash(m_blocks[0].bl);
     if (!(firstBlockHash == m_currency.genesisBlockHash())) {
       logger(ERROR, BRIGHT_RED) << "- Blockchain.cpp - Failed to init: genesis block mismatch. "
         "Probably you set --testnet flag with data "
@@ -500,7 +496,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
 
   logger(INFO, BRIGHT_GREEN)
     << "- Blockchain.cpp - Blockchain initialized. last block: " << m_blocks.size() - 1 << ", "
-    << Common::timeIntervalToString(timestamp_diff)
+    << common::timeIntervalToString(timestamp_diff)
     << " time ago, current difficulty: " << getDifficultyForNextBlock();
 
   return true;
@@ -538,12 +534,12 @@ void Blockchain::rebuildCache() {
     }
 
     const BlockEntry& block = m_blocks[b];
-    Crypto::Hash blockHash = get_block_hash(block.bl);
+    crypto::Hash blockHash = get_block_hash(block.bl);
     m_blockIndex.push(blockHash);
     uint64_t interest = 0;
     for (uint16_t t = 0; t < block.transactions.size(); ++t) {
       const TransactionEntry& transaction = block.transactions[t];
-      Crypto::Hash transactionHash = getObjectHash(transaction.tx);
+      crypto::Hash transactionHash = getObjectHash(transaction.tx);
       TransactionIndex transactionIndex = { b, t };
       m_transactionMap.insert(std::make_pair(transactionHash, transactionIndex));
 
@@ -623,42 +619,42 @@ bool Blockchain::resetAndSetGenesisBlock(const Block& b) {
   return bvc.m_added_to_main_chain && !bvc.m_verification_failed;
 }
 
-Crypto::Hash Blockchain::getTailId(uint32_t& height) {
+crypto::Hash Blockchain::getTailId(uint32_t& height) {
   assert(!m_blocks.empty());
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   height = getCurrentBlockchainHeight() - 1;
   return getTailId();
 }
 
-Crypto::Hash Blockchain::getTailId() {
+crypto::Hash Blockchain::getTailId() {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return m_blocks.empty() ? NULL_HASH : m_blockIndex.getTailId();
 }
 
-std::vector<Crypto::Hash> Blockchain::buildSparseChain() {
+std::vector<crypto::Hash> Blockchain::buildSparseChain() {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   assert(m_blockIndex.size() != 0);
   return doBuildSparseChain(m_blockIndex.getTailId());
 }
 
-std::vector<Crypto::Hash> Blockchain::buildSparseChain(const Crypto::Hash& startBlockId) {
+std::vector<crypto::Hash> Blockchain::buildSparseChain(const crypto::Hash& startBlockId) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   assert(haveBlock(startBlockId));
   return doBuildSparseChain(startBlockId);
 }
 
-std::vector<Crypto::Hash> Blockchain::doBuildSparseChain(const Crypto::Hash& startBlockId) const {
+std::vector<crypto::Hash> Blockchain::doBuildSparseChain(const crypto::Hash& startBlockId) const {
   assert(m_blockIndex.size() != 0);
 
-  std::vector<Crypto::Hash> sparseChain;
+  std::vector<crypto::Hash> sparseChain;
 
   if (m_blockIndex.hasBlock(startBlockId)) {
     sparseChain = m_blockIndex.buildSparseChain(startBlockId);
   } else {
     assert(m_alternative_chains.count(startBlockId) > 0);
 
-    std::vector<Crypto::Hash> alternativeChain;
-    Crypto::Hash blockchainAncestor;
+    std::vector<crypto::Hash> alternativeChain;
+    crypto::Hash blockchainAncestor;
     for (auto it = m_alternative_chains.find(startBlockId); it != m_alternative_chains.end(); it = m_alternative_chains.find(blockchainAncestor)) {
       alternativeChain.emplace_back(it->first);
       blockchainAncestor = it->second.bl.previousBlockHash;
@@ -670,7 +666,7 @@ std::vector<Crypto::Hash> Blockchain::doBuildSparseChain(const Crypto::Hash& sta
 
     assert(!sparseChain.empty());
     assert(m_blockIndex.hasBlock(blockchainAncestor));
-    std::vector<Crypto::Hash> sparseMainChain = m_blockIndex.buildSparseChain(blockchainAncestor);
+    std::vector<crypto::Hash> sparseMainChain = m_blockIndex.buildSparseChain(blockchainAncestor);
     sparseChain.reserve(sparseChain.size() + sparseMainChain.size());
     std::copy(sparseMainChain.begin(), sparseMainChain.end(), std::back_inserter(sparseChain));
   }
@@ -678,13 +674,13 @@ std::vector<Crypto::Hash> Blockchain::doBuildSparseChain(const Crypto::Hash& sta
   return sparseChain;
 }
 
-Crypto::Hash Blockchain::getBlockIdByHeight(uint32_t height) {
+crypto::Hash Blockchain::getBlockIdByHeight(uint32_t height) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   assert(height < m_blockIndex.size());
   return m_blockIndex.getBlockId(height);
 }
 
-bool Blockchain::getBlockByHash(const Crypto::Hash& blockHash, Block& b) {
+bool Blockchain::getBlockByHash(const crypto::Hash& blockHash, Block& b) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   uint32_t height = 0;
@@ -705,7 +701,7 @@ bool Blockchain::getBlockByHash(const Crypto::Hash& blockHash, Block& b) {
   return false;
 }
 
-bool Blockchain::getBlockHeight(const Crypto::Hash& blockId, uint32_t& blockHeight) {
+bool Blockchain::getBlockHeight(const crypto::Hash& blockId, uint32_t& blockHeight) {
   std::lock_guard<decltype(m_blockchain_lock)> lock(m_blockchain_lock);
   return m_blockIndex.getBlockHeight(blockId, blockHeight);
 }
@@ -825,7 +821,7 @@ bool Blockchain::switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::
   }  
 
   // Compare transactions in proposed alt chain vs current main chain and reject if some transaction is missing in the alt chain
-  std::vector<Crypto::Hash> mainChainTxHashes, altChainTxHashes;
+  std::vector<crypto::Hash> mainChainTxHashes, altChainTxHashes;
   for (size_t i = m_blocks.size() - 1; i >= split_height; i--) {
     Block b = m_blocks[i].bl;
     std::copy(b.transactionHashes.begin(), b.transactionHashes.end(), std::inserter(mainChainTxHashes, mainChainTxHashes.end()));
@@ -838,7 +834,7 @@ bool Blockchain::switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::
   for (auto main_ch_it = mainChainTxHashes.begin(); main_ch_it != mainChainTxHashes.end(); main_ch_it++) {
     auto tx_hash = *main_ch_it;
     if (std::find(altChainTxHashes.begin(), altChainTxHashes.end(), tx_hash) == altChainTxHashes.end()) {
-      logger(ERROR, BRIGHT_RED) << "Attempting to switch to an alternate chain, but it lacks transaction " << Common::podToHex(tx_hash) << " from main chain, rejected";
+      logger(ERROR, BRIGHT_RED) << "Attempting to switch to an alternate chain, but it lacks transaction " << common::podToHex(tx_hash) << " from main chain, rejected";
       mainChainTxHashes.clear();
       mainChainTxHashes.shrink_to_fit();
       altChainTxHashes.clear();
@@ -906,7 +902,7 @@ bool Blockchain::switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::
     }
   }
 
-  std::vector<Crypto::Hash> blocksFromCommonRoot;
+  std::vector<crypto::Hash> blocksFromCommonRoot;
   blocksFromCommonRoot.reserve(alt_chain.size() + 1);
   blocksFromCommonRoot.push_back(alt_chain.front()->second.bl.previousBlockHash);
 
@@ -1053,7 +1049,7 @@ bool Blockchain::validate_miner_transaction(const Block& b, uint32_t height, siz
 
   std::vector<size_t> lastBlocksSizes;
   get_last_n_blocks_sizes(lastBlocksSizes, m_currency.rewardBlocksWindow());
-  size_t blocksSizeMedian = Common::medianValue(lastBlocksSizes);
+  size_t blocksSizeMedian = common::medianValue(lastBlocksSizes);
 
   if (!m_currency.getBlockReward(blocksSizeMedian, cumulativeBlockSize, alreadyGeneratedCoins, fee, height, reward, emissionChange)) {
     logger(INFO, BRIGHT_WHITE) << "block size " << cumulativeBlockSize << " is bigger than allowed for this blockchain";
@@ -1137,13 +1133,13 @@ bool Blockchain::complete_timestamps_vector(uint64_t start_top_height, std::vect
   return true;
 }
 
-bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id, block_verification_context& bvc, bool sendNewAlternativeBlockMessage) {
+bool Blockchain::handle_alternative_block(const Block& b, const crypto::Hash& id, block_verification_context& bvc, bool sendNewAlternativeBlockMessage) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   auto block_height = get_block_height(b);
   if (block_height == 0) {
     logger(ERROR, BRIGHT_RED) <<
-      "Block with id: " << Common::podToHex(id) << " (as alternative) have wrong miner transaction";
+      "Block with id: " << common::podToHex(id) << " (as alternative) have wrong miner transaction";
 
     bvc.m_verification_failed = true;
     return false;
@@ -1202,7 +1198,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
         return false;
       }
 
-      Crypto::Hash h = NULL_HASH;
+      crypto::Hash h = NULL_HASH;
       get_block_hash(m_blocks[alt_chain.front()->second.height - 1].bl, h);
       if (!(h == alt_chain.front()->second.bl.previousBlockHash)) {
         logger(ERROR, BRIGHT_RED) << "alternative chain have wrong connection to main chain";
@@ -1245,7 +1241,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
 
     // Disable merged mining
     TransactionExtraMergeMiningTag mmTag;
-    if (getMergeMiningTagFromExtra(bei.bl.baseTransaction.extra, mmTag) && bei.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V3) {
+    if (getMergeMiningTagFromExtra(bei.bl.baseTransaction.extra, mmTag) && bei.height >= cn::parameters::UPGRADE_HEIGHT_V3) {
       logger(ERROR, BRIGHT_RED) << "Merge mining tag was found in extra of miner transaction";
       return false;
     }
@@ -1254,7 +1250,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     m_is_in_checkpoint_zone = false;
     difficulty_type current_diff = get_next_difficulty_for_alternative_chain(alt_chain, bei);
     if (!(current_diff)) { logger(ERROR, BRIGHT_RED) << "!!!!!!! DIFFICULTY OVERHEAD !!!!!!!"; return false; }
-    Crypto::Hash proof_of_work = NULL_HASH;
+    crypto::Hash proof_of_work = NULL_HASH;
     if (!m_currency.checkProofOfWork(m_cn_context, bei.bl, current_diff, proof_of_work)) {
       logger(INFO, BRIGHT_RED) <<
         "Block with id: " << id
@@ -1267,7 +1263,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
 
     if (!prevalidate_miner_transaction(b, bei.height)) {
       logger(INFO, BRIGHT_RED) <<
-        "Block with id: " << Common::podToHex(id) << " (as alternative) have wrong miner transaction.";
+        "Block with id: " << common::podToHex(id) << " (as alternative) have wrong miner transaction.";
 
       bvc.m_verification_failed = true;
       return false;
@@ -1349,7 +1345,7 @@ bool Blockchain::getBlocks(uint32_t start_offset, uint32_t count, std::list<Bloc
 
   for (size_t i = start_offset; i < start_offset + count && i < m_blocks.size(); i++) {
     blocks.push_back(m_blocks[i].bl);
-    std::list<Crypto::Hash> missed_ids;
+    std::list<crypto::Hash> missed_ids;
     getTransactions(m_blocks[i].bl.transactionHashes, txs, missed_ids);
     if (!(!missed_ids.size())) {
       logger(ERROR, BRIGHT_RED) << "have missed transactions in own block in main blockchain";
@@ -1380,7 +1376,7 @@ bool Blockchain::handleGetObjects(NOTIFY_REQUEST_GET_OBJECTS::request& arg, NOTI
   getBlocks(arg.blocks, blocks, rsp.missed_ids);
 
   for (const auto& bl : blocks) {
-    std::list<Crypto::Hash> missed_tx_id;
+    std::list<crypto::Hash> missed_tx_id;
     std::list<Transaction> txs;
     getTransactions(bl.transactionHashes, txs, rsp.missed_ids);
     if (!(!missed_tx_id.size())) { logger(ERROR, BRIGHT_RED) << "Internal error: have missed missed_tx_id.size()=" << missed_tx_id.size() << ENDL << "for block id = " << get_block_hash(bl); return false; } //WTF???
@@ -1400,6 +1396,27 @@ bool Blockchain::handleGetObjects(NOTIFY_REQUEST_GET_OBJECTS::request& arg, NOTI
   //pack aside transactions
   for (const auto& tx : txs) {
     rsp.txs.push_back(asString(toBinaryArray(tx)));
+  }
+
+  return true;
+}
+
+bool Blockchain::getTransactionsWithOutputGlobalIndexes(const std::vector<crypto::Hash>& txs_ids, std::list<crypto::Hash>& missed_txs, std::vector<std::pair<Transaction, std::vector<uint32_t>>>& txs) {
+    std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
+
+  for (const auto& tx_id : txs_ids) {
+    auto it = m_transactionMap.find(tx_id);
+    if (it == m_transactionMap.end()) {
+      missed_txs.push_back(tx_id);
+    }
+    else {
+      const TransactionEntry& tx = transactionByIndex(it->second);
+      if (!(tx.m_global_output_indexes.size())) { 
+        logger(ERROR, BRIGHT_RED) << "Internal error: global indexes for transaction " << tx_id << " is empty"; 
+        return false;
+      }
+      txs.push_back(std::make_pair(tx.tx, tx.m_global_output_indexes));
+    }
   }
 
   return true;
@@ -1475,7 +1492,7 @@ bool Blockchain::getRandomOutsByAmount(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_
     if (!(up_index_limit <= amount_outs.size())) { logger(ERROR, BRIGHT_RED) << "internal error: find_end_of_allowed_index returned wrong index=" << up_index_limit << ", with amount_outs.size = " << amount_outs.size(); return false; }
 
     if (up_index_limit > 0) {
-      ShuffleGenerator<size_t, Crypto::random_engine<size_t>> generator(up_index_limit);
+      ShuffleGenerator<size_t, crypto::random_engine<size_t>> generator(up_index_limit);
       for (uint64_t j = 0; j < up_index_limit && result_outs.outs.size() < req.outs_count; ++j) {
         add_out_to_get_random_outs(amount_outs, result_outs, amount, generator());
       }
@@ -1484,7 +1501,7 @@ bool Blockchain::getRandomOutsByAmount(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_
   return true;
 }
 
-uint32_t Blockchain::findBlockchainSupplement(const std::vector<Crypto::Hash>& qblock_ids) {
+uint32_t Blockchain::findBlockchainSupplement(const std::vector<crypto::Hash>& qblock_ids) {
   assert(!qblock_ids.empty());
   assert(qblock_ids.back() == m_blockIndex.getBlockId(0));
 
@@ -1526,7 +1543,7 @@ void Blockchain::print_blockchain_index() {
   std::stringstream ss;
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
-  std::vector<Crypto::Hash> blockIds = m_blockIndex.getBlockIds(0, std::numeric_limits<uint32_t>::max());
+  std::vector<crypto::Hash> blockIds = m_blockIndex.getBlockIds(0, std::numeric_limits<uint32_t>::max());
   logger(INFO, BRIGHT_WHITE) << "Current blockchain index:";
 
   size_t height = 0;
@@ -1549,7 +1566,7 @@ void Blockchain::print_blockchain_outs(const std::string& file) {
     }
   }
 
-  if (Common::saveStringToFile(file, ss.str())) {
+  if (common::saveStringToFile(file, ss.str())) {
     logger(INFO, BRIGHT_WHITE) <<
       "Current outputs index writen to file: " << file;
   } else {
@@ -1558,7 +1575,7 @@ void Blockchain::print_blockchain_outs(const std::string& file) {
   }
 }
 
-std::vector<Crypto::Hash> Blockchain::findBlockchainSupplement(const std::vector<Crypto::Hash>& remoteBlockIds, size_t maxCount,
+std::vector<crypto::Hash> Blockchain::findBlockchainSupplement(const std::vector<crypto::Hash>& remoteBlockIds, size_t maxCount,
   uint32_t& totalBlockCount, uint32_t& startBlockIndex) {
 
   assert(!remoteBlockIds.empty());
@@ -1571,7 +1588,7 @@ std::vector<Crypto::Hash> Blockchain::findBlockchainSupplement(const std::vector
   return m_blockIndex.getBlockIds(startBlockIndex, static_cast<uint32_t>(maxCount));
 }
 
-bool Blockchain::haveBlock(const Crypto::Hash& id) {
+bool Blockchain::haveBlock(const crypto::Hash& id) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   if (m_blockIndex.hasBlock(id))
     return true;
@@ -1587,7 +1604,7 @@ size_t Blockchain::getTotalTransactions() {
   return m_transactionMap.size();
 }
 
-bool Blockchain::getTransactionOutputGlobalIndexes(const Crypto::Hash& tx_id, std::vector<uint32_t>& indexs) {
+bool Blockchain::getTransactionOutputGlobalIndexes(const crypto::Hash& tx_id, std::vector<uint32_t>& indexs) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   auto it = m_transactionMap.find(tx_id);
   if (it == m_transactionMap.end()) {
@@ -1628,7 +1645,7 @@ bool Blockchain::get_out_by_msig_gindex(uint64_t amount, uint64_t gindex, Multis
 
 
 
-bool Blockchain::checkTransactionInputs(const Transaction& tx, uint32_t& max_used_block_height, Crypto::Hash& max_used_block_id, BlockInfo* tail) {
+bool Blockchain::checkTransactionInputs(const Transaction& tx, uint32_t& max_used_block_height, crypto::Hash& max_used_block_id, BlockInfo* tail) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   if (tail)
@@ -1654,17 +1671,17 @@ bool Blockchain::haveTransactionKeyImagesAsSpent(const Transaction &tx) {
 }
 
 bool Blockchain::checkTransactionInputs(const Transaction& tx, uint32_t* pmax_used_block_height) {
-  Crypto::Hash tx_prefix_hash = getObjectHash(*static_cast<const TransactionPrefix*>(&tx));
+  crypto::Hash tx_prefix_hash = getObjectHash(*static_cast<const TransactionPrefix*>(&tx));
   return checkTransactionInputs(tx, tx_prefix_hash, pmax_used_block_height);
 }
 
-bool Blockchain::checkTransactionInputs(const Transaction& tx, const Crypto::Hash& tx_prefix_hash, uint32_t* pmax_used_block_height) {
+bool Blockchain::checkTransactionInputs(const Transaction& tx, const crypto::Hash& tx_prefix_hash, uint32_t* pmax_used_block_height) {
   size_t inputIndex = 0;
   if (pmax_used_block_height) {
     *pmax_used_block_height = 0;
   }
 
-  Crypto::Hash transactionHash = getObjectHash(tx);
+  crypto::Hash transactionHash = getObjectHash(tx);
   for (const auto& txin : tx.inputs) {
     assert(inputIndex < tx.signatures.size());
     if (txin.type() == typeid(KeyInput)) {
@@ -1673,7 +1690,7 @@ bool Blockchain::checkTransactionInputs(const Transaction& tx, const Crypto::Has
 
       if (have_tx_keyimg_as_spent(in_to_key.keyImage)) {
         logger(DEBUGGING) <<
-          "Key image already spent in blockchain: " << Common::podToHex(in_to_key.keyImage);
+          "Key image already spent in blockchain: " << common::podToHex(in_to_key.keyImage);
         return false;
       }
 
@@ -1723,14 +1740,14 @@ bool Blockchain::is_tx_spendtime_unlocked(uint64_t unlock_time) {
   return false;
 }
 
-bool Blockchain::check_tx_input(const KeyInput& txin, const Crypto::Hash& tx_prefix_hash, const std::vector<Crypto::Signature>& sig, uint32_t* pmax_related_block_height) {
+bool Blockchain::check_tx_input(const KeyInput& txin, const crypto::Hash& tx_prefix_hash, const std::vector<crypto::Signature>& sig, uint32_t* pmax_related_block_height) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   struct outputs_visitor {
-    std::vector<const Crypto::PublicKey *>& m_results_collector;
+    std::vector<const crypto::PublicKey *>& m_results_collector;
     Blockchain& m_bch;
     LoggerRef logger;
-    outputs_visitor(std::vector<const Crypto::PublicKey *>& results_collector, Blockchain& bch, ILogger& logger) :m_results_collector(results_collector), m_bch(bch), logger(logger, "outputs_visitor") {
+    outputs_visitor(std::vector<const crypto::PublicKey *>& results_collector, Blockchain& bch, ILogger& logger) :m_results_collector(results_collector), m_bch(bch), logger(logger, "outputs_visitor") {
     }
 
     bool handle_output(const Transaction& tx, const TransactionOutput& out, size_t transactionOutputIndex) {
@@ -1753,7 +1770,7 @@ bool Blockchain::check_tx_input(const KeyInput& txin, const Crypto::Hash& tx_pre
   };
 
   //check ring signature
-  std::vector<const Crypto::PublicKey *> output_keys;
+  std::vector<const crypto::PublicKey *> output_keys;
   outputs_visitor vi(output_keys, *this, logger.getLogger());
   if (!scanOutputKeysForIndexes(txin, vi, pmax_related_block_height)) {
     logger(INFO, BRIGHT_WHITE) <<
@@ -1768,7 +1785,7 @@ bool Blockchain::check_tx_input(const KeyInput& txin, const Crypto::Hash& tx_pre
     return false;
   }
   
- /* if (getCurrentBlockchainHeight() > CryptoNote::parameters::UPGRADE_HEIGHT_V3 && getCurrentBlockchainHeight() < CryptoNote::parameters::UPGRADE_HEIGHT_V5 && txin.outputIndexes.size() < 3) {
+ /* if (getCurrentBlockchainHeight() > cn::parameters::UPGRADE_HEIGHT_V3 && getCurrentBlockchainHeight() < cn::parameters::UPGRADE_HEIGHT_V5 && txin.outputIndexes.size() < 3) {
     logger(ERROR, BRIGHT_RED) << "ring size is too small: " <<  txin.outputIndexes.size() << " Expected: 3";
     return false;
   }*/
@@ -1778,13 +1795,13 @@ bool Blockchain::check_tx_input(const KeyInput& txin, const Crypto::Hash& tx_pre
     return true;
   }
 
-  static const Crypto::KeyImage I = { {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };
-  static const Crypto::KeyImage L = { {0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7, 0xa2, 0xde, 0xf9, 0xde, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10 } };
+  static const crypto::KeyImage I = { {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };
+  static const crypto::KeyImage L = { {0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7, 0xa2, 0xde, 0xf9, 0xde, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10 } };
   if (!(scalarmultKey(txin.keyImage, L) == I)) {
     return false;
   }
 
-  return Crypto::check_ring_signature(tx_prefix_hash, txin.keyImage, output_keys, sig.data());
+  return crypto::check_ring_signature(tx_prefix_hash, txin.keyImage, output_keys, sig.data());
 }
 
 uint64_t Blockchain::get_adjusted_time() {
@@ -1837,7 +1854,7 @@ bool Blockchain::check_block_timestamp(std::vector<uint64_t> timestamps, const B
     return true;
   }
 
-  uint64_t median_ts = Common::medianValue(timestamps);
+  uint64_t median_ts = common::medianValue(timestamps);
 
   if (b.timestamp < median_ts) {
     logger(INFO, BRIGHT_WHITE) <<
@@ -1849,7 +1866,7 @@ bool Blockchain::check_block_timestamp(std::vector<uint64_t> timestamps, const B
   return true;
 }
 
-bool Blockchain::checkBlockVersion(const Block& b, const Crypto::Hash& blockHash) {
+bool Blockchain::checkBlockVersion(const Block& b, const crypto::Hash& blockHash) {
   uint64_t height = get_block_height(b);
   const uint8_t expectedBlockVersion = get_block_major_version_for_height(height);
   if (b.majorVersion != expectedBlockVersion) {
@@ -1861,7 +1878,7 @@ bool Blockchain::checkBlockVersion(const Block& b, const Crypto::Hash& blockHash
   return true;
 }
 
-bool Blockchain::checkCumulativeBlockSize(const Crypto::Hash& blockId, size_t cumulativeBlockSize, uint64_t height) {
+bool Blockchain::checkCumulativeBlockSize(const crypto::Hash& blockId, size_t cumulativeBlockSize, uint64_t height) {
   size_t maxBlockCumulativeSize = m_currency.maxBlockCumulativeSize(height);
   if (cumulativeBlockSize > maxBlockCumulativeSize) {
     logger(INFO, BRIGHT_WHITE) <<
@@ -1876,7 +1893,7 @@ bool Blockchain::checkCumulativeBlockSize(const Crypto::Hash& blockId, size_t cu
 // Returns true, if cumulativeSize is calculated precisely, else returns false.
 bool Blockchain::getBlockCumulativeSize(const Block& block, size_t& cumulativeSize) {
   std::vector<Transaction> blockTxs;
-  std::vector<Crypto::Hash> missedTxs;
+  std::vector<crypto::Hash> missedTxs;
   getTransactions(block.transactionHashes, blockTxs, missedTxs, true);
 
   cumulativeSize = getObjectBinarySize(block.baseTransaction);
@@ -1892,7 +1909,7 @@ bool Blockchain::update_next_comulative_size_limit() {
   std::vector<size_t> sz;
   get_last_n_blocks_sizes(sz, m_currency.rewardBlocksWindow());
 
-  uint64_t median = Common::medianValue(sz);
+  uint64_t median = common::medianValue(sz);
   if (median <= m_currency.blockGrantedFullRewardZone()) {
     median = m_currency.blockGrantedFullRewardZone();
   }
@@ -1904,7 +1921,7 @@ bool Blockchain::update_next_comulative_size_limit() {
 bool Blockchain::addNewBlock(const Block& bl_, block_verification_context& bvc) {
   //copy block here to let modify block.target
   Block bl = bl_;
-  Crypto::Hash id;
+  crypto::Hash id;
   if (!get_block_hash(bl, id)) {
     logger(ERROR, BRIGHT_RED) <<
       "Failed to get block hash, possible block has invalid format";
@@ -1952,7 +1969,7 @@ const Blockchain::TransactionEntry& Blockchain::transactionByIndex(TransactionIn
   return m_blocks[index.block].transactions[index.transaction];
 }
 
-bool Blockchain::pushBlock(const Block& blockData, const Crypto::Hash& id, block_verification_context& bvc, uint32_t height) {
+bool Blockchain::pushBlock(const Block& blockData, const crypto::Hash& id, block_verification_context& bvc, uint32_t height) {
   std::vector<Transaction> transactions;
   if (!loadTransactions(blockData, transactions, height)) {
     bvc.m_verification_failed = true;
@@ -1967,12 +1984,12 @@ bool Blockchain::pushBlock(const Block& blockData, const Crypto::Hash& id, block
   return true;
 }
 
-bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction>& transactions, const Crypto::Hash& id, block_verification_context& bvc) {
+bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction>& transactions, const crypto::Hash& id, block_verification_context& bvc) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   auto blockProcessingStart = std::chrono::steady_clock::now();
 
-  Crypto::Hash blockHash = id;
+  crypto::Hash blockHash = id;
 
   if (m_blockIndex.hasBlock(blockHash)) {
     logger(ERROR, BRIGHT_RED) <<
@@ -1991,7 +2008,7 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
   uint32_t height = 0;
   TransactionExtraMergeMiningTag mmTag;
   if (m_blockIndex.getBlockHeight(blockHash, height)) {
-    if (getMergeMiningTagFromExtra(blockData.baseTransaction.extra, mmTag) && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V3) {
+    if (getMergeMiningTagFromExtra(blockData.baseTransaction.extra, mmTag) && height >= cn::parameters::UPGRADE_HEIGHT_V3) {
       logger(ERROR, BRIGHT_RED) << "Merge mining tag was found in extra of miner transaction";
       return false;
     }
@@ -2024,7 +2041,7 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
   }
 
   auto longhashTimeStart = std::chrono::steady_clock::now();
-  Crypto::Hash proof_of_work = NULL_HASH;
+  crypto::Hash proof_of_work = NULL_HASH;
   if (m_checkpoints.is_in_checkpoint_zone(getCurrentBlockchainHeight())) {
     if (!m_checkpoints.check_block(getCurrentBlockchainHeight(), blockHash)) {
       bvc.m_verification_failed = true;
@@ -2033,7 +2050,7 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
   } else {
     if (!m_currency.checkProofOfWork(m_cn_context, blockData, currentDifficulty, proof_of_work)) {
       logger(INFO, BRIGHT_WHITE) <<
-        "Block " << blockHash << ", has too weak proof of work: " << Common::podToHex(proof_of_work) << ", expected difficulty: " << currentDifficulty << " MajorVersion: " << std::to_string(blockData.majorVersion);
+        "Block " << blockHash << ", has too weak proof of work: " << common::podToHex(proof_of_work) << ", expected difficulty: " << currentDifficulty << " MajorVersion: " << std::to_string(blockData.majorVersion);
       bvc.m_verification_failed = true;
       return false;
     }
@@ -2048,7 +2065,7 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
     return false;
   }
 
-  Crypto::Hash minerTransactionHash = getObjectHash(blockData.baseTransaction);
+  crypto::Hash minerTransactionHash = getObjectHash(blockData.baseTransaction);
 
   BlockEntry block;
   block.bl = blockData;
@@ -2064,14 +2081,14 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
   uint64_t interestSummary = 0;
 
   for (size_t i = 0; i < transactions.size(); ++i) {
-    const Crypto::Hash& tx_id = blockData.transactionHashes[i];
+    const crypto::Hash& tx_id = blockData.transactionHashes[i];
     block.transactions.resize(block.transactions.size() + 1);
     block.transactions.back().tx = transactions[i];
     size_t blob_size = toBinaryArray(transactions[i]).size();
 
     uint64_t in_amount = m_currency.getTransactionAllInputsAmount(transactions[i], block.height);
 	  uint64_t out_amount = getOutputAmount(transactions[i]);
-    uint64_t fee = in_amount < out_amount ? CryptoNote::parameters::MINIMUM_FEE : in_amount - out_amount;
+    uint64_t fee = in_amount < out_amount ? cn::parameters::MINIMUM_FEE : in_amount - out_amount;
 
     bool isTransactionValid = true;
     if (block.bl.majorVersion == BLOCK_MAJOR_VERSION_1 && transactions[i].version > TRANSACTION_VERSION_1) {
@@ -2192,7 +2209,7 @@ void Blockchain::pushToDepositIndex(const BlockEntry& block, uint64_t interest) 
 
 
 bool Blockchain::pushBlock(BlockEntry& block) {
-  Crypto::Hash blockHash = get_block_hash(block.bl);
+  crypto::Hash blockHash = get_block_hash(block.bl);
 
   m_blocks.push_back(block);
   m_blockIndex.push(blockHash);
@@ -2205,7 +2222,7 @@ bool Blockchain::pushBlock(BlockEntry& block) {
   return true;
 }
 
-void Blockchain::popBlock(const Crypto::Hash& blockHash) {
+void Blockchain::popBlock(const crypto::Hash& blockHash) {
   if (m_blocks.empty()) {
     logger(ERROR, BRIGHT_RED) <<
       "Attempt to pop block from empty blockchain.";
@@ -2237,7 +2254,7 @@ void Blockchain::popBlock(const Crypto::Hash& blockHash) {
     
 }
 
-bool Blockchain::pushTransaction(BlockEntry& block, const Crypto::Hash& transactionHash, TransactionIndex transactionIndex) {
+bool Blockchain::pushTransaction(BlockEntry& block, const crypto::Hash& transactionHash, TransactionIndex transactionIndex) {
   auto result = m_transactionMap.insert(std::make_pair(transactionHash, transactionIndex));
   if (!result.second) {
     logger(ERROR, BRIGHT_RED) <<
@@ -2300,7 +2317,7 @@ bool Blockchain::pushTransaction(BlockEntry& block, const Crypto::Hash& transact
   return true;
 }
 
-void Blockchain::popTransaction(const Transaction& transaction, const Crypto::Hash& transactionHash) {
+void Blockchain::popTransaction(const Transaction& transaction, const crypto::Hash& transactionHash) {
   TransactionIndex transactionIndex = m_transactionMap.at(transactionHash);
   for (size_t outputIndex = 0; outputIndex < transaction.outputs.size(); ++outputIndex) {
     const TransactionOutput& output = transaction.outputs[transaction.outputs.size() - 1 - outputIndex];
@@ -2410,7 +2427,7 @@ void Blockchain::popTransaction(const Transaction& transaction, const Crypto::Ha
   }
 }
 
-void Blockchain::popTransactions(const BlockEntry& block, const Crypto::Hash& minerTransactionHash) {
+void Blockchain::popTransactions(const BlockEntry& block, const crypto::Hash& minerTransactionHash) {
   for (size_t i = 0; i < block.transactions.size() - 1; ++i) {
     popTransaction(block.transactions[block.transactions.size() - 1 - i].tx, block.bl.transactionHashes[block.transactions.size() - 2 - i]);
   }
@@ -2418,7 +2435,7 @@ void Blockchain::popTransactions(const BlockEntry& block, const Crypto::Hash& mi
   popTransaction(block.bl.baseTransaction, minerTransactionHash);
 }
 
-bool Blockchain::validateInput(const MultisignatureInput& input, const Crypto::Hash& transactionHash, const Crypto::Hash& transactionPrefixHash, const std::vector<Crypto::Signature>& transactionSignatures) {
+bool Blockchain::validateInput(const MultisignatureInput& input, const crypto::Hash& transactionHash, const crypto::Hash& transactionPrefixHash, const std::vector<crypto::Signature>& transactionSignatures) {
   assert(input.signatureCount == transactionSignatures.size());
   MultisignatureOutputsContainer::const_iterator amountOutputs = m_multisignatureOutputs.find(input.amount);
   if (amountOutputs == m_multisignatureOutputs.end()) {
@@ -2481,7 +2498,7 @@ bool Blockchain::validateInput(const MultisignatureInput& input, const Crypto::H
       return false;
     }
 
-    if (Crypto::check_signature(transactionPrefixHash, output.keys[outputKeyIndex], transactionSignatures[inputSignatureIndex])) {
+    if (crypto::check_signature(transactionPrefixHash, output.keys[outputKeyIndex], transactionSignatures[inputSignatureIndex])) {
       ++inputSignatureIndex;
     }
 
@@ -2510,7 +2527,7 @@ bool Blockchain::removeLastBlock() {
   logger(DEBUGGING) << "Removing last block with height " << m_blocks.back().height;
   popTransactions(m_blocks.back(), getObjectHash(m_blocks.back().bl.baseTransaction));
 
-  Crypto::Hash blockHash = getBlockIdByHeight(m_blocks.back().height);
+  crypto::Hash blockHash = getBlockIdByHeight(m_blocks.back().height);
   m_timestampIndex.remove(m_blocks.back().bl.timestamp, blockHash);
   m_generatedTransactionsIndex.remove(m_blocks.back().bl);
 
@@ -2538,12 +2555,12 @@ bool Blockchain::getLowerBound(uint64_t timestamp, uint64_t startOffset, uint32_
   return true;
 }
 
-std::vector<Crypto::Hash> Blockchain::getBlockIds(uint32_t startHeight, uint32_t maxCount) {
+std::vector<crypto::Hash> Blockchain::getBlockIds(uint32_t startHeight, uint32_t maxCount) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return m_blockIndex.getBlockIds(startHeight, maxCount);
 }
 
-bool Blockchain::getBlockContainingTransaction(const Crypto::Hash& txId, Crypto::Hash& blockId, uint32_t& blockHeight) {
+bool Blockchain::getBlockContainingTransaction(const crypto::Hash& txId, crypto::Hash& blockId, uint32_t& blockHeight) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   auto it = m_transactionMap.find(txId);
   if (it == m_transactionMap.end()) {
@@ -2555,7 +2572,7 @@ bool Blockchain::getBlockContainingTransaction(const Crypto::Hash& txId, Crypto:
   }
 }
 
-bool Blockchain::getAlreadyGeneratedCoins(const Crypto::Hash& hash, uint64_t& generatedCoins) {
+bool Blockchain::getAlreadyGeneratedCoins(const crypto::Hash& hash, uint64_t& generatedCoins) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   // try to find block in main chain
@@ -2576,7 +2593,7 @@ bool Blockchain::getAlreadyGeneratedCoins(const Crypto::Hash& hash, uint64_t& ge
   return false;
 }
 
-bool Blockchain::getBlockSize(const Crypto::Hash& hash, size_t& size) {
+bool Blockchain::getBlockSize(const crypto::Hash& hash, size_t& size) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   // try to find block in main chain
@@ -2597,7 +2614,7 @@ bool Blockchain::getBlockSize(const Crypto::Hash& hash, size_t& size) {
   return false;
 }
 
-bool Blockchain::getMultisigOutputReference(const MultisignatureInput& txInMultisig, std::pair<Crypto::Hash, size_t>& outputReference) {
+bool Blockchain::getMultisigOutputReference(const MultisignatureInput& txInMultisig, std::pair<crypto::Hash, size_t>& outputReference) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   MultisignatureOutputsContainer::const_iterator amountIter = m_multisignatureOutputs.find(txInMultisig.amount);
   if (amountIter == m_multisignatureOutputs.end()) {
@@ -2669,17 +2686,17 @@ bool Blockchain::getGeneratedTransactionsNumber(uint32_t height, uint64_t& gener
   return m_generatedTransactionsIndex.find(height, generatedTransactions);
 }
 
-bool Blockchain::getOrphanBlockIdsByHeight(uint32_t height, std::vector<Crypto::Hash>& blockHashes) {
+bool Blockchain::getOrphanBlockIdsByHeight(uint32_t height, std::vector<crypto::Hash>& blockHashes) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return m_orthanBlocksIndex.find(height, blockHashes);
 }
 
-bool Blockchain::getBlockIdsByTimestamp(uint64_t timestampBegin, uint64_t timestampEnd, uint32_t blocksNumberLimit, std::vector<Crypto::Hash>& hashes, uint32_t& blocksNumberWithinTimestamps) {
+bool Blockchain::getBlockIdsByTimestamp(uint64_t timestampBegin, uint64_t timestampEnd, uint32_t blocksNumberLimit, std::vector<crypto::Hash>& hashes, uint32_t& blocksNumberWithinTimestamps) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return m_timestampIndex.find(timestampBegin, timestampEnd, blocksNumberLimit, hashes, blocksNumberWithinTimestamps);
 }
 
-bool Blockchain::getTransactionIdsByPaymentId(const Crypto::Hash& paymentId, std::vector<Crypto::Hash>& transactionHashes) {
+bool Blockchain::getTransactionIdsByPaymentId(const crypto::Hash& paymentId, std::vector<crypto::Hash>& transactionHashes) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   return m_paymentIdIndex.find(paymentId, transactionHashes);
 }
@@ -2727,7 +2744,7 @@ void Blockchain::sendMessage(const BlockchainMessage& message) {
   }
 }
 
-bool Blockchain::isBlockInMainChain(const Crypto::Hash& blockId) {
+bool Blockchain::isBlockInMainChain(const crypto::Hash& blockId) {
   return m_blockIndex.hasBlock(blockId);
 }
 

@@ -32,11 +32,11 @@
 #include "P2pNetworks.h"
 #include "PeerListManager.h"
 
-namespace System {
+namespace platform_system {
 class TcpConnection;
 }
 
-namespace CryptoNote
+namespace cn
 {
   class LevinProtocol;
   class ISerializer;
@@ -71,11 +71,11 @@ namespace CryptoNote
     using Clock = std::chrono::steady_clock;
     using TimePoint = Clock::time_point;
 
-    System::Context<void>* context;
+    platform_system::Context<void>* context;
     PeerIdType peerId;
-    System::TcpConnection connection;
+    platform_system::TcpConnection connection;
 
-    P2pConnectionContext(System::Dispatcher& dispatcher, Logging::ILogger& log, System::TcpConnection&& conn) :
+    P2pConnectionContext(platform_system::Dispatcher& dispatcher, logging::ILogger& log, platform_system::TcpConnection&& conn) :
       context(nullptr),
       peerId(0),
       connection(std::move(conn)),
@@ -101,9 +101,9 @@ namespace CryptoNote
     uint64_t writeDuration(TimePoint now) const;
 
   private:
-    Logging::LoggerRef logger;
+    logging::LoggerRef logger;
     TimePoint writeOperationStartTime;
-    System::Event queueEvent;
+    platform_system::Event queueEvent;
     std::vector<P2pMessage> writeQueue;
     size_t writeQueueSize = 0;
     bool stopped;
@@ -115,14 +115,14 @@ namespace CryptoNote
 
     static void init_options(boost::program_options::options_description& desc);
 
-    NodeServer(System::Dispatcher& dispatcher, CryptoNote::CryptoNoteProtocolHandler& payload_handler, Logging::ILogger& log);
+    NodeServer(platform_system::Dispatcher& dispatcher, cn::CryptoNoteProtocolHandler& payload_handler, logging::ILogger& log);
 
     bool run();
     bool init(const NetNodeConfig& config);
     bool deinit();
     bool sendStopSignal();
     uint32_t get_this_peer_port(){return m_listeningPort;}
-    CryptoNote::CryptoNoteProtocolHandler& get_payload_object();
+    cn::CryptoNoteProtocolHandler& get_payload_object();
 
     void serialize(ISerializer& s);
 
@@ -132,7 +132,7 @@ namespace CryptoNote
     virtual uint64_t get_connections_count() override;
     size_t get_outgoing_connections_count();
 
-    CryptoNote::PeerlistManager& getPeerlistManager() { return m_peerlist; }
+    cn::PeerlistManager& getPeerlistManager() { return m_peerlist; }
 
   private:
 
@@ -155,7 +155,7 @@ namespace CryptoNote
     bool check_trust(const proof_of_trust& tr);
     void initUpnp();
 
-    bool handshake(CryptoNote::LevinProtocol& proto, P2pConnectionContext& context, bool just_take_peerlist = false);
+    bool handshake(cn::LevinProtocol& proto, P2pConnectionContext& context, bool just_take_peerlist = false);
     bool timedSync();
     bool handleTimedSyncResponse(const BinaryArray& in, P2pConnectionContext& context);
     void forEachConnection(std::function<void(P2pConnectionContext&)> action);
@@ -166,7 +166,7 @@ namespace CryptoNote
     //----------------- i_p2p_endpoint -------------------------------------------------------------
     virtual void relay_notify_to_all(int command, const BinaryArray& data_buff, const net_connection_id* excludeConnection) override;
     virtual bool invoke_notify_to_peer(int command, const BinaryArray& req_buff, const CryptoNoteConnectionContext& context) override;
-    virtual void for_each_connection(std::function<void(CryptoNote::CryptoNoteConnectionContext&, PeerIdType)> f) override;
+    virtual void for_each_connection(std::function<void(cn::CryptoNoteConnectionContext&, PeerIdType)> f) override;
     virtual void externalRelayNotifyToAll(int command, const BinaryArray& data_buff) override;
 
     //-----------------------------------------------------------------------------------------------
@@ -234,13 +234,13 @@ namespace CryptoNote
     bool m_hide_my_port;
     std::string m_p2p_state_filename;
 
-    System::Dispatcher& m_dispatcher;
-    System::ContextGroup m_workingContextGroup;
-    System::Event m_stopEvent;
-    System::Timer m_idleTimer;
-    System::Timer m_timeoutTimer;
-    System::TcpListener m_listener;
-    Logging::LoggerRef logger;
+    platform_system::Dispatcher& m_dispatcher;
+    platform_system::ContextGroup m_workingContextGroup;
+    platform_system::Event m_stopEvent;
+    platform_system::Timer m_idleTimer;
+    platform_system::Timer m_timeoutTimer;
+    platform_system::TcpListener m_listener;
+    logging::LoggerRef logger;
     std::atomic<bool> m_stop;
 
     CryptoNoteProtocolHandler& m_payload_handler;
@@ -249,7 +249,7 @@ namespace CryptoNote
     // OnceInInterval m_peer_handshake_idle_maker_interval;
     OnceInInterval m_connections_maker_interval;
     OnceInInterval m_peerlist_store_interval;
-    System::Timer m_timedSyncTimer;
+    platform_system::Timer m_timedSyncTimer;
 
     std::string m_bind_ip;
     std::string m_port;

@@ -75,7 +75,7 @@ namespace crypto
    * 
    * \brief Mnemonic seed word generation and wallet restoration helper functions.
    */
-  namespace ElectrumWords
+  namespace electrum_words
   {
 
     const int seed_length = 24;
@@ -98,7 +98,7 @@ namespace crypto
      * \param  language_name   Language of the seed as found gets written here.
      * \return                 false if not a multiple of 3 words, or if word is not in the words list
      */
-    bool words_to_bytes(std::string words, Crypto::SecretKey& dst,
+    bool words_to_bytes(std::string words, crypto::SecretKey& dst,
       std::string &language_name);
 
     /*!
@@ -119,7 +119,7 @@ namespace crypto
      * \param  language_name Seed language name
      * \return               true if successful false if not. Unsuccessful if wrong key size.
      */
-    bool bytes_to_words(const Crypto::SecretKey& src, std::string& words,
+    bool bytes_to_words(const crypto::SecretKey& src, std::string& words,
       const std::string &language_name);
 
     /*!
@@ -146,10 +146,10 @@ namespace crypto
     template <typename T>
     void log_incorrect_words(std::vector<std::string> words, T &stream)
     {
-      Language::Base *language = Language::Singleton<Language::English>::instance();
+      seed_language::Base *language = seed_language::Singleton<seed_language::English>::instance();
       const std::vector<std::string> &dictionary = language->get_word_list();
 
-      Common::Console::setTextColor(Common::Console::Color::BrightRed);
+      common::console::setTextColor(common::console::Color::BrightRed);
 
       for (auto i : words)
       {
@@ -159,7 +159,7 @@ namespace crypto
         }
       }
 
-      Common::Console::setTextColor(Common::Console::Color::Default);
+      common::console::setTextColor(common::console::Color::Default);
     }
 
     /*!
@@ -171,7 +171,7 @@ namespace crypto
      */
     template <typename T>
     bool is_valid_mnemonic(std::string mnemonic_phrase,
-                           Crypto::SecretKey &private_spend_key,
+                           crypto::SecretKey &private_spend_key,
                            T &stream)
 
     {
@@ -206,13 +206,13 @@ namespace crypto
 
       if (words.size() != mnemonic_phrase_length)
       {
-        Common::Console::setTextColor(Common::Console::Color::BrightRed);
+        common::console::setTextColor(common::console::Color::BrightRed);
         stream << "Invalid mnemonic phrase! Seed phrase is not 25 words! "
                << "Please try again." << std::endl;
 
         log_incorrect_words(words, stream);
 
-        Common::Console::setTextColor(Common::Console::Color::Default);
+        common::console::setTextColor(common::console::Color::Default);
 
         return false;
       }
@@ -232,11 +232,11 @@ namespace crypto
          the seed phrase is in, then we can't log words which aren't in the x
          dictionary, we will have to take an argument to know what language they
          are in, but this is less user friendly. */
-      Common::Console::setTextColor(Common::Console::Color::BrightRed);
+      common::console::setTextColor(common::console::Color::BrightRed);
 
       stream << "Invalid mnemonic phrase!" << std::endl;
       
-      Common::Console::setTextColor(Common::Console::Color::Default);
+      common::console::setTextColor(common::console::Color::Default);
 
       log_incorrect_words(words, stream);
 

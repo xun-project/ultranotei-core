@@ -18,10 +18,10 @@
 #include "Serialization/BinaryOutputStreamSerializer.h"
 #include "Serialization/BinaryInputStreamSerializer.h"
 
-using namespace Crypto;
-using namespace Common;
+using namespace crypto;
+using namespace common;
 
-namespace CryptoNote {
+namespace cn {
 
 bool parseTransactionExtra(const std::vector<uint8_t> &transactionExtra, std::vector<TransactionExtraField> &transactionExtraFields) {
   transactionExtraFields.clear();
@@ -220,7 +220,7 @@ bool append_message_to_extra(std::vector<uint8_t>& tx_extra, const tx_extra_mess
   return true;
 }
 
-std::vector<std::string> get_messages_from_extra(const std::vector<uint8_t> &extra, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key) {
+std::vector<std::string> get_messages_from_extra(const std::vector<uint8_t> &extra, const crypto::PublicKey &txkey, const crypto::SecretKey *recepient_secret_key) {
   std::vector<TransactionExtraField> tx_extra_fields;
   std::vector<std::string> result;
   if (!parseTransactionExtra(extra, tx_extra_fields)) {
@@ -241,8 +241,8 @@ std::vector<std::string> get_messages_from_extra(const std::vector<uint8_t> &ext
 }
 
 void appendTTLToExtra(std::vector<uint8_t>& tx_extra, uint64_t ttl) {
-  std::string ttlData = Tools::get_varint_data(ttl);
-  std::string extraFieldSize = Tools::get_varint_data(ttlData.size());
+  std::string ttlData = tools::get_varint_data(ttl);
+  std::string extraFieldSize = tools::get_varint_data(ttlData.size());
 
   tx_extra.reserve(tx_extra.size() + 1 + extraFieldSize.size() + ttlData.size());
   tx_extra.push_back(TX_EXTRA_TTL);
@@ -267,7 +267,7 @@ bool getPaymentIdFromTransactionExtraNonce(const std::vector<uint8_t>& extra_non
 }
 
 bool parsePaymentId(const std::string& paymentIdString, Hash& paymentId) {
-  return Common::podFromHex(paymentIdString, paymentId);
+  return common::podFromHex(paymentIdString, paymentId);
 }
 
 bool createTxExtraWithPaymentId(const std::string& paymentIdString, std::vector<uint8_t>& extra) {
@@ -278,9 +278,9 @@ bool createTxExtraWithPaymentId(const std::string& paymentIdString, std::vector<
   }
 
   std::vector<uint8_t> extraNonce;
-  CryptoNote::setPaymentIdToTransactionExtraNonce(extraNonce, paymentIdBin);
+  cn::setPaymentIdToTransactionExtraNonce(extraNonce, paymentIdBin);
 
-  if (!CryptoNote::addExtraNonceToTransactionExtra(extra, extraNonce)) {
+  if (!cn::addExtraNonceToTransactionExtra(extra, extraNonce)) {
     return false;
   }
 
@@ -336,7 +336,7 @@ bool tx_extra_message::encrypt(size_t index, const std::string &message, const A
   return true;
 }
 
-bool tx_extra_message::decrypt(size_t index, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key, std::string &message) const {
+bool tx_extra_message::decrypt(size_t index, const crypto::PublicKey &txkey, const crypto::SecretKey *recepient_secret_key, std::string &message) const {
   size_t mlen = data.size();
   if (mlen < TX_EXTRA_MESSAGE_CHECKSUM_SIZE) {
     return false;

@@ -7,7 +7,7 @@
 #include "IP2pNodeInternal.h"
 
 
-namespace CryptoNote {
+namespace cn {
 #ifdef _WIN32
 	char suppressMSVCWarningLNK4221;
 #endif

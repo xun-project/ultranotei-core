@@ -14,7 +14,7 @@
 
 #include "Serialization/SerializationOverloads.h"
 
-namespace CryptoNote {
+namespace cn {
 //-----------------------------------------------
 #define CORE_RPC_STATUS_OK "OK"
 #define CORE_RPC_STATUS_BUSY "BUSY"
@@ -49,7 +49,7 @@ struct COMMAND_RPC_GET_HEIGHT {
 struct COMMAND_RPC_GET_BLOCKS_FAST {
 
   struct request {
-    std::vector<Crypto::Hash> block_ids; //*first 10 blocks id goes sequential, next goes in pow(2,n) offset, like 2, 4, 8, 16, 32, 64 and so on, and the last one is always genesis block */
+    std::vector<crypto::Hash> block_ids; //*first 10 blocks id goes sequential, next goes in pow(2,n) offset, like 2, 4, 8, 16, 32, 64 and so on, and the last one is always genesis block */
 
     void serialize(ISerializer &s) {
       serializeAsBinary(block_ids, "block_ids", s);
@@ -95,8 +95,8 @@ struct COMMAND_RPC_GET_TRANSACTIONS {
 //-----------------------------------------------
 struct COMMAND_RPC_GET_POOL_CHANGES {
   struct request {
-    Crypto::Hash tailBlockId;
-    std::vector<Crypto::Hash> knownTxsIds;
+    crypto::Hash tailBlockId;
+    std::vector<crypto::Hash> knownTxsIds;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(tailBlockId)
@@ -107,7 +107,7 @@ struct COMMAND_RPC_GET_POOL_CHANGES {
   struct response {
     bool isTailBlockActual;
     std::vector<BinaryArray> addedTxs;          // Added transactions blobs
-    std::vector<Crypto::Hash> deletedTxsIds; // IDs of not found transactions
+    std::vector<crypto::Hash> deletedTxsIds; // IDs of not found transactions
     std::string status;
 
     void serialize(ISerializer &s) {
@@ -121,8 +121,8 @@ struct COMMAND_RPC_GET_POOL_CHANGES {
 
 struct COMMAND_RPC_GET_POOL_CHANGES_LITE {
   struct request {
-    Crypto::Hash tailBlockId;
-    std::vector<Crypto::Hash> knownTxsIds;
+    crypto::Hash tailBlockId;
+    std::vector<crypto::Hash> knownTxsIds;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(tailBlockId)
@@ -133,7 +133,7 @@ struct COMMAND_RPC_GET_POOL_CHANGES_LITE {
   struct response {
     bool isTailBlockActual;
     std::vector<TransactionPrefixInfo> addedTxs;          // Added transactions blobs
-    std::vector<Crypto::Hash> deletedTxsIds; // IDs of not found transactions
+    std::vector<crypto::Hash> deletedTxsIds; // IDs of not found transactions
     std::string status;
 
     void serialize(ISerializer &s) {
@@ -149,7 +149,7 @@ struct COMMAND_RPC_GET_POOL_CHANGES_LITE {
 struct COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES {
 
   struct request {
-    Crypto::Hash txid;
+    crypto::Hash txid;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(txid)
@@ -180,9 +180,16 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request {
 #pragma pack(push, 1)
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry {
   uint64_t global_amount_index;
-  Crypto::PublicKey out_key;
+  crypto::PublicKey out_key;
 };
 #pragma pack(pop)
+
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry_json : public COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry {
+  void serialize(ISerializer & s) {
+    s(global_amount_index, "global_index");
+    s(out_key, "public_key");
+  }
+};
 
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount {
   uint64_t amount;
@@ -194,8 +201,28 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount {
   }
 };
 
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json {
+  uint64_t amount;
+  std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry_json> outs;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(amount)
+    KV_MEMBER(outs)
+  }
+};
+
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response {
   std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount> outs;
+  std::string status;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(outs);
+    KV_MEMBER(status)
+  }
+};
+
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response_json {
+  std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json> outs;
   std::string status;
 
   void serialize(ISerializer &s) {
@@ -210,6 +237,14 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS {
 
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry out_entry;
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount outs_for_amount;
+};
+
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON {
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request request;
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response_json response;
+
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry_json out_entry;
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json outs_for_amount;
 };
 
 //-----------------------------------------------
@@ -748,7 +783,7 @@ struct F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS {
 
 struct COMMAND_RPC_QUERY_BLOCKS {
   struct request {
-    std::vector<Crypto::Hash> block_ids; //*first 10 blocks id goes sequential, next goes in pow(2,n) offset, like 2, 4, 8, 16, 32, 64 and so on, and the last one is always genesis block */
+    std::vector<crypto::Hash> block_ids; //*first 10 blocks id goes sequential, next goes in pow(2,n) offset, like 2, 4, 8, 16, 32, 64 and so on, and the last one is always genesis block */
     uint64_t timestamp;
 
     void serialize(ISerializer &s) {
@@ -776,7 +811,7 @@ struct COMMAND_RPC_QUERY_BLOCKS {
 
 struct COMMAND_RPC_QUERY_BLOCKS_LITE {
   struct request {
-    std::vector<Crypto::Hash> blockIds;
+    std::vector<crypto::Hash> blockIds;
     uint64_t timestamp;
 
     void serialize(ISerializer &s) {
@@ -804,12 +839,12 @@ struct COMMAND_RPC_QUERY_BLOCKS_LITE {
 
 struct reserve_proof_entry
 {
-	Crypto::Hash txid;
+	crypto::Hash txid;
 	uint64_t index_in_tx;
-	Crypto::PublicKey shared_secret;
-	Crypto::KeyImage key_image;
-	Crypto::Signature shared_secret_sig;
-	Crypto::Signature key_image_sig;
+	crypto::PublicKey shared_secret;
+	crypto::KeyImage key_image;
+	crypto::Signature shared_secret_sig;
+	crypto::Signature key_image_sig;
 
 	void serialize(ISerializer& s)
 	{
@@ -824,12 +859,74 @@ struct reserve_proof_entry
 
 struct reserve_proof {
 	std::vector<reserve_proof_entry> proofs;
-	Crypto::Signature signature;
+	crypto::Signature signature;
 
 	void serialize(ISerializer &s) {
 		KV_MEMBER(proofs)
 		KV_MEMBER(signature)
 	}
+};
+
+struct tx_with_output_global_indexes {
+  TransactionPrefix transaction;
+  crypto::Hash hash;
+  crypto::Hash block_hash;
+  uint32_t height;
+  uint64_t fee;
+  uint64_t timestamp;
+  std::vector<uint32_t> output_indexes;
+
+  void serialize(ISerializer &s)
+  {
+    KV_MEMBER(transaction)
+    KV_MEMBER(hash)
+    KV_MEMBER(block_hash)
+    KV_MEMBER(height)
+    KV_MEMBER(fee)
+    KV_MEMBER(timestamp)
+    KV_MEMBER(output_indexes)
+  }
+};
+
+struct COMMAND_RPC_GET_TRANSACTIONS_WITH_OUTPUT_GLOBAL_INDEXES {
+  struct request {
+    std::vector<uint32_t> heights;
+    bool include_miner_txs = true;
+    bool range = false;
+
+    void serialize(ISerializer &s) {
+      KV_MEMBER(heights)
+      KV_MEMBER(include_miner_txs)
+      KV_MEMBER(range)
+    };
+  };
+
+  struct response {
+    std::vector<tx_with_output_global_indexes> transactions;
+    std::list<std::string> missed_txs;
+    std::string status;
+
+    void serialize(ISerializer &s)
+    {
+      KV_MEMBER(transactions)
+      KV_MEMBER(missed_txs)
+      KV_MEMBER(status)
+    }
+  };
+};
+
+struct COMMAND_RPC_GET_RAW_TRANSACTIONS_POOL {
+  typedef EMPTY_STRUCT request;
+
+  struct response {
+    std::vector<tx_with_output_global_indexes> transactions;
+    std::string status;
+
+    void serialize(ISerializer &s) {
+      KV_MEMBER(transactions)
+      KV_MEMBER(status)
+    }
+  };
 };
 
 struct COMMAND_RPC_GET_BLOCK_TIMESTAMP_BY_HEIGHT

@@ -8,7 +8,7 @@
 #include "StringTools.h"
 #include <fstream>
 
-namespace Common {
+namespace common {
 
 namespace {
 
@@ -282,6 +282,12 @@ std::string timeIntervalToString(uint64_t intervalInSeconds) {
     ".h" + std::to_string(hours) + 
     ".m" + std::to_string(minutes) +
     ".s" + std::to_string(seconds);
+}
+
+std::string makeCenteredString(size_t width, const std::string& text) {
+  if (text.size() >= width) {
+    return text;
+  }
 }
 
 

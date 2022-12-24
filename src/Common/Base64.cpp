@@ -7,8 +7,8 @@
 
 #include "Base64.h"
 
-namespace Tools {
-namespace Base64 {
+namespace tools {
+namespace base_64 {
 
 namespace {
   static const std::string base64chars =

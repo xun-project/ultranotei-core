@@ -13,11 +13,11 @@
 
 class ColouredMsg {
 public:
-  ColouredMsg(std::string msg, Common::Console::Color colour)
+  ColouredMsg(std::string msg, common::console::Color colour)
     : msg(msg), colour(colour) {}
 
   ColouredMsg(std::string msg, int padding,
-    Common::Console::Color colour)
+    common::console::Color colour)
     : msg(msg), colour(colour), padding(padding), pad(true) {}
 
 
@@ -33,7 +33,7 @@ public:
    */
 
   friend std::ostream& operator<<(std::ostream& os, const ColouredMsg &m) {
-    Common::Console::setTextColor(m.colour);
+    common::console::setTextColor(m.colour);
 
     if (m.pad) {
       os << std::left << std::setw(m.padding) << m.msg;
@@ -41,13 +41,13 @@ public:
       os << m.msg;
     }
 
-    Common::Console::setTextColor(Common::Console::Color::Default);
+    common::console::setTextColor(common::console::Color::Default);
     return os;
   }
 
 protected:
   std::string msg;
-  const Common::Console::Color colour;
+  const common::console::Color colour;
   const int padding = 0;
   const bool pad = false;
 };
@@ -57,40 +57,40 @@ protected:
 class SuccessMsg : public ColouredMsg {
 public:
   explicit SuccessMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::Green) {}
+    : ColouredMsg(msg, common::console::Color::Green) {}
 
   explicit SuccessMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::Green) {}
+    : ColouredMsg(msg, padding, common::console::Color::Green) {}
 };
 
 class InformationMsg : public ColouredMsg {
 public:
   explicit InformationMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightYellow) {}
+    : ColouredMsg(msg, common::console::Color::BrightYellow) {}
 
   explicit InformationMsg(std::string msg, int padding)
     : ColouredMsg(msg, padding,
-      Common::Console::Color::BrightYellow) {}
+      common::console::Color::BrightYellow) {}
 };
 
 class SuggestionMsg : public ColouredMsg {
 public:
   explicit SuggestionMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightBlue) {}
+    : ColouredMsg(msg, common::console::Color::BrightBlue) {}
 
   explicit SuggestionMsg(std::string msg, int padding)
     : ColouredMsg(msg, padding,
-      Common::Console::Color::BrightBlue) {}
+      common::console::Color::BrightBlue) {}
 };
 
 class WarningMsg : public ColouredMsg {
 public:
   explicit WarningMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightRed) {}
+    : ColouredMsg(msg, common::console::Color::BrightRed) {}
 
   explicit WarningMsg(std::string msg, int padding)
     : ColouredMsg(msg, padding,
-      Common::Console::Color::BrightRed) {}
+      common::console::Color::BrightRed) {}
 };
 
 ///// ColouredMsg's
@@ -98,71 +98,71 @@ public:
 class RedMsg : public ColouredMsg {
 public:
   explicit RedMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::Red) {}
+    : ColouredMsg(msg, common::console::Color::Red) {}
 
   explicit RedMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::Red) {}
+    : ColouredMsg(msg, padding, common::console::Color::Red) {}
 };
 
 class BrightRedMsg : public ColouredMsg {
 public:
   explicit BrightRedMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightRed) {}
+    : ColouredMsg(msg, common::console::Color::BrightRed) {}
 
   explicit BrightRedMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::BrightRed) {}
+    : ColouredMsg(msg, padding, common::console::Color::BrightRed) {}
 };
 
 class MagentaMsg : public ColouredMsg {
 public:
   explicit MagentaMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::Magenta) {}
+    : ColouredMsg(msg, common::console::Color::Magenta) {}
 
   explicit MagentaMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::Magenta) {}
+    : ColouredMsg(msg, padding, common::console::Color::Magenta) {}
 };
 
 class BrightMagentaMsg : public ColouredMsg {
 public:
   explicit BrightMagentaMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightMagenta) {}
+    : ColouredMsg(msg, common::console::Color::BrightMagenta) {}
 
   explicit BrightMagentaMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::BrightMagenta) {}
+    : ColouredMsg(msg, padding, common::console::Color::BrightMagenta) {}
 };
 
 class GreenMsg : public ColouredMsg {
 public:
   explicit GreenMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::Green) {}
+    : ColouredMsg(msg, common::console::Color::Green) {}
 
   explicit GreenMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::Green) {}
+    : ColouredMsg(msg, padding, common::console::Color::Green) {}
 };
 
 class BrightGreenMsg : public ColouredMsg {
 public:
   explicit BrightGreenMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightGreen) {}
+    : ColouredMsg(msg, common::console::Color::BrightGreen) {}
 
   explicit BrightGreenMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::BrightGreen) {}
+    : ColouredMsg(msg, padding, common::console::Color::BrightGreen) {}
 };
 
 class YellowMsg : public ColouredMsg {
 public:
   explicit YellowMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::Yellow) {}
+    : ColouredMsg(msg, common::console::Color::Yellow) {}
 
   explicit YellowMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::Yellow) {}
+    : ColouredMsg(msg, padding, common::console::Color::Yellow) {}
 };
 
 class BrightYellowMsg : public ColouredMsg {
 public:
   explicit BrightYellowMsg(std::string msg)
-    : ColouredMsg(msg, Common::Console::Color::BrightYellow) {}
+    : ColouredMsg(msg, common::console::Color::BrightYellow) {}
 
   explicit BrightYellowMsg(std::string msg, int padding)
-    : ColouredMsg(msg, padding, Common::Console::Color::BrightYellow) {}
+    : ColouredMsg(msg, padding, common::console::Color::BrightYellow) {}
 };
