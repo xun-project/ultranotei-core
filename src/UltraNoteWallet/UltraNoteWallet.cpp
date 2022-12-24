@@ -581,7 +581,7 @@ ultranote_wallet::ultranote_wallet(platform_system::Dispatcher& dispatcher, cons
   m_daemon_port(0),
   m_currency(currency),
   logManager(log),
-  logger(log, "simplewallet"),
+  logger(log, "ultranotewallet"),
   m_refresh_progress_reporter(*this),
   m_initResultPromise(nullptr),
   m_walletSynchronized(false) {
@@ -618,7 +618,7 @@ std::string ultranote_wallet::wallet_menu(bool do_ext)
 
   if (do_ext)
   {
-    menu_item += "\t\tConceal Wallet Extended Menu\n\n";
+    menu_item += "\t\tUltraNote Wallet Extended Menu\n\n";
     menu_item += "[ ] = Optional arg\n";
     menu_item += "\"balance_proof <amount>\"                           - Generate a signature proving that you own at least <amount> | [<message>]\n";
     menu_item += "\"create_integrated <payment_id>\"                   - Create an integrated address with a payment ID.\n";
@@ -628,7 +628,7 @@ std::string ultranote_wallet::wallet_menu(bool do_ext)
     menu_item += "\"optimize_all\"                                     - Optimize your wallet several times so you can send large transactions.\n";
     menu_item += "\"outputs\"                                          - Show the number of unlocked outputs available for a transaction.\n";
     menu_item += "\"payments <payment_id>\"                            - Show payments from payment ID. | [<payment_id_2> ... <payment_id_N>]\n";
-    menu_item += "\"save_txs_to_file\"                                 - Saves all known transactions to <wallet_name>_conceal_transactions.txt | [false] or [true] to include deposits (default: false)\n";
+    menu_item += "\"save_txs_to_file\"                                 - Saves all known transactions to <wallet_name>_ultranote_transactions.txt | [false] or [true] to include deposits (default: false)\n";
     menu_item += "\"set_log <level>\"                                  - Change current log level, default = 3, <level> is a number 0-4.\n";
     menu_item += "\"sign_message <message>\"                           - Sign a message with your wallet keys.\n";
     menu_item += "\"show_dust\"                                        - Show the number of unmixable dust outputs.\n";
@@ -636,9 +636,10 @@ std::string ultranote_wallet::wallet_menu(bool do_ext)
   }
   else
   {
-    menu_item += "\t\tConceal Wallet Menu\n\n";
+    menu_item += "\t\tUltraNote Wallet Menu\n\n";
     menu_item += "[ ] = Optional arg\n\n";
-    menu_item += "\"help\" | \"ext_help\"           - Shows this help dialog or extended help dialog.\n\n";
+    menu_item += "\"help\"                        - Shows this help dialog.\n";
+    menu_item += "\"ext_help\"                    - Shows this extended help dialog.\n\n";
     menu_item += "\"address\"                     - Shows wallet address.\n";
     menu_item += "\"balance\"                     - Shows wallet main and deposit balance.\n";
     menu_item += "\"bc_height\"                   - Shows current blockchain height.\n";
@@ -651,7 +652,7 @@ std::string ultranote_wallet::wallet_menu(bool do_ext)
     menu_item += "\"reset\"                       - Reset cached blockchain data and starts synchronizing from block 0.\n";
     menu_item += "\"transfer <address> <amount>\" - Transfers <amount> to <address>. | [-p<payment_id>] [<amount_2>]...[<amount_N>] [<address_2>]...[<address_n>]\n";
     menu_item += "\"save\"                        - Save wallet synchronized blockchain data.\n";
-    menu_item += "\"save_keys\"                   - Saves wallet private keys to \"<wallet_name>_conceal_backup.txt\".\n";
+    menu_item += "\"save_keys\"                   - Saves wallet private keys to \"<wallet_name>_ultranote_backup.txt\".\n";
     menu_item += "\"withdraw <id>\"               - Withdraw a deposit from the blockchain.\n";
   }
 
@@ -1118,7 +1119,7 @@ bool ultranote_wallet::new_wallet(crypto::SecretKey &secret_key, crypto::SecretK
                   "**********************************************************************\n" <<
                   "Your wallet has been imported.\n" <<
                   "Use \"help\" command to see the list of available commands.\n" <<
-                  "Always use \"exit\" command when closing simplewallet to save\n" <<
+                  "Always use \"exit\" command when closing ultranotewallet to save\n" <<
                   "current session's state. Otherwise, you will possibly need to synchronize \n" <<
                   "your wallet again. Your wallet key is NOT under risk anyway.\n" <<
                   "**********************************************************************";

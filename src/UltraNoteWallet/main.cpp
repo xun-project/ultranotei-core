@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   desc_all.add(desc_general).add(desc_params);
 
   logging::LoggerManager logManager;
-  logging::LoggerRef logger(logManager, "simplewallet");
+  logging::LoggerRef logger(logManager, "ultranotewallet");
   platform_system::Dispatcher dispatcher;
 
   po::variables_map vm;
