@@ -1,5 +1,5 @@
 // Copyright (c) 2018-2022 Conceal Network & Conceal Devs
-//
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,7 +23,7 @@ namespace cn
   {
   public:
     /**
-     * @return - returns deposit term, should be multiple of 21900
+     * @return - returns deposit term, should be multiple of 22000
     **/
     uint32_t deposit_term(const cn::Deposit &deposit) const;
 
