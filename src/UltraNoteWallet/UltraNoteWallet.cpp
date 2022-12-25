@@ -2085,12 +2085,12 @@ bool ultranote_wallet::deposit(const std::vector<std::string> &args)
      * Change arg to uint64_t using boost then
      * multiply by min_term so user can type in months
     **/
-    uint64_t deposit_term = boost::lexical_cast<uint64_t>(args[0]) * 21900;
+    uint64_t deposit_term = boost::lexical_cast<uint64_t>(args[0]) * 22000;
 
     /* Now validate the deposit term and the amount */
     if (deposit_term < cn::parameters::DEPOSIT_MIN_TERM)
     {
-      logger(ERROR, BRIGHT_RED) << "Deposit term is too small, min=21900, given=" << deposit_term;
+      logger(ERROR, BRIGHT_RED) << "Deposit term is too small, min=22000, given=" << deposit_term;
       return true;
     }
 
@@ -2266,7 +2266,7 @@ bool ultranote_wallet::confirm_deposit(uint64_t term, uint64_t amount)
 
   logger(INFO) << "Confirm deposit details:\n"
     << "\tAmount: " << m_currency.formatAmount(amount) << "\n"
-    << "\tMonths: " << term / 21900 << "\n"
+    << "\tMonths: " << term / 22000 << "\n"
     << "\tInterest: " << m_currency.formatAmount(interest) << "\n";
 
   logger(INFO) << "Is this correct? (Y/N): \n";
