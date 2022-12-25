@@ -613,7 +613,7 @@ ultranote_wallet::ultranote_wallet(platform_system::Dispatcher& dispatcher, cons
   m_consoleHandler.setHandler("ext_help", boost::bind(&ultranote_wallet::extended_help, this, boost::arg<1>()), "Show this help");
   m_consoleHandler.setHandler("exit", boost::bind(&ultranote_wallet::exit, this, _1), "Close wallet");  
   m_consoleHandler.setHandler("balance_proof", boost::bind(&ultranote_wallet::get_reserve_proof, this, _1), "all|<amount> [<message>] - Generate a signature proving that you own at least <amount>, optionally with a challenge string <message>. ");
-  m_consoleHandler.setHandler("save_keys", boost::bind(&ultranote_wallet::save_keys_to_file, this, boost::arg<1>()), "Saves wallet private keys to \"<wallet_name>_conceal_backup.txt\"");
+  m_consoleHandler.setHandler("save_keys", boost::bind(&ultranote_wallet::save_keys_to_file, this, boost::arg<1>()), "Saves wallet private keys to \"<wallet_name>_ultranote_backup.txt\"");
   m_consoleHandler.setHandler("list_deposits", boost::bind(&ultranote_wallet::list_deposits, this, boost::arg<1>()), "Show all known deposits from this wallet");
   m_consoleHandler.setHandler("deposit", boost::bind(&ultranote_wallet::deposit, this, boost::arg<1>()), "deposit <months> <amount> - Create a deposit");
   m_consoleHandler.setHandler("withdraw", boost::bind(&ultranote_wallet::withdraw, this, boost::arg<1>()), "withdraw <id> - Withdraw a deposit");
@@ -2017,12 +2017,12 @@ bool ultranote_wallet::save_keys_to_file(const std::vector<std::string>& args)
 
   /* remove ".wallet" from the end of the string */
   std::string formatted_wal_str = m_wallet_file.erase(m_wallet_file.size() - 7);
-  std::ofstream backup_file(formatted_wal_str + "_conceal_backup.txt");
+  std::ofstream backup_file(formatted_wal_str + "_ultranote_backup.txt");
 
   AccountKeys keys;
   m_wallet->getAccountKeys(keys);
 
-  std::string priv_key = "\t\tConceal Keys Backup\n\n";
+  std::string priv_key = "\t\tUltraNote Keys Backup\n\n";
   priv_key += "Wallet file name: " + m_wallet_file + "\n";
   priv_key += "Private spend key: " + common::podToHex(keys.spendSecretKey) + "\n";
   priv_key += "Private view key: " +  common::podToHex(keys.viewSecretKey) + "\n";
@@ -2039,8 +2039,8 @@ bool ultranote_wallet::save_keys_to_file(const std::vector<std::string>& args)
 
   backup_file << priv_key;
 
-  logger(INFO, BRIGHT_GREEN) << "Wallet keys have been saved to the current folder where \"concealwallet\" is located as \""
-    << formatted_wal_str << "_conceal_backup.txt\".";
+  logger(INFO, BRIGHT_GREEN) << "Wallet keys have been saved to the current folder where \"ultranotewallet\" is located as \""
+    << formatted_wal_str << "_ultranote_backup.txt\".";
 
   return true;
 }
