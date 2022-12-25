@@ -387,15 +387,6 @@ std::string tryToOpenWalletOrLoadKeysOrThrow(LoggerRef& logger, std::unique_ptr<
   }
 }
 
-std::string makeCenteredString(size_t width, const std::string& text) {
-  if (text.size() >= width) {
-    return text;
-  }
-
-  size_t offset = (width - text.size() + 1) / 2;
-  return std::string(offset, ' ') + text + std::string(width - text.size() - offset, ' ');
-}
-
 const size_t TIMESTAMP_MAX_WIDTH = 19;
 const size_t HASH_MAX_WIDTH = 64;
 const size_t TOTAL_AMOUNT_MAX_WIDTH = 20;
@@ -404,15 +395,26 @@ const size_t BLOCK_MAX_WIDTH = 7;
 const size_t UNLOCK_TIME_MAX_WIDTH = 11;
 
 void printListTransfersHeader(LoggerRef& logger) {
-  std::string header = makeCenteredString(TIMESTAMP_MAX_WIDTH, "timestamp (UTC)") + "  ";
-  header += makeCenteredString(HASH_MAX_WIDTH, "hash") + "  ";
-  header += makeCenteredString(TOTAL_AMOUNT_MAX_WIDTH, "total amount") + "  ";
-  header += makeCenteredString(FEE_MAX_WIDTH, "fee") + "  ";
-  header += makeCenteredString(BLOCK_MAX_WIDTH, "block") + "  ";
-  header += makeCenteredString(UNLOCK_TIME_MAX_WIDTH, "unlock time");
+  std::string header = common::makeCenteredString(TIMESTAMP_MAX_WIDTH, "timestamp (UTC)") + "  ";
+  header += common::makeCenteredString(HASH_MAX_WIDTH, "hash") + "  ";
+  header += common::makeCenteredString(TOTAL_AMOUNT_MAX_WIDTH, "total amount") + "  ";
+  header += common::makeCenteredString(FEE_MAX_WIDTH, "fee") + "  ";
+  header += common::makeCenteredString(BLOCK_MAX_WIDTH, "block") + "  ";
+  header += common::makeCenteredString(UNLOCK_TIME_MAX_WIDTH, "unlock time");
 
   logger(INFO, BRIGHT_MAGENTA) << header;
   logger(INFO, BRIGHT_MAGENTA) << std::string(header.size(), '-');
+}
+
+void printListDepositsHeader(LoggerRef& logger) {
+  std::string header = common::makeCenteredString(8, "ID") + " | ";
+  header += common::makeCenteredString(20, "Amount") + " | ";
+  header += common::makeCenteredString(20, "Interest") + " | ";
+  header += common::makeCenteredString(16, "Unlock Height") + " | ";
+  header += common::makeCenteredString(10, "State");
+
+  logger(INFO) << "\n" << header;
+  logger(INFO) << std::string(header.size(), '=');
 }
 
 void printListTransfersItem(LoggerRef& logger, const WalletLegacyTransaction& txInfo, IWalletLegacy& wallet, const Currency& currency) {
@@ -608,8 +610,14 @@ ultranote_wallet::ultranote_wallet(platform_system::Dispatcher& dispatcher, cons
   m_consoleHandler.setHandler("save", boost::bind(&ultranote_wallet::save, this, _1), "Save wallet synchronized data");
   m_consoleHandler.setHandler("reset", boost::bind(&ultranote_wallet::reset, this, _1), "Discard cache data and start synchronizing from the start");
   m_consoleHandler.setHandler("help", boost::bind(&ultranote_wallet::help, this, _1), "Show this help");
+  m_consoleHandler.setHandler("ext_help", boost::bind(&ultranote_wallet::extended_help, this, boost::arg<1>()), "Show this help");
   m_consoleHandler.setHandler("exit", boost::bind(&ultranote_wallet::exit, this, _1), "Close wallet");  
   m_consoleHandler.setHandler("balance_proof", boost::bind(&ultranote_wallet::get_reserve_proof, this, _1), "all|<amount> [<message>] - Generate a signature proving that you own at least <amount>, optionally with a challenge string <message>. ");
+  m_consoleHandler.setHandler("save_keys", boost::bind(&ultranote_wallet::save_keys_to_file, this, boost::arg<1>()), "Saves wallet private keys to \"<wallet_name>_ultranote_backup.txt\"");
+  m_consoleHandler.setHandler("list_deposits", boost::bind(&ultranote_wallet::list_deposits, this, boost::arg<1>()), "Show all known deposits from this wallet");
+  m_consoleHandler.setHandler("deposit", boost::bind(&ultranote_wallet::deposit, this, boost::arg<1>()), "deposit <months> <amount> - Create a deposit");
+  m_consoleHandler.setHandler("withdraw", boost::bind(&ultranote_wallet::withdraw, this, boost::arg<1>()), "withdraw <id> - Withdraw a deposit");
+  m_consoleHandler.setHandler("deposit_info", boost::bind(&ultranote_wallet::deposit_info, this, boost::arg<1>()), "deposit_info <id> - Get infomation for deposit <id>");
 }
 
 std::string ultranote_wallet::wallet_menu(bool do_ext)
@@ -1997,4 +2005,288 @@ bool ultranote_wallet::process_command(const std::vector<std::string> &args) {
 
 void ultranote_wallet::printConnectionError() const {
   fail_msg_writer() << "wallet failed to connect to daemon (" << m_daemon_address << ").";
+}
+
+bool ultranote_wallet::save_keys_to_file(const std::vector<std::string>& args)
+{
+  if (!args.empty())
+  {
+    logger(ERROR) <<  "Usage: \"export_keys\"";
+    return true;
+  }
+
+  /* remove ".wallet" from the end of the string */
+  std::string formatted_wal_str = m_wallet_file.erase(m_wallet_file.size() - 7);
+  std::ofstream backup_file(formatted_wal_str + "_ultranote_backup.txt");
+
+  AccountKeys keys;
+  m_wallet->getAccountKeys(keys);
+
+  std::string priv_key = "\t\tUltraNote Keys Backup\n\n";
+  priv_key += "Wallet file name: " + m_wallet_file + "\n";
+  priv_key += "Private spend key: " + common::podToHex(keys.spendSecretKey) + "\n";
+  priv_key += "Private view key: " +  common::podToHex(keys.viewSecretKey) + "\n";
+
+  crypto::PublicKey unused_dummy_variable;
+  crypto::SecretKey deterministic_private_view_key;
+
+  AccountBase::generateViewFromSpend(keys.spendSecretKey, deterministic_private_view_key, unused_dummy_variable);
+  bool deterministic_private_keys = deterministic_private_view_key == keys.viewSecretKey;
+
+  /* dont show a mnemonic seed if it is an old non-deterministic wallet */
+  if (deterministic_private_keys)
+    priv_key += "Mnemonic seed: " + generate_mnemonic(keys.spendSecretKey) + "\n";
+
+  backup_file << priv_key;
+
+  logger(INFO, BRIGHT_GREEN) << "Wallet keys have been saved to the current folder where \"ultranotewallet\" is located as \""
+    << formatted_wal_str << "_ultranote_backup.txt\".";
+
+  return true;
+}
+
+bool ultranote_wallet::list_deposits(const std::vector<std::string> &args)
+{
+  bool haveDeposits = m_wallet->getDepositCount() > 0;
+
+  if (!haveDeposits)
+  {
+    success_msg_writer() << "No deposits";
+    return true;
+  }
+
+  printListDepositsHeader(logger);
+
+  /* go through deposits ids for the amount of deposits in wallet */
+  for (DepositId id = 0; id < m_wallet->getDepositCount(); ++id)
+  {
+    /* get deposit info from id and store it to deposit */
+    Deposit deposit = m_wallet->get_deposit(id);
+    cn::WalletLegacyTransaction txInfo;
+    m_wallet->getTransaction(deposit.creatingTransactionId, txInfo);
+
+    logger(INFO) << m_chelper.get_deposit_info(deposit, id, m_currency, txInfo);
+  }
+
+  return true;
+}
+
+bool ultranote_wallet::deposit(const std::vector<std::string> &args)
+{
+  if (args.size() != 2)
+  {
+    logger(ERROR) << "Usage: deposit <months> <amount>";
+    return true;
+  }
+
+  try
+  {
+    /**
+     * Change arg to uint64_t using boost then
+     * multiply by min_term so user can type in months
+    **/
+    uint64_t deposit_term = boost::lexical_cast<uint64_t>(args[0]) * 22000;
+
+    /* Now validate the deposit term and the amount */
+    if (deposit_term < cn::parameters::DEPOSIT_MIN_TERM)
+    {
+      logger(ERROR, BRIGHT_RED) << "Deposit term is too small, min=22000, given=" << deposit_term;
+      return true;
+    }
+
+    if (deposit_term > cn::parameters::DEPOSIT_MAX_TERM)
+    {
+      logger(ERROR, BRIGHT_RED) << "Deposit term is too big, min=" << cn::parameters::DEPOSIT_MAX_TERM
+        << ", given=" << deposit_term;
+      return true;
+    }
+
+    uint64_t deposit_amount = boost::lexical_cast<uint64_t>(args[1]);
+    bool ok = m_currency.parseAmount(args[1], deposit_amount);
+
+    if (!ok || 0 == deposit_amount)
+    {
+      logger(ERROR, BRIGHT_RED) << "amount is wrong: " << deposit_amount <<
+        ", expected number from 1 to " << m_currency.formatAmount(cn::parameters::MONEY_SUPPLY);
+      return true;
+    }
+
+    if (deposit_amount < cn::parameters::DEPOSIT_MIN_AMOUNT)
+    {
+      logger(ERROR, BRIGHT_RED) << "Deposit amount is too small, min=" << cn::parameters::DEPOSIT_MIN_AMOUNT
+        << ", given=" << m_currency.formatAmount(deposit_amount);
+      return true;
+    }
+
+    if (!confirm_deposit(deposit_term, deposit_amount))
+    {
+      logger(ERROR) << "Deposit is not being created.";
+      return true;
+    }
+
+    logger(INFO) << "Creating deposit...";
+
+    /* Use defaults for fee + mix in */
+    uint64_t deposit_fee = cn::parameters::MINIMUM_FEE;
+    uint64_t deposit_mix_in = cn::parameters::MINIMUM_MIXIN;
+
+    cn::WalletHelper::SendCompleteResultObserver sent;
+    WalletHelper::IWalletRemoveObserverGuard removeGuard(*m_wallet, sent);
+
+    cn::TransactionId tx = m_wallet->deposit(deposit_term, deposit_amount, deposit_fee, deposit_mix_in);
+
+    if (tx == WALLET_LEGACY_INVALID_DEPOSIT_ID)
+    {
+      fail_msg_writer() << "Can't deposit money";
+      return true;
+    }
+
+    std::error_code sendError = sent.wait(tx);
+    removeGuard.removeObserver();
+
+    if (sendError)
+    {
+      fail_msg_writer() << sendError.message();
+      return true;
+    }
+
+    cn::WalletLegacyTransaction d_info;
+    m_wallet->getTransaction(tx, d_info);
+    success_msg_writer(true) << "Money successfully sent, transaction hash: " << common::podToHex(d_info.hash)
+      << "\n\tID: " << d_info.firstDepositId;
+
+    try
+    {
+      cn::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+    }
+    catch (const std::exception& e)
+    {
+      fail_msg_writer() << e.what();
+      return true;
+    }
+  }
+  catch (const std::system_error& e)
+  {
+    fail_msg_writer() << e.what();
+  }
+  catch (const std::exception& e)
+  {
+    fail_msg_writer() << e.what();
+  }
+  catch (...)
+  {
+    fail_msg_writer() << "unknown error";
+  }
+
+  return true;
+}
+
+bool ultranote_wallet::withdraw(const std::vector<std::string> &args)
+{
+  if (args.size() != 1)
+  {
+    logger(ERROR) << "Usage: withdraw <id>";
+    return true;
+  }
+
+  try
+  {
+    if (m_wallet->getDepositCount() == 0)
+    {
+      logger(ERROR) << "No deposits have been made in this wallet.";
+      return true;
+    }
+
+    uint64_t deposit_id = boost::lexical_cast<uint64_t>(args[0]);
+    uint64_t deposit_fee = cn::parameters::MINIMUM_FEE;
+    
+    cn::WalletHelper::SendCompleteResultObserver sent;
+    WalletHelper::IWalletRemoveObserverGuard removeGuard(*m_wallet, sent);
+
+    cn::TransactionId tx = m_wallet->withdrawDeposit(deposit_id, deposit_fee);
+  
+    if (tx == WALLET_LEGACY_INVALID_DEPOSIT_ID)
+    {
+      fail_msg_writer() << "Can't withdraw money";
+      return true;
+    }
+
+    std::error_code sendError = sent.wait(tx);
+    removeGuard.removeObserver();
+
+    if (sendError)
+    {
+      fail_msg_writer() << sendError.message();
+      return true;
+    }
+
+    cn::WalletLegacyTransaction d_info;
+    m_wallet->getTransaction(tx, d_info);
+    success_msg_writer(true) << "Money successfully sent, transaction hash: " << common::podToHex(d_info.hash);
+
+    try
+    {
+      cn::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+    }
+    catch (const std::exception& e)
+    {
+      fail_msg_writer() << e.what();
+      return true;
+    }
+  }
+  catch (std::exception &e)
+  {
+    fail_msg_writer() << "failed to withdraw deposit: " << e.what();
+  }
+
+  return true;
+}
+
+bool ultranote_wallet::deposit_info(const std::vector<std::string> &args)
+{
+  if (args.size() != 1)
+  {
+    logger(ERROR) << "Usage: withdraw <id>";
+    return true;
+  }
+
+  uint64_t deposit_id = boost::lexical_cast<uint64_t>(args[0]);
+  cn::Deposit deposit = m_wallet->get_deposit(deposit_id);
+  cn::WalletLegacyTransaction txInfo;
+  m_wallet->getTransaction(deposit.creatingTransactionId, txInfo);
+
+  logger(INFO) << m_chelper.get_full_deposit_info(deposit, deposit_id, m_currency, txInfo);
+
+  return true;
+}
+
+bool ultranote_wallet::confirm_deposit(uint64_t term, uint64_t amount)
+{
+  uint64_t interest = m_currency.calculateInterest(amount, term);
+
+  logger(INFO) << "Confirm deposit details:\n"
+    << "\tAmount: " << m_currency.formatAmount(amount) << "\n"
+    << "\tMonths: " << term / 22000 << "\n"
+    << "\tInterest: " << m_currency.formatAmount(interest) << "\n";
+
+  logger(INFO) << "Is this correct? (Y/N): \n";
+
+  char c;
+  std::cin >> c;
+  c = std::tolower(c);
+
+  if (c == 'y')
+  {
+    return true;
+  }
+  else if (c == 'n')
+  {
+    return false;
+  }
+  else
+  {
+    logger(ERROR) << "Bad input, please enter either Y or N.";
+  }
+
+  return false;
 }

@@ -21,6 +21,7 @@
 #include "CryptoNoteCore/CryptoNoteBasic.h"
 #include "Rpc/CoreRpcServerCommandsDefinitions.h"
 #include "ITransfersContainer.h"
+#include "IWallet.h"
 
 namespace cn {
 
@@ -72,15 +73,6 @@ struct WalletLegacyTransaction {
   std::vector<std::string> messages;
 };
 
-struct Deposit {
-  TransactionId creatingTransactionId;
-  TransactionId spendingTransactionId;
-  uint32_t term;
-  uint64_t amount;
-  uint64_t interest;
-  bool locked;
-};
-
 using PaymentId = crypto::Hash;
 struct Payments {
   PaymentId paymentId;
@@ -104,6 +96,7 @@ public:
   virtual void externalTransactionCreated(TransactionId transactionId) {}
   virtual void sendTransactionCompleted(TransactionId transactionId, std::error_code result) {}
   virtual void transactionUpdated(TransactionId transactionId) {}
+  virtual void depositUpdated(const DepositId& depositId) {}
   virtual void depositsUpdated(const std::vector<DepositId>& depositIds) {}
 };
 
@@ -156,9 +149,10 @@ public:
   virtual std::list<TransactionOutputInformation> selectFusionTransfersToSend(uint64_t threshold, size_t minInputCount, size_t maxInputCount) = 0;
   virtual TransactionId sendFusionTransaction(const std::list<TransactionOutputInformation>& fusionInputs, uint64_t fee, const std::string& extra = "", uint64_t mixIn = 0, uint64_t unlockTimestamp = 0) = 0;
   virtual TransactionId deposit(uint32_t term, uint64_t amount, uint64_t fee, uint64_t mixIn = 0) = 0;
+  virtual TransactionId withdrawDeposit(const DepositId& depositId, uint64_t fee) = 0;
   virtual TransactionId withdrawDeposits(const std::vector<DepositId>& depositIds, uint64_t fee) = 0;
   virtual std::error_code cancelTransaction(size_t transferId) = 0;
-
+  virtual Deposit get_deposit(DepositId depositId) = 0;
 };
 
 }
