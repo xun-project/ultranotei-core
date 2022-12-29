@@ -62,64 +62,63 @@ namespace payment_service
 namespace
 {
 
-bool checkPaymentId(const std::string &paymentId)
-{
-  if (paymentId.size() != 64)
+  bool checkPaymentId(const std::string &paymentId)
   {
-    return false;
-  }
-
-  return std::all_of(paymentId.begin(), paymentId.end(), [](const char c) {
-    if (c >= '0' && c <= '9')
+    if (paymentId.size() != 64)
     {
-      return true;
+      return false;
     }
 
-    if (c >= 'a' && c <= 'f')
-    {
-      return true;
-    }
+    return std::all_of(paymentId.begin(), paymentId.end(), [](const char c) {
+      if (c >= '0' && c <= '9')
+      {
+        return true;
+      }
 
-    if (c >= 'A' && c <= 'F')
-    {
-      return true;
-    }
+      if (c >= 'a' && c <= 'f')
+      {
+        return true;
+      }
 
-    return false;
-  });
-}
+      if (c >= 'A' && c <= 'F')
+      {
+        return true;
+      }
 
-crypto::Hash parsePaymentId(const std::string &paymentIdStr)
-{
-  if (!checkPaymentId(paymentIdStr))
-  {
-    throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::WRONG_PAYMENT_ID_FORMAT));
+      return false;
+    });
   }
 
-  crypto::Hash paymentId;
-  bool r = common::podFromHex(paymentIdStr, paymentId);
-  assert(r);
-  
-
-  return paymentId;
-}
-
-bool getPaymentIdFromExtra(const std::string &binaryString, crypto::Hash &paymentId)
-{
-  return cn::getPaymentIdFromTxExtra(common::asBinaryArray(binaryString), paymentId);
-}
-
-std::string getPaymentIdStringFromExtra(const std::string &binaryString)
-{
-  crypto::Hash paymentId;
-
-  if (!getPaymentIdFromExtra(binaryString, paymentId))
+  crypto::Hash parsePaymentId(const std::string &paymentIdStr)
   {
-    return std::string();
+    if (!checkPaymentId(paymentIdStr))
+    {
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::WRONG_PAYMENT_ID_FORMAT));
+    }
+
+    crypto::Hash paymentId;
+    bool r = common::podFromHex(paymentIdStr, paymentId);
+    assert(r);
+
+    return paymentId;
   }
 
-  return common::podToHex(paymentId);
-}
+  bool getPaymentIdFromExtra(const std::string &binaryString, crypto::Hash &paymentId)
+  {
+    return cn::getPaymentIdFromTxExtra(common::asBinaryArray(binaryString), paymentId);
+  }
+
+  std::string getPaymentIdStringFromExtra(const std::string &binaryString)
+  {
+    crypto::Hash paymentId;
+
+    if (!getPaymentIdFromExtra(binaryString, paymentId))
+    {
+      return std::string();
+    }
+
+    return common::podToHex(paymentId);
+  }
 
 } // namespace
 
@@ -182,255 +181,256 @@ struct TransactionsInBlockInfoFilter
 namespace
 {
 
-void addPaymentIdToExtra(const std::string &paymentId, std::string &extra)
-{
-  std::vector<uint8_t> extraVector;
-  if (!cn::createTxExtraWithPaymentId(paymentId, extraVector))
+  void addPaymentIdToExtra(const std::string &paymentId, std::string &extra)
   {
-    throw std::runtime_error("Couldn't add payment id to extra");
-  }
-
-  std::copy(extraVector.begin(), extraVector.end(), std::back_inserter(extra));
-}
-
-void validatePaymentId(const std::string &paymentId, logging::LoggerRef logger)
-{
-  if (!checkPaymentId(paymentId))
-  {
-    logger(logging::WARNING) << "Can't validate payment id: " << paymentId;
-    throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::WRONG_PAYMENT_ID_FORMAT));
-  }
-}
-
-bool createOutputBinaryFile(const std::string &filename, std::fstream &file)
-{
-  file.open(filename.c_str(), std::fstream::in | std::fstream::out | std::ofstream::binary);
-  if (file)
-  {
-    file.close();
-    return false;
-  }
-
-  file.open(filename.c_str(), std::fstream::out | std::fstream::binary);
-  return true;
-}
-
-std::string createTemporaryFile(const std::string &path, std::fstream &tempFile)
-{
-  bool created = false;
-  std::string temporaryName;
-
-  for (size_t i = 1; i < 100; i++)
-  {
-    temporaryName = path + "." + std::to_string(i++);
-
-    if (createOutputBinaryFile(temporaryName, tempFile))
+    std::vector<uint8_t> extraVector;
+    if (!cn::createTxExtraWithPaymentId(paymentId, extraVector))
     {
-      created = true;
-      break;
+      throw std::runtime_error("Couldn't add payment id to extra");
+    }
+
+    std::copy(extraVector.begin(), extraVector.end(), std::back_inserter(extra));
+  }
+
+  void validatePaymentId(const std::string &paymentId, logging::LoggerRef logger)
+  {
+    if (!checkPaymentId(paymentId))
+    {
+      logger(logging::WARNING) << "Can't validate payment id: " << paymentId;
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::WRONG_PAYMENT_ID_FORMAT));
     }
   }
 
-  if (!created)
+  bool createOutputBinaryFile(const std::string &filename, std::fstream &file)
   {
-    throw std::runtime_error("Couldn't create temporary file: " + temporaryName);
-  }
-
-  return temporaryName;
-}
-
-//returns true on success
-bool deleteFile(const std::string &filename)
-{
-  boost::system::error_code err;
-  return boost::filesystem::remove(filename, err) && !err;
-}
-
-void replaceWalletFiles(const std::string &path, const std::string &tempFilePath)
-{
-  tools::replace_file(tempFilePath, path);
-}
-
-crypto::Hash parseHash(const std::string &hashString, logging::LoggerRef logger)
-{
-  crypto::Hash hash;
-
-  if (!common::podFromHex(hashString, hash))
-  {
-    logger(logging::WARNING) << "Can't parse hash string " << hashString;
-    throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::WRONG_HASH_FORMAT));
-  }
-
-  return hash;
-}
-
-std::vector<cn::TransactionsInBlockInfo> filterTransactions(
-    const std::vector<cn::TransactionsInBlockInfo> &blocks,
-    const TransactionsInBlockInfoFilter &filter)
-{
-
-  std::vector<cn::TransactionsInBlockInfo> result;
-
-  for (const auto &block : blocks)
-  {
-    cn::TransactionsInBlockInfo item;
-    item.blockHash = block.blockHash;
-
-    for (const auto &transaction : block.transactions)
+    file.open(filename.c_str(), std::fstream::in | std::fstream::out | std::ofstream::binary);
+    if (file)
     {
-      if (transaction.transaction.state != cn::WalletTransactionState::DELETED && filter.checkTransaction(transaction))
+      file.close();
+      return false;
+    }
+
+    file.open(filename.c_str(), std::fstream::out | std::fstream::binary);
+    return true;
+  }
+
+  std::string createTemporaryFile(const std::string &path, std::fstream &tempFile)
+  {
+    bool created = false;
+    std::string temporaryName;
+
+    for (size_t i = 1; i < 100; i++)
+    {
+      temporaryName = path + "." + std::to_string(i++);
+
+      if (createOutputBinaryFile(temporaryName, tempFile))
       {
-        item.transactions.push_back(transaction);
+        created = true;
+        break;
       }
     }
 
-    if (!block.transactions.empty())
+    if (!created)
     {
-      result.push_back(std::move(item));
+      throw std::runtime_error("Couldn't create temporary file: " + temporaryName);
+    }
+
+    return temporaryName;
+  }
+
+  //returns true on success
+  bool deleteFile(const std::string &filename)
+  {
+    boost::system::error_code err;
+    return boost::filesystem::remove(filename, err) && !err;
+  }
+
+  void replaceWalletFiles(const std::string &path, const std::string &tempFilePath)
+  {
+    tools::replace_file(tempFilePath, path);
+  }
+
+  crypto::Hash parseHash(const std::string &hashString, logging::LoggerRef logger)
+  {
+    crypto::Hash hash;
+
+    if (!common::podFromHex(hashString, hash))
+    {
+      logger(logging::WARNING) << "Can't parse hash string " << hashString;
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::WRONG_HASH_FORMAT));
+    }
+
+    return hash;
+  }
+
+  std::vector<cn::TransactionsInBlockInfo> filterTransactions(
+      const std::vector<cn::TransactionsInBlockInfo> &blocks,
+      const TransactionsInBlockInfoFilter &filter)
+  {
+    std::vector<cn::TransactionsInBlockInfo> result;
+
+    for (const auto &block : blocks)
+    {
+      cn::TransactionsInBlockInfo item;
+      item.blockHash = block.blockHash;
+
+      for (const auto &transaction : block.transactions)
+      {
+        if (transaction.transaction.state != cn::WalletTransactionState::DELETED && filter.checkTransaction(transaction))
+        {
+          item.transactions.push_back(transaction);
+        }
+      }
+
+      if (!block.transactions.empty())
+      {
+        result.push_back(std::move(item));
+      }
+    }
+
+    return result;
+  }
+
+  //KD2
+
+  payment_service::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(const cn::WalletTransactionWithTransfers &transactionWithTransfers)
+  {
+    payment_service::TransactionRpcInfo transactionInfo;
+    transactionInfo.state = static_cast<uint8_t>(transactionWithTransfers.transaction.state);
+    transactionInfo.transactionHash = common::podToHex(transactionWithTransfers.transaction.hash);
+    transactionInfo.blockIndex = transactionWithTransfers.transaction.blockHeight;
+    transactionInfo.timestamp = transactionWithTransfers.transaction.timestamp;
+    transactionInfo.isBase = transactionWithTransfers.transaction.isBase;
+    transactionInfo.depositCount = transactionWithTransfers.transaction.depositCount;
+    transactionInfo.firstDepositId = transactionWithTransfers.transaction.firstDepositId;
+    transactionInfo.unlockTime = transactionWithTransfers.transaction.unlockTime;
+    transactionInfo.amount = transactionWithTransfers.transaction.totalAmount;
+    transactionInfo.fee = transactionWithTransfers.transaction.fee;
+    transactionInfo.extra = common::toHex(transactionWithTransfers.transaction.extra.data(), transactionWithTransfers.transaction.extra.size());
+    transactionInfo.paymentId = getPaymentIdStringFromExtra(transactionWithTransfers.transaction.extra);
+
+    for (const cn::WalletTransfer &transfer : transactionWithTransfers.transfers)
+    {
+      payment_service::TransferRpcInfo rpcTransfer;
+      rpcTransfer.address = transfer.address;
+      rpcTransfer.amount = transfer.amount;
+      rpcTransfer.type = static_cast<uint8_t>(transfer.type);
+      transactionInfo.transfers.push_back(std::move(rpcTransfer));
+    }
+    return transactionInfo;
+  }
+
+  std::vector<payment_service::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(
+      const std::vector<cn::TransactionsInBlockInfo> &blocks, uint32_t &knownBlockCount)
+  {
+    std::vector<payment_service::TransactionsInBlockRpcInfo> rpcBlocks;
+    rpcBlocks.reserve(blocks.size());
+    for (const auto &block : blocks)
+    {
+      payment_service::TransactionsInBlockRpcInfo rpcBlock;
+      rpcBlock.blockHash = common::podToHex(block.blockHash);
+
+      for (const cn::WalletTransactionWithTransfers &transactionWithTransfers : block.transactions)
+      {
+        payment_service::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);
+        transactionInfo.confirmations = knownBlockCount - transactionInfo.blockIndex;
+        rpcBlock.transactions.push_back(std::move(transactionInfo));
+      }
+
+      rpcBlocks.push_back(std::move(rpcBlock));
+    }
+
+    return rpcBlocks;
+  }
+
+  std::vector<payment_service::TransactionHashesInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(
+      const std::vector<cn::TransactionsInBlockInfo> &blocks)
+  {
+
+    std::vector<payment_service::TransactionHashesInBlockRpcInfo> transactionHashes;
+    transactionHashes.reserve(blocks.size());
+    for (const cn::TransactionsInBlockInfo &block : blocks)
+    {
+      payment_service::TransactionHashesInBlockRpcInfo item;
+      item.blockHash = common::podToHex(block.blockHash);
+
+      for (const cn::WalletTransactionWithTransfers &transaction : block.transactions)
+      {
+        item.transactionHashes.emplace_back(common::podToHex(transaction.transaction.hash));
+      }
+
+      transactionHashes.push_back(std::move(item));
+    }
+
+    return transactionHashes;
+  }
+
+  void validateAddresses(const std::vector<std::string> &addresses, const cn::Currency &currency, logging::LoggerRef logger)
+  {
+    for (const auto &address : addresses)
+    {
+      if (!cn::validateAddress(address, currency))
+      {
+        logger(logging::WARNING) << "Can't validate address " << address;
+        throw std::system_error(make_error_code(cn::error::BAD_ADDRESS));
+      }
     }
   }
 
-  return result;
-}
-
-//KD2
-
-payment_service::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(const cn::WalletTransactionWithTransfers &transactionWithTransfers)
-{
-  payment_service::TransactionRpcInfo transactionInfo;
-  transactionInfo.state = static_cast<uint8_t>(transactionWithTransfers.transaction.state);
-  transactionInfo.transactionHash = common::podToHex(transactionWithTransfers.transaction.hash);
-  transactionInfo.blockIndex = transactionWithTransfers.transaction.blockHeight;
-  transactionInfo.timestamp = transactionWithTransfers.transaction.timestamp;
-  transactionInfo.isBase = transactionWithTransfers.transaction.isBase;
-  transactionInfo.unlockTime = transactionWithTransfers.transaction.unlockTime;
-  transactionInfo.amount = transactionWithTransfers.transaction.totalAmount;
-  transactionInfo.fee = transactionWithTransfers.transaction.fee;
-  transactionInfo.extra = common::toHex(transactionWithTransfers.transaction.extra.data(), transactionWithTransfers.transaction.extra.size());
-  transactionInfo.paymentId = getPaymentIdStringFromExtra(transactionWithTransfers.transaction.extra);
-
-  for (const cn::WalletTransfer &transfer : transactionWithTransfers.transfers)
+  std::vector<std::string> collectDestinationAddresses(const std::vector<payment_service::WalletRpcOrder> &orders)
   {
-    payment_service::TransferRpcInfo rpcTransfer;
-    rpcTransfer.address = transfer.address;
-    rpcTransfer.amount = transfer.amount;
-    rpcTransfer.type = static_cast<uint8_t>(transfer.type);
-    transactionInfo.transfers.push_back(std::move(rpcTransfer));
-  }
-  return transactionInfo;
-}
+    std::vector<std::string> result;
 
-std::vector<payment_service::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(
-    const std::vector<cn::TransactionsInBlockInfo> &blocks)
-{
-
-  std::vector<payment_service::TransactionsInBlockRpcInfo> rpcBlocks;
-  rpcBlocks.reserve(blocks.size());
-  for (const auto &block : blocks)
-  {
-    payment_service::TransactionsInBlockRpcInfo rpcBlock;
-    rpcBlock.blockHash = common::podToHex(block.blockHash);
-
-    for (const cn::WalletTransactionWithTransfers &transactionWithTransfers : block.transactions)
+    result.reserve(orders.size());
+    for (const auto &order : orders)
     {
-      payment_service::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);
-      rpcBlock.transactions.push_back(std::move(transactionInfo));
+      result.push_back(order.address);
     }
 
-    rpcBlocks.push_back(std::move(rpcBlock));
+    return result;
   }
 
-  return rpcBlocks;
-}
-
-std::vector<payment_service::TransactionHashesInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(
-    const std::vector<cn::TransactionsInBlockInfo> &blocks)
-{
-
-  std::vector<payment_service::TransactionHashesInBlockRpcInfo> transactionHashes;
-  transactionHashes.reserve(blocks.size());
-  for (const cn::TransactionsInBlockInfo &block : blocks)
+  std::vector<payment_service::WalletRpcMessage> collectMessages(const std::vector<payment_service::WalletRpcOrder> &orders)
   {
-    payment_service::TransactionHashesInBlockRpcInfo item;
-    item.blockHash = common::podToHex(block.blockHash);
+    std::vector<payment_service::WalletRpcMessage> result;
 
-    for (const cn::WalletTransactionWithTransfers &transaction : block.transactions)
+    result.reserve(orders.size());
+    for (const auto &order : orders)
     {
-      item.transactionHashes.emplace_back(common::podToHex(transaction.transaction.hash));
+      if (!order.message.empty())
+      {
+        result.push_back({order.address, order.message});
+      }
     }
 
-    transactionHashes.push_back(std::move(item));
+    return result;
   }
 
-  return transactionHashes;
-}
-
-void validateAddresses(const std::vector<std::string> &addresses, const cn::Currency &currency, logging::LoggerRef logger)
-{
-  for (const auto &address : addresses)
+  std::vector<cn::WalletOrder> convertWalletRpcOrdersToWalletOrders(const std::vector<payment_service::WalletRpcOrder> &orders)
   {
-    if (!cn::validateAddress(address, currency))
+    std::vector<cn::WalletOrder> result;
+    result.reserve(orders.size());
+
+    for (const auto &order : orders)
     {
-      logger(logging::WARNING) << "Can't validate address " << address;
-      throw std::system_error(make_error_code(cn::error::BAD_ADDRESS));
+      result.emplace_back(cn::WalletOrder{order.address, order.amount});
     }
-  }
-}
 
-std::vector<std::string> collectDestinationAddresses(const std::vector<payment_service::WalletRpcOrder> &orders)
-{
-  std::vector<std::string> result;
-
-  result.reserve(orders.size());
-  for (const auto &order : orders)
-  {
-    result.push_back(order.address);
+    return result;
   }
 
-  return result;
-}
-
-std::vector<payment_service::WalletRpcMessage> collectMessages(const std::vector<payment_service::WalletRpcOrder> &orders)
-{
-  std::vector<payment_service::WalletRpcMessage> result;
-
-  result.reserve(orders.size());
-  for (const auto &order : orders)
+  std::vector<cn::WalletMessage> convertWalletRpcMessagesToWalletMessages(const std::vector<payment_service::WalletRpcMessage> &messages)
   {
-    if (!order.message.empty())
+    std::vector<cn::WalletMessage> result;
+    result.reserve(messages.size());
+
+    for (const auto &message : messages)
     {
-      result.push_back({order.address, order.message});
+      result.emplace_back(cn::WalletMessage{message.address, message.message});
     }
+
+    return result;
   }
-
-  return result;
-}
-
-std::vector<cn::WalletOrder> convertWalletRpcOrdersToWalletOrders(const std::vector<payment_service::WalletRpcOrder> &orders)
-{
-  std::vector<cn::WalletOrder> result;
-  result.reserve(orders.size());
-
-  for (const auto &order : orders)
-  {
-    result.emplace_back(cn::WalletOrder{order.address, order.amount});
-  }
-
-  return result;
-}
-
-std::vector<cn::WalletMessage> convertWalletRpcMessagesToWalletMessages(const std::vector<payment_service::WalletRpcMessage> &messages)
-{
-  std::vector<cn::WalletMessage> result;
-  result.reserve(messages.size());
-
-  for (const auto &message : messages)
-  {
-    result.emplace_back(cn::WalletMessage{message.address, message.message});
-  }
-
-  return result;
-}
 
 } // namespace
 
@@ -458,7 +458,7 @@ void createWalletFile(std::fstream &walletFile, const std::string &filename)
 
 void saveWallet(cn::IWallet &wallet, std::fstream &walletFile, bool saveDetailed = true, bool saveCache = true)
 {
-  wallet.save(walletFile, saveDetailed, saveCache);
+  wallet.save();
   walletFile.flush();
 }
 
@@ -483,7 +483,11 @@ void secureSaveWallet(cn::IWallet &wallet, const std::string &path, bool saveDet
 }
 
 /* Generate a new wallet (-g) or import a new wallet if the secret keys have been specified */
-void generateNewWallet(const cn::Currency &currency, const WalletConfiguration &conf, logging::ILogger &logger, platform_system::Dispatcher &dispatcher)
+void generateNewWallet(
+    const cn::Currency &currency,
+    const WalletConfiguration &conf,
+    logging::ILogger &logger,
+    platform_system::Dispatcher &dispatcher)
 {
   logging::LoggerRef log(logger, "generateNewWallet");
 
@@ -493,34 +497,36 @@ void generateNewWallet(const cn::Currency &currency, const WalletConfiguration &
   cn::IWallet *wallet = new cn::WalletGreen(dispatcher, currency, *nodeStub, logger);
   std::unique_ptr<cn::IWallet> walletGuard(wallet);
 
-  std::fstream walletFile;
-  createWalletFile(walletFile, conf.walletFile);
-
   std::string address;
 
   /* Create a new address and container since both view key and spend key
-     have not been specifiec */
+    have not been specified */
   if (conf.secretSpendKey.empty() && conf.secretViewKey.empty())
   {
-    log(logging::INFO, logging::BRIGHT_WHITE) << "Generating new wallet";
-    log(logging::INFO, logging::BRIGHT_WHITE) << "Both spend key and view key are empty.";
+    log(logging::INFO, logging::BRIGHT_WHITE) << "Generating new deterministic wallet";
+
     crypto::SecretKey private_view_key;
     cn::KeyPair spendKey;
-    crypto::PublicKey unused;
 
     crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);
-    AccountBase::generateViewFromSpend(spendKey.secretKey, private_view_key, unused);
 
-    wallet->initializeWithViewKey(private_view_key, conf.walletPassword);
+    crypto::PublicKey unused_dummy_variable;
+
+    cn::AccountBase::generateViewFromSpend(spendKey.secretKey, private_view_key, unused_dummy_variable);
+
+    wallet->initializeWithViewKey(conf.walletFile, conf.walletPassword, private_view_key);
     address = wallet->createAddress(spendKey.secretKey);
 
+    log(logging::INFO, logging::BRIGHT_WHITE) << "New deterministic wallet is generated. Address: " << address;
+
+    //TODO make this a cout
     log(logging::INFO, logging::BRIGHT_WHITE) << "New wallet generated.";
     log(logging::INFO, logging::BRIGHT_WHITE) << "Address: " << address;
     log(logging::INFO, logging::BRIGHT_WHITE) << "Secret spend key: " << common::podToHex(spendKey.secretKey);
     log(logging::INFO, logging::BRIGHT_WHITE) << "Secret view key: " << common::podToHex(private_view_key);
   }
   /* We need both secret keys to import the wallet and create the container
-     so in the absence of either, display and error message and return */
+    so in the absence of either, display and error message and return */
   else if (conf.secretSpendKey.empty() || conf.secretViewKey.empty())
   {
     log(logging::ERROR, logging::BRIGHT_RED) << "Need both secret spend key and secret view key.";
@@ -549,14 +555,14 @@ void generateNewWallet(const cn::Currency &currency, const WalletConfiguration &
     crypto::SecretKey private_spend_key = *(struct crypto::SecretKey *)&private_spend_key_hash;
     crypto::SecretKey private_view_key = *(struct crypto::SecretKey *)&private_view_key_hash;
 
-    wallet->initializeWithViewKey(private_view_key, conf.walletPassword);
+    wallet->initializeWithViewKey(conf.walletFile, conf.walletPassword, private_view_key);
     address = wallet->createAddress(private_spend_key);
     log(logging::INFO, logging::BRIGHT_WHITE) << "Imported wallet successfully.";
     log(logging::INFO, logging::BRIGHT_WHITE) << "Address: " << address;
   }
 
   /* Save the container and exit */
-  saveWallet(*wallet, walletFile, false, false);
+  wallet->save(cn::WalletSaveLevel::SAVE_KEYS_ONLY);
   log(logging::INFO) << "Wallet is saved";
 } // namespace payment_service
 
@@ -574,17 +580,23 @@ void importLegacyKeys(const std::string &legacyKeysFile, const WalletConfigurati
   walletFile.flush();
 }
 
-WalletService::WalletService(const cn::Currency &currency, platform_system::Dispatcher &sys, cn::INode &node,
-                             cn::IWallet &wallet, cn::IFusionManager &fusionManager, const WalletConfiguration &conf, logging::ILogger &logger) : currency(currency),
-                                                                                                                                                                  wallet(wallet),
-                                                                                                                                                                  fusionManager(fusionManager),
-                                                                                                                                                                  node(node),
-                                                                                                                                                                  config(conf),
-                                                                                                                                                                  inited(false),
-                                                                                                                                                                  logger(logger, "WalletService"),
-                                                                                                                                                                  dispatcher(sys),
-                                                                                                                                                                  readyEvent(dispatcher),
-                                                                                                                                                                  refreshContext(dispatcher)
+WalletService::WalletService(
+    const cn::Currency &currency,
+    platform_system::Dispatcher &sys,
+    cn::INode &node,
+    cn::IWallet &wallet,
+    cn::IFusionManager &fusionManager,
+    const WalletConfiguration &conf,
+    logging::ILogger &logger) : currency(currency),
+                                wallet(wallet),
+                                fusionManager(fusionManager),
+                                node(node),
+                                config(conf),
+                                inited(false),
+                                logger(logger, "WalletService"),
+                                dispatcher(sys),
+                                readyEvent(dispatcher),
+                                refreshContext(dispatcher)
 {
   readyEvent.set();
 }
@@ -611,9 +623,8 @@ void WalletService::init()
 
 void WalletService::saveWallet()
 {
-  logger(logging::INFO) << "Saving wallet...";
-  payment_service::secureSaveWallet(wallet, config.walletFile, true, true);
-  logger(logging::INFO) << "Wallet is saved";
+  wallet.save();
+  logger(logging::INFO, logging::BRIGHT_WHITE) << "Wallet is saved";
 }
 
 std::error_code WalletService::saveWalletNoThrow()
@@ -630,8 +641,7 @@ std::error_code WalletService::saveWalletNoThrow()
       return make_error_code(cn::error::NOT_INITIALIZED);
     }
 
-    payment_service::secureSaveWallet(wallet, config.walletFile, true, true);
-    logger(logging::INFO) << "Wallet is saved";
+    saveWallet();
   }
   catch (std::system_error &x)
   {
@@ -649,18 +659,9 @@ std::error_code WalletService::saveWalletNoThrow()
 
 void WalletService::loadWallet()
 {
-  std::ifstream inputWalletFile;
-  inputWalletFile.open(config.walletFile.c_str(), std::fstream::in | std::fstream::binary);
-  if (!inputWalletFile)
-  {
-    throw std::runtime_error("Couldn't open wallet file");
-  }
-
-  logger(logging::INFO) << "Loading wallet";
-
-  wallet.load(inputWalletFile, config.walletPassword);
-
-  logger(logging::INFO) << "Wallet loading is finished.";
+  logger(logging::INFO, logging::BRIGHT_WHITE) << "Loading wallet";
+  wallet.load(config.walletFile, config.walletPassword);
+  logger(logging::INFO, logging::BRIGHT_WHITE) << "Wallet loading is finished.";
 }
 
 void WalletService::loadTransactionIdIndex()
@@ -679,62 +680,88 @@ std::error_code WalletService::resetWallet()
   {
     platform_system::EventLock lk(readyEvent);
 
-    logger(logging::INFO) << "Reseting wallet";
+    logger(logging::INFO, logging::BRIGHT_WHITE) << "Resetting wallet";
 
     if (!inited)
     {
-      logger(logging::WARNING) << "Reset impossible: Wallet Service is not initialized";
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Reset impossible: Wallet Service is not initialized";
       return make_error_code(cn::error::NOT_INITIALIZED);
     }
 
     reset();
-    logger(logging::INFO) << "Wallet has been reset";
+    logger(logging::INFO, logging::BRIGHT_WHITE) << "Wallet has been reset";
   }
   catch (std::system_error &x)
   {
-    logger(logging::WARNING) << "Error while reseting wallet: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while resetting wallet: " << x.what();
     return x.code();
   }
   catch (std::exception &x)
   {
-    logger(logging::WARNING) << "Error while reseting wallet: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while resetting wallet: " << x.what();
     return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
   }
 
   return std::error_code();
 }
 
-std::error_code WalletService::replaceWithNewWallet(const std::string &viewSecretKeyText)
+std::error_code WalletService::exportWallet(const std::string &fileName)
 {
   try
   {
     platform_system::EventLock lk(readyEvent);
 
-    crypto::SecretKey viewSecretKey;
-    if (!common::podFromHex(viewSecretKeyText, viewSecretKey))
+    if (!inited)
     {
-      logger(logging::WARNING) << "Cannot restore view secret key: " << viewSecretKeyText;
-      return make_error_code(cn::error::WalletServiceErrorCode::WRONG_KEY_FORMAT);
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Export impossible: Wallet Service is not initialized";
+      return make_error_code(cn::error::NOT_INITIALIZED);
     }
 
-    crypto::PublicKey viewPublicKey;
-    if (!crypto::secret_key_to_public_key(viewSecretKey, viewPublicKey))
-    {
-      logger(logging::WARNING) << "Cannot derive view public key, wrong secret key: " << viewSecretKeyText;
-      return make_error_code(cn::error::WalletServiceErrorCode::WRONG_KEY_FORMAT);
-    }
+    boost::filesystem::path walletPath(config.walletFile);
+    boost::filesystem::path exportPath = walletPath.parent_path() / fileName;
 
-    replaceWithNewWallet(viewSecretKey);
-    logger(logging::INFO) << "The container has been replaced";
+    logger(logging::INFO, logging::BRIGHT_WHITE) << "Exporting wallet to " << exportPath.string();
+    wallet.exportWallet(exportPath.string());
   }
   catch (std::system_error &x)
   {
-    logger(logging::WARNING) << "Error while replacing container: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while exporting wallet: " << x.what();
     return x.code();
   }
   catch (std::exception &x)
   {
-    logger(logging::WARNING) << "Error while replacing container: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while exporting wallet: " << x.what();
+    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+  }
+
+  return std::error_code();
+}
+
+std::error_code WalletService::resetWallet(const uint32_t scanHeight)
+{
+  try
+  {
+    platform_system::EventLock lk(readyEvent);
+
+    logger(logging::INFO, logging::BRIGHT_WHITE) << "Resetting wallet";
+
+    if (!inited)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Reset impossible: Wallet Service is not initialized";
+      return make_error_code(cn::error::NOT_INITIALIZED);
+    }
+
+    wallet.reset(scanHeight);
+    logger(logging::INFO, logging::BRIGHT_WHITE) << "Wallet has been reset starting scanning from height " << scanHeight;
+  }
+  catch (std::system_error &x)
+  {
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while resetting wallet: " << x.what();
+    return x.code();
+  }
+  catch (std::exception &x)
+  {
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while resetting wallet: " << x.what();
     return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
   }
 
@@ -776,17 +803,19 @@ std::error_code WalletService::createAddress(std::string &address)
   try
   {
     platform_system::EventLock lk(readyEvent);
+
     logger(logging::DEBUGGING) << "Creating address";
-    saveWallet();
+
     address = wallet.createAddress();
   }
   catch (std::system_error &x)
   {
-    logger(logging::WARNING) << "Error while creating address: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while creating address: " << x.what();
     return x.code();
   }
 
   logger(logging::DEBUGGING) << "Created address " << address;
+
   return std::error_code();
 }
 
@@ -867,7 +896,7 @@ std::error_code WalletService::deleteAddress(const std::string &address)
   }
   catch (std::system_error &x)
   {
-    logger(logging::WARNING) << "Error while deleting address: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while deleting address: " << x.what();
     return x.code();
   }
 
@@ -895,7 +924,7 @@ std::error_code WalletService::getSpendkeys(const std::string &address, std::str
   return std::error_code();
 }
 
-std::error_code WalletService::getBalance(const std::string &address, uint64_t &availableBalance, uint64_t &lockedAmount)
+std::error_code WalletService::getBalance(const std::string &address, uint64_t &availableBalance, uint64_t &lockedAmount, uint64_t &lockedDepositBalance, uint64_t &unlockedDepositBalance)
 {
   try
   {
@@ -904,6 +933,8 @@ std::error_code WalletService::getBalance(const std::string &address, uint64_t &
 
     availableBalance = wallet.getActualBalance(address);
     lockedAmount = wallet.getPendingBalance(address);
+    lockedDepositBalance = wallet.getLockedDepositBalance(address);
+    unlockedDepositBalance = wallet.getUnlockedDepositBalance(address);
   }
   catch (std::system_error &x)
   {
@@ -915,7 +946,7 @@ std::error_code WalletService::getBalance(const std::string &address, uint64_t &
   return std::error_code();
 }
 
-std::error_code WalletService::getBalance(uint64_t &availableBalance, uint64_t &lockedAmount)
+std::error_code WalletService::getBalance(uint64_t &availableBalance, uint64_t &lockedAmount, uint64_t &lockedDepositBalance, uint64_t &unlockedDepositBalance)
 {
   try
   {
@@ -924,6 +955,8 @@ std::error_code WalletService::getBalance(uint64_t &availableBalance, uint64_t &
 
     availableBalance = wallet.getActualBalance();
     lockedAmount = wallet.getPendingBalance();
+    lockedDepositBalance = wallet.getLockedDepositBalance();
+    unlockedDepositBalance = wallet.getUnlockedDepositBalance();
   }
   catch (std::system_error &x)
   {
@@ -967,15 +1000,18 @@ std::error_code WalletService::getViewKey(std::string &viewSecretKey)
   }
   catch (std::system_error &x)
   {
-    logger(logging::WARNING) << "Error while getting view key: " << x.what();
+    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while getting view key: " << x.what();
     return x.code();
   }
 
   return std::error_code();
 }
 
-std::error_code WalletService::getTransactionHashes(const std::vector<std::string> &addresses, const std::string &blockHashString,
-                                                    uint32_t blockCount, const std::string &paymentId, std::vector<TransactionHashesInBlockRpcInfo> &transactionHashes)
+std::error_code WalletService::getTransactionHashes(
+    const std::vector<std::string> &addresses,
+    const std::string &blockHashString,
+    uint32_t blockCount, const std::string &paymentId,
+    std::vector<TransactionHashesInBlockRpcInfo> &transactionHashes)
 {
   try
   {
@@ -1036,8 +1072,53 @@ std::error_code WalletService::getTransactionHashes(const std::vector<std::strin
   return std::error_code();
 }
 
-std::error_code WalletService::getTransactions(const std::vector<std::string> &addresses, const std::string &blockHashString,
-                                               uint32_t blockCount, const std::string &paymentId, std::vector<TransactionsInBlockRpcInfo> &transactions)
+std::error_code WalletService::getDeposit(uint64_t depositId, uint64_t &amount, uint64_t &term, uint64_t &interest, std::string &creatingTransactionHash, std::string &spendingTransactionHash, bool &locked, uint64_t &height, uint64_t &unlockHeight, std::string &address)
+{
+  try
+  {
+    platform_system::EventLock lk(readyEvent);
+    Deposit deposit = wallet.getDeposit(depositId);
+    amount = deposit.amount;
+    term = deposit.term;
+    interest = deposit.interest;
+    height = deposit.height;
+    unlockHeight = deposit.unlockHeight;
+
+    WalletTransaction wallettx = wallet.getTransaction(deposit.creatingTransactionId);
+    creatingTransactionHash = common::podToHex(wallettx.hash);
+
+    WalletTransfer transfer = wallet.getTransactionTransfer(deposit.creatingTransactionId, 0);
+
+    address = transfer.address;
+
+    if (deposit.spendingTransactionId != WALLET_INVALID_TRANSACTION_ID)
+    {
+      WalletTransaction walletstx = wallet.getTransaction(deposit.spendingTransactionId);
+      spendingTransactionHash = common::podToHex(walletstx.hash);
+    }
+
+    bool state = true;
+    uint32_t knownBlockCount = node.getKnownBlockCount();
+    if (knownBlockCount > unlockHeight)
+    {
+      locked = false;
+    }
+  }
+  catch (std::exception &x)
+  {
+    logger(logging::WARNING) << "Error while getting deposit: " << x.what();
+    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+  }
+
+  return std::error_code();
+}
+
+std::error_code WalletService::getTransactions(
+    const std::vector<std::string> &addresses,
+    const std::string &blockHashString,
+    uint32_t blockCount,
+    const std::string &paymentId,
+    std::vector<TransactionsInBlockRpcInfo> &transactions)
 {
   try
   {
@@ -1070,7 +1151,7 @@ std::error_code WalletService::getTransactions(const std::vector<std::string> &a
 }
 
 std::error_code WalletService::getTransactions(const std::vector<std::string> &addresses, uint32_t firstBlockIndex,
-                                               uint32_t blockCount, const std::string &paymentId, std::vector<TransactionsInBlockRpcInfo> &transactions)
+                                                uint32_t blockCount, const std::string &paymentId, std::vector<TransactionsInBlockRpcInfo> &transactions)
 {
   try
   {
@@ -1126,6 +1207,8 @@ std::error_code WalletService::getTransaction(const std::string &transactionHash
     transaction.unlockTime = transactionWithTransfers.transaction.unlockTime;
     transaction.amount = transactionWithTransfers.transaction.totalAmount;
     transaction.fee = transactionWithTransfers.transaction.fee;
+    transaction.firstDepositId = transactionWithTransfers.transaction.firstDepositId;
+    transaction.depositCount = transactionWithTransfers.transaction.depositCount;
     transaction.extra = common::toHex(transactionWithTransfers.transaction.extra.data(), transactionWithTransfers.transaction.extra.size());
     transaction.paymentId = getPaymentIdStringFromExtra(transactionWithTransfers.transaction.extra);
 
@@ -1134,7 +1217,7 @@ std::error_code WalletService::getTransaction(const std::string &transactionHash
     transaction.confirmations = knownBlockCount - transaction.blockIndex;
 
     /* Cycle through all the transfers in the transaction and extract the address, 
-       amount, and pull any messages from Extra */
+      amount, and pull any messages from Extra */
     std::vector<std::string> messages;
     std::vector<uint8_t> extraBin = common::fromHex(transaction.extra);
     crypto::PublicKey publicKey = cn::getTransactionPublicKeyFromExtra(extraBin);
@@ -1200,9 +1283,19 @@ std::error_code WalletService::getAddresses(std::vector<std::string> &addresses)
 
 std::error_code WalletService::sendTransaction(const SendTransaction::Request &request, std::string &transactionHash, std::string &transactionSecretKey)
 {
+
   try
   {
     platform_system::EventLock lk(readyEvent);
+
+    uint64_t knownBlockCount = node.getKnownBlockCount();
+    uint64_t localBlockCount = node.getLocalBlockCount();
+    uint64_t diff = knownBlockCount - localBlockCount;
+    if ((localBlockCount == 0) || (diff > 2))
+    {
+      logger(logging::WARNING) << "Daemon is not synchronized";
+      return make_error_code(cn::error::DAEMON_NOT_SYNCED);
+    }
 
     validateAddresses(request.sourceAddresses, currency, logger);
     validateAddresses(collectDestinationAddresses(request.transfers), currency, logger);
@@ -1234,8 +1327,6 @@ std::error_code WalletService::sendTransaction(const SendTransaction::Request &r
     size_t transactionId = wallet.transfer(sendParams, transactionSK);
     transactionHash = common::podToHex(wallet.getTransaction(transactionId).hash);
     transactionSecretKey = common::podToHex(transactionSK);
-    saveWallet();
-
     logger(logging::DEBUGGING) << "Transaction " << transactionHash << " has been sent";
   }
   catch (std::system_error &x)
@@ -1313,9 +1404,9 @@ std::error_code WalletService::createIntegratedAddress(const CreateIntegrated::R
 
   /* Get the spend and view public keys from the address */
   const bool valid = cn::parseAccountAddressString(prefix,
-                                                           addr,
-                                                           address_str);
-  
+                                                            addr,
+                                                            address_str);
+
   cn::BinaryArray ba;
   cn::toBinaryArray(addr, ba);
   std::string keys = common::asString(ba);
@@ -1499,218 +1590,457 @@ std::error_code WalletService::getUnconfirmedTransactionHashes(const std::vector
   return std::error_code();
 }
 
-std::error_code WalletService::getStatus(uint32_t &blockCount, uint32_t &knownBlockCount, std::string &lastBlockHash, uint32_t &peerCount)
+std::error_code WalletService::getStatus(
+    uint32_t &blockCount,
+    uint32_t &knownBlockCount,
+    std::string &lastBlockHash,
+    uint32_t &peerCount,
+    uint32_t &depositCount,
+    uint32_t &transactionCount,
+    uint32_t &addressCount)
 {
   try
   {
     platform_system::EventLock lk(readyEvent);
 
+    auto estimateResult = fusionManager.estimate(1000000, {});
     knownBlockCount = node.getKnownBlockCount();
     peerCount = static_cast<uint32_t>(node.getPeerCount());
     blockCount = wallet.getBlockCount();
-
+    depositCount = static_cast<uint32_t>(wallet.getWalletDepositCount());
+    transactionCount = static_cast<uint32_t>(wallet.getTransactionCount());
+    addressCount = static_cast<uint32_t>(wallet.getAddressCount());
     auto lastHashes = wallet.getBlockHashes(blockCount - 1, 1);
     lastBlockHash = common::podToHex(lastHashes.back());
   }
-  catch (std::system_error &x)
-  {
-    logger(logging::WARNING) << "Error while getting status: " << x.what();
-    return x.code();
-  }
-  catch (std::exception &x)
-  {
-    logger(logging::WARNING) << "Error while getting status: " << x.what();
-    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
-  }
-
-  return std::error_code();
-}
-
-std::error_code WalletService::getMessagesFromExtra(const std::string &extra, std::vector<std::string> &messages)
-{
-  try
-  {
-    platform_system::EventLock lk(readyEvent);
-
-    std::vector<uint8_t> extraBin = common::fromHex(extra);
-    crypto::PublicKey publicKey = cn::getTransactionPublicKeyFromExtra(extraBin);
-    messages.clear();
-    for (size_t i = 0; i < wallet.getAddressCount(); ++i)
+    catch (std::system_error &x)
     {
-      crypto::SecretKey secretKey = wallet.getAddressSpendKey(wallet.getAddress(i)).secretKey;
-      std::vector<std::string> m = cn::get_messages_from_extra(extraBin, publicKey, &secretKey);
-      messages.insert(std::end(messages), std::begin(m), std::end(m));
+      logger(logging::WARNING) << "Error while getting status: " << x.what();
+      return x.code();
     }
-  }
-  catch (std::exception &e)
-  {
-    logger(logging::WARNING) << "getMessagesFromExtra warning: " << e.what();
-    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
-  }
+    catch (std::exception &x)
+    {
+      logger(logging::WARNING) << "Error while getting status: " << x.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+    }
 
-  return std::error_code();
+    return std::error_code();
 }
 
-void WalletService::refresh()
-{
-  try
+  /* Create a new deposit for the wallet address specified. */
+  std::error_code WalletService::createDeposit(
+      uint64_t amount,
+      uint64_t term,
+      std::string sourceAddress,
+      std::string & transactionHash)
   {
-    logger(logging::DEBUGGING) << "Refresh is started";
-    for (;;)
+  
+    try
     {
-      auto event = wallet.getEvent();
-      if (event.type == cn::TRANSACTION_CREATED)
+
+      uint64_t knownBlockCount = node.getKnownBlockCount();
+      uint64_t localBlockCount = node.getLocalBlockCount();
+      uint64_t diff = knownBlockCount - localBlockCount;
+      if ((localBlockCount == 0) || (diff > 2))
       {
-        size_t transactionId = event.transactionCreated.transactionIndex;
-        transactionIdIndex.emplace(common::podToHex(wallet.getTransaction(transactionId).hash), transactionId);
+        logger(logging::WARNING) << "Daemon is not synchronized";
+        return make_error_code(cn::error::DAEMON_NOT_SYNCED);
+      }
+      
+      platform_system::EventLock lk(readyEvent);
+
+      /* Validate the source addresse if it is are not empty */
+      if (!sourceAddress.empty())
+      {
+        validateAddresses({sourceAddress}, currency, logger);
+      }
+
+      /* Now validate the deposit term and the amount */
+
+      if (term < cn::parameters::DEPOSIT_MIN_TERM)
+      {
+        return make_error_code(cn::error::DEPOSIT_TERM_TOO_SMALL);
+      }
+
+      if (term > cn::parameters::DEPOSIT_MAX_TERM)
+      {
+        return make_error_code(cn::error::DEPOSIT_TERM_TOO_BIG);
+      }
+
+      if (amount < cn::parameters::DEPOSIT_MIN_AMOUNT)
+      {
+        return make_error_code(cn::error::DEPOSIT_AMOUNT_TOO_SMALL);
+      }
+
+      /* Create or send the deposit */
+      wallet.createDeposit(amount, term, sourceAddress, sourceAddress, transactionHash);
+    }
+
+    catch (std::system_error &x)
+    {
+      logger(logging::WARNING) << "Error: " << x.what();
+      return x.code();
+    }
+    catch (std::exception &x)
+    {
+      logger(logging::WARNING) << "Error : " << x.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+    }
+
+    return std::error_code();
+  }
+
+  std::error_code WalletService::withdrawDeposit(
+      uint64_t depositId,
+      std::string & transactionHash)
+
+  {
+    // TODO try and catch
+    wallet.withdrawDeposit(depositId, transactionHash);
+    return std::error_code();
+  }
+
+  /* Create and send a deposit to another wallet address, the deposit then will appear in their
+  wallet upon confirmation. */
+  std::error_code WalletService::sendDeposit(
+      uint64_t amount,
+      uint64_t term,
+      std::string sourceAddress,
+      std::string destinationAddress,
+      std::string & transactionHash)
+  {
+    try
+    {
+      platform_system::EventLock lk(readyEvent);
+
+      /* Validate both the source and destination addresses
+      if they are not empty */
+
+      if (!sourceAddress.empty())
+      {
+        validateAddresses({sourceAddress}, currency, logger);
+      }
+
+      if (!destinationAddress.empty())
+      {
+        validateAddresses({destinationAddress}, currency, logger);
+      }
+
+      /* Now validate the deposit term and the amount */
+
+      if (term < cn::parameters::DEPOSIT_MIN_TERM)
+      {
+        return make_error_code(cn::error::DEPOSIT_TERM_TOO_SMALL);
+      }
+
+      if (term > cn::parameters::DEPOSIT_MAX_TERM)
+      {
+        return make_error_code(cn::error::DEPOSIT_TERM_TOO_BIG);
+      }
+
+      if (amount < cn::parameters::DEPOSIT_MIN_AMOUNT)
+      {
+        return make_error_code(cn::error::DEPOSIT_AMOUNT_TOO_SMALL);
+      }
+
+      /* Create and send the deposit */
+      wallet.createDeposit(amount, term, sourceAddress, destinationAddress, transactionHash);
+    }
+
+    catch (std::system_error &x)
+    {
+      logger(logging::WARNING) << "Error: " << x.what();
+      return x.code();
+    }
+    catch (std::exception &x)
+    {
+      logger(logging::WARNING) << "Error : " << x.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+    }
+    return std::error_code();
+  }
+
+  std::error_code WalletService::getMessagesFromExtra(const std::string &extra, std::vector<std::string> &messages)
+  {
+    try
+    {
+      platform_system::EventLock lk(readyEvent);
+
+      std::vector<uint8_t> extraBin = common::fromHex(extra);
+      crypto::PublicKey publicKey = cn::getTransactionPublicKeyFromExtra(extraBin);
+      messages.clear();
+      for (size_t i = 0; i < wallet.getAddressCount(); ++i)
+      {
+        crypto::SecretKey secretKey = wallet.getAddressSpendKey(wallet.getAddress(i)).secretKey;
+        std::vector<std::string> m = cn::get_messages_from_extra(extraBin, publicKey, &secretKey);
+        messages.insert(std::end(messages), std::begin(m), std::end(m));
       }
     }
-  }
-  catch (std::system_error &e)
-  {
-    logger(logging::DEBUGGING) << "refresh is stopped: " << e.what();
-  }
-  catch (std::exception &e)
-  {
-    logger(logging::WARNING) << "exception thrown in refresh(): " << e.what();
-  }
-}
-
-std::error_code WalletService::estimateFusion(uint64_t threshold, const std::vector<std::string> &addresses,
-                                              uint32_t &fusionReadyCount, uint32_t &totalOutputCount)
-{
-
-  try
-  {
-    platform_system::EventLock lk(readyEvent);
-
-    validateAddresses(addresses, currency, logger);
-
-    auto estimateResult = fusionManager.estimate(threshold, addresses);
-    fusionReadyCount = static_cast<uint32_t>(estimateResult.fusionReadyCount);
-    totalOutputCount = static_cast<uint32_t>(estimateResult.totalOutputCount);
-  }
-  catch (std::system_error &x)
-  {
-    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Failed to estimate number of fusion outputs: " << x.what();
-    return x.code();
-  }
-  catch (std::exception &x)
-  {
-    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Failed to estimate number of fusion outputs: " << x.what();
-    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
-  }
-
-  return std::error_code();
-}
-
-std::error_code WalletService::sendFusionTransaction(uint64_t threshold, uint32_t anonymity, const std::vector<std::string> &addresses,
-                                                     const std::string &destinationAddress, std::string &transactionHash)
-{
-
-  try
-  {
-    platform_system::EventLock lk(readyEvent);
-
-    validateAddresses(addresses, currency, logger);
-    if (!destinationAddress.empty())
+    catch (std::exception &e)
     {
-      validateAddresses({destinationAddress}, currency, logger);
+      logger(logging::WARNING) << "getMessagesFromExtra warning: " << e.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
     }
 
-    size_t transactionId = fusionManager.createFusionTransaction(threshold, 0, addresses, destinationAddress);
-    transactionHash = common::podToHex(wallet.getTransaction(transactionId).hash);
-
-    logger(logging::INFO) << "Fusion transaction " << transactionHash << " has been sent";
+    return std::error_code();
   }
-  catch (std::system_error &x)
+
+  void WalletService::refresh()
   {
-    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while sending fusion transaction: " << x.what();
-    return x.code();
+    try
+    {
+      logger(logging::DEBUGGING) << "Refresh is started";
+      for (;;)
+      {
+        auto event = wallet.getEvent();
+        if (event.type == cn::TRANSACTION_CREATED)
+        {
+          size_t transactionId = event.transactionCreated.transactionIndex;
+          transactionIdIndex.emplace(common::podToHex(wallet.getTransaction(transactionId).hash), transactionId);
+        }
+      }
+    }
+    catch (std::system_error &e)
+    {
+      logger(logging::DEBUGGING) << "refresh is stopped: " << e.what();
+    }
+    catch (std::exception &e)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "exception thrown in refresh(): " << e.what();
+    }
   }
-  catch (std::exception &x)
+
+  std::error_code WalletService::estimateFusion(uint64_t threshold, const std::vector<std::string> &addresses,
+                                                uint32_t &fusionReadyCount, uint32_t &totalOutputCount)
   {
-    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while sending fusion transaction: " << x.what();
-    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+
+    uint64_t knownBlockCount = node.getKnownBlockCount();
+    uint64_t localBlockCount = node.getLocalBlockCount();
+    uint64_t diff = knownBlockCount - localBlockCount;
+    if ((localBlockCount == 0) || (diff > 2))
+    {
+      logger(logging::WARNING) << "Daemon is not synchronized";
+      return make_error_code(cn::error::DAEMON_NOT_SYNCED);
+    }
+
+    try
+    {
+      platform_system::EventLock lk(readyEvent);
+
+      validateAddresses(addresses, currency, logger);
+
+      auto estimateResult = fusionManager.estimate(threshold, addresses);
+      fusionReadyCount = static_cast<uint32_t>(estimateResult.fusionReadyCount);
+      totalOutputCount = static_cast<uint32_t>(estimateResult.totalOutputCount);
+    }
+    catch (std::system_error &x)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Failed to estimate number of fusion outputs: " << x.what();
+      return x.code();
+    }
+    catch (std::exception &x)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Failed to estimate number of fusion outputs: " << x.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+    }
+
+    return std::error_code();
   }
 
-  return std::error_code();
-}
-
-void WalletService::reset()
-{
-  payment_service::secureSaveWallet(wallet, config.walletFile, false, false);
-  wallet.stop();
-  wallet.shutdown();
-  inited = false;
-  refreshContext.wait();
-
-  wallet.start();
-  init();
-}
-
-void WalletService::replaceWithNewWallet(const crypto::SecretKey &viewSecretKey)
-{
-  wallet.stop();
-  wallet.shutdown();
-  inited = false;
-  refreshContext.wait();
-
-  transactionIdIndex.clear();
-
-  wallet.start();
-  wallet.initializeWithViewKey(viewSecretKey, config.walletPassword);
-  inited = true;
-}
-
-std::vector<cn::TransactionsInBlockInfo> WalletService::getTransactions(const crypto::Hash &blockHash, size_t blockCount) const
-{
-  std::vector<cn::TransactionsInBlockInfo> result = wallet.getTransactions(blockHash, blockCount);
-  if (result.empty())
+  std::error_code WalletService::sendFusionTransaction(uint64_t threshold, uint32_t anonymity, const std::vector<std::string> &addresses,
+                                                        const std::string &destinationAddress, std::string &transactionHash)
   {
-    throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
+    try
+    {
+      platform_system::EventLock lk(readyEvent);
+
+      uint64_t knownBlockCount = node.getKnownBlockCount();
+      uint64_t localBlockCount = node.getLocalBlockCount();
+      uint64_t diff = knownBlockCount - localBlockCount;
+      if ((localBlockCount == 0) || (diff > 2))
+      {
+        logger(logging::WARNING) << "Daemon is not synchronized";
+        return make_error_code(cn::error::DAEMON_NOT_SYNCED);
+      }
+
+      validateAddresses(addresses, currency, logger);
+      if (!destinationAddress.empty())
+      {
+        validateAddresses({destinationAddress}, currency, logger);
+      }
+
+      size_t transactionId = fusionManager.createFusionTransaction(threshold, 0, addresses, destinationAddress);
+      transactionHash = common::podToHex(wallet.getTransaction(transactionId).hash);
+
+      logger(logging::INFO) << "Fusion transaction " << transactionHash << " has been sent";
+    }
+    catch (std::system_error &x)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while sending fusion transaction: " << x.what();
+      return x.code();
+    }
+    catch (std::exception &x)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while sending fusion transaction: " << x.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+    }
+
+    return std::error_code();
   }
 
-  return result;
-}
-
-std::vector<cn::TransactionsInBlockInfo> WalletService::getTransactions(uint32_t firstBlockIndex, size_t blockCount) const
-{
-  std::vector<cn::TransactionsInBlockInfo> result = wallet.getTransactions(firstBlockIndex, blockCount);
-  if (result.empty())
+  void WalletService::reset()
   {
-    throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
+    wallet.save(cn::WalletSaveLevel::SAVE_KEYS_ONLY);
+    wallet.stop();
+    wallet.shutdown();
+    inited = false;
+    refreshContext.wait();
+
+    wallet.start();
+    init();
   }
 
-  return result;
-}
+  void WalletService::replaceWithNewWallet(const crypto::SecretKey &viewSecretKey)
+  {
+    wallet.stop();
+    wallet.shutdown();
+    inited = false;
+    refreshContext.wait();
 
-std::vector<TransactionHashesInBlockRpcInfo> WalletService::getRpcTransactionHashes(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
-{
-  std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(blockHash, blockCount);
-  std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
-  return convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(filteredTransactions);
-}
+    transactionIdIndex.clear();
 
-std::vector<TransactionHashesInBlockRpcInfo> WalletService::getRpcTransactionHashes(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
-{
-  std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(firstBlockIndex, blockCount);
-  std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
-  return convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(filteredTransactions);
-}
+    size_t i = 0;
+    for (;;)
+    {
+      boost::system::error_code ec;
+      std::string backup = config.walletFile + ".backup";
+      if (i != 0)
+      {
+        backup += "." + std::to_string(i);
+      }
 
-std::vector<TransactionsInBlockRpcInfo> WalletService::getRpcTransactions(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
-{
-  std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(blockHash, blockCount);
-  std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
-  return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(filteredTransactions);
-}
+      if (!boost::filesystem::exists(backup))
+      {
+        boost::filesystem::rename(config.walletFile, backup);
+        logger(logging::DEBUGGING) << "Walletd file '" << config.walletFile << "' backed up to '" << backup << '\'';
+        break;
+      }
+    }
 
-std::vector<TransactionsInBlockRpcInfo> WalletService::getRpcTransactions(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
-{
-  std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(firstBlockIndex, blockCount);
-  std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
-  return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(filteredTransactions);
-}
+    wallet.start();
+    wallet.initializeWithViewKey(config.walletFile, config.walletPassword, viewSecretKey);
+    inited = true;
+  }
+
+  std::error_code WalletService::replaceWithNewWallet(const std::string &viewSecretKeyText)
+  {
+    try
+    {
+      platform_system::EventLock lk(readyEvent);
+
+      crypto::SecretKey viewSecretKey;
+      if (!common::podFromHex(viewSecretKeyText, viewSecretKey))
+      {
+        logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Cannot restore view secret key: " << viewSecretKeyText;
+        return make_error_code(cn::error::WalletServiceErrorCode::WRONG_KEY_FORMAT);
+      }
+
+      crypto::PublicKey viewPublicKey;
+      if (!crypto::secret_key_to_public_key(viewSecretKey, viewPublicKey))
+      {
+        logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Cannot derive view public key, wrong secret key: " << viewSecretKeyText;
+        return make_error_code(cn::error::WalletServiceErrorCode::WRONG_KEY_FORMAT);
+      }
+
+      replaceWithNewWallet(viewSecretKey);
+      logger(logging::INFO, logging::BRIGHT_WHITE) << "The container has been replaced";
+    }
+    catch (std::system_error &x)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while replacing container: " << x.what();
+      return x.code();
+    }
+    catch (std::exception &x)
+    {
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while replacing container: " << x.what();
+      return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
+    }
+
+    return std::error_code();
+  }
+
+  std::vector<cn::TransactionsInBlockInfo> WalletService::getTransactions(const crypto::Hash &blockHash, size_t blockCount) const
+  {
+    std::vector<cn::TransactionsInBlockInfo> result = wallet.getTransactions(blockHash, blockCount);
+    if (result.empty())
+    {
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
+    }
+
+    return result;
+  }
+
+  std::vector<cn::TransactionsInBlockInfo> WalletService::getTransactions(uint32_t firstBlockIndex, size_t blockCount) const
+  {
+    std::vector<cn::TransactionsInBlockInfo> result = wallet.getTransactions(firstBlockIndex, blockCount);
+    if (result.empty())
+    {
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
+    }
+
+    return result;
+  }
+
+  std::vector<cn::DepositsInBlockInfo> WalletService::getDeposits(const crypto::Hash &blockHash, size_t blockCount) const
+  {
+    std::vector<cn::DepositsInBlockInfo> result = wallet.getDeposits(blockHash, blockCount);
+    if (result.empty())
+    {
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
+    }
+
+    return result;
+  }
+
+  std::vector<cn::DepositsInBlockInfo> WalletService::getDeposits(uint32_t firstBlockIndex, size_t blockCount) const
+  {
+    std::vector<cn::DepositsInBlockInfo> result = wallet.getDeposits(firstBlockIndex, blockCount);
+    if (result.empty())
+    {
+      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
+    }
+
+    return result;
+  }
+
+  std::vector<TransactionHashesInBlockRpcInfo> WalletService::getRpcTransactionHashes(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
+  {
+    std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(blockHash, blockCount);
+    std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
+    return convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(filteredTransactions);
+  }
+
+  std::vector<TransactionHashesInBlockRpcInfo> WalletService::getRpcTransactionHashes(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
+  {
+    std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(firstBlockIndex, blockCount);
+    std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
+    return convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(filteredTransactions);
+  }
+
+  std::vector<TransactionsInBlockRpcInfo> WalletService::getRpcTransactions(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
+  {
+    uint32_t knownBlockCount = node.getKnownBlockCount();
+    std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(blockHash, blockCount);
+    std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
+    return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(filteredTransactions, knownBlockCount);
+  }
+
+  std::vector<TransactionsInBlockRpcInfo> WalletService::getRpcTransactions(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
+  {
+    uint32_t knownBlockCount = node.getKnownBlockCount();
+    std::vector<cn::TransactionsInBlockInfo> allTransactions = getTransactions(firstBlockIndex, blockCount);
+    std::vector<cn::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);
+    return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(filteredTransactions, knownBlockCount);
+  }
 
 } //namespace payment_service

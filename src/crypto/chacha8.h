@@ -11,6 +11,7 @@
 #include <string>
 
 #include "hash.h"
+#include "randomize.h"
 
 namespace crypto {
   extern "C" {
@@ -44,6 +45,16 @@ namespace crypto {
     cn_slow_hash(context, password.data(), password.size(), pwd_hash);
     memcpy(static_cast<void*>(&key), &pwd_hash, sizeof(key));
     memset(&pwd_hash, 0, sizeof(pwd_hash));
+  }
+
+  /**
+   * Generates a random chacha8 IV
+   */
+  inline chacha8_iv randomChachaIV()
+  {
+    chacha8_iv result;
+    randomize::randomBytes(CHACHA8_IV_SIZE, result.data);
+    return result;
   }
 }
 
