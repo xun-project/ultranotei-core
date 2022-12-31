@@ -5,7 +5,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "WalletSerialization.h"
+#include "WalletSerializationV1.h"
 
 #include <string>
 #include <sstream>
@@ -476,7 +476,7 @@ void WalletSerializer::saveTransfers(common::IOutputStream& destination, CryptoC
   }
 }
 
-void WalletSerializer::load(const std::string& password, common::IInputStream& source) {
+void WalletSerializer::load(const crypto::chacha8_key &key, common::IInputStream& source) {
   cn::BinaryInputStreamSerializer s(source);
   s.beginObject("wallet");
 
@@ -485,22 +485,22 @@ void WalletSerializer::load(const std::string& password, common::IInputStream& s
   if (version > SERIALIZATION_VERSION) {
     throw std::system_error(make_error_code(error::WRONG_VERSION));
   } else if (version > 2) {
-    loadWallet(source, password, version);
+    loadWallet(source, key, version);
   } else {
-    loadWalletV1(source, password);
+    loadWalletV1(source, key);
   }
 
   s.endObject();
 }
 
-void WalletSerializer::loadWallet(common::IInputStream& source, const std::string& password, uint32_t version) {
+void WalletSerializer::loadWallet(common::IInputStream& source, const crypto::chacha8_key &key, uint32_t version) {
   cn::CryptoContext cryptoContext;
 
   bool details = false;
   bool cache = false;
 
   loadIv(source, cryptoContext.iv);
-  generateKey(password, cryptoContext.key);
+  cryptoContext.key = key;
 
   loadKeys(source, cryptoContext);
   checkKeys();
@@ -549,13 +549,13 @@ void WalletSerializer::loadWallet(common::IInputStream& source, const std::strin
   }
 }
 
-void WalletSerializer::loadWalletV1(common::IInputStream& source, const std::string& password) {
+void WalletSerializer::loadWalletV1(common::IInputStream& source, const crypto::chacha8_key &key) {
   cn::CryptoContext cryptoContext;
 
   cn::BinaryInputStreamSerializer encrypted(source);
 
   encrypted(cryptoContext.iv, "iv");
-  generateKey(password, cryptoContext.key);
+  cryptoContext.key = key;
 
   std::string cipher;
   encrypted(cipher, "data");

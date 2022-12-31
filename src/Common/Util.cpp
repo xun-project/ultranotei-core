@@ -19,6 +19,7 @@
 #include <sys/utsname.h>
 #endif
 
+#pragma warning(disable : 4996)
 
 namespace tools
 {
