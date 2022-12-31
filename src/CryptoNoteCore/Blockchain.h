@@ -7,6 +7,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #pragma once
+#define STDC_HEADERS 1
 
 #include <atomic>
 

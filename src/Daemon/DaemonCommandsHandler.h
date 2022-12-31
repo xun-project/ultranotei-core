@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <boost/bind.hpp>
+
 #include "Common/ConsoleHandler.h"
 
 #include <Logging/LoggerRef.h>
