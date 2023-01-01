@@ -8,6 +8,8 @@
 
 #pragma once
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+
 #include <boost/bind.hpp>
 
 #include "Common/ConsoleHandler.h"
