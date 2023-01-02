@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -98,9 +99,9 @@ private:
   void loadWallet();
   void loadTransactionIdIndex();
 
-  void replaceWithNewWallet(const crypto::SecretKey& viewSecretKey);
+  void replaceWithNewWallet(const crypto::SecretKey &viewSecretKey);
 
-  std::vector<cn::TransactionsInBlockInfo> getTransactions(const crypto::Hash& blockHash, size_t blockCount) const;
+  std::vector<cn::TransactionsInBlockInfo> getTransactions(const crypto::Hash &blockHash, size_t blockCount) const;
   std::vector<cn::TransactionsInBlockInfo> getTransactions(uint32_t firstBlockIndex, size_t blockCount) const;
 
   std::vector<cn::DepositsInBlockInfo> getDeposits(const crypto::Hash &blockHash, size_t blockCount) const;
@@ -109,17 +110,20 @@ private:
   std::vector<TransactionHashesInBlockRpcInfo> getRpcTransactionHashes(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const;
   std::vector<TransactionHashesInBlockRpcInfo> getRpcTransactionHashes(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const;
 
-  std::vector<TransactionsInBlockRpcInfo> getRpcTransactions(const crypto::Hash& blockHash, size_t blockCount, const TransactionsInBlockInfoFilter& filter) const;
+  std::vector<TransactionsInBlockRpcInfo> getRpcTransactions(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter& filter) const;
   std::vector<TransactionsInBlockRpcInfo> getRpcTransactions(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter& filter) const;
 
+  TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(const cn::WalletTransactionWithTransfers &transactionWithTransfers, const uint32_t &knownBlockCount) const;
+  std::vector<TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(const std::vector<cn::TransactionsInBlockInfo> &blocks, const uint32_t &knownBlockCount) const;
+  
   const cn::Currency& currency;
-  cn::IWallet& wallet;
-  cn::IFusionManager& fusionManager;
-  cn::INode& node;
-  const WalletConfiguration& config;
+  cn::IWallet &wallet;
+  cn::IFusionManager &fusionManager;
+  cn::INode &node;
+  const WalletConfiguration &config;
   bool inited;
   logging::LoggerRef logger;
-  platform_system::Dispatcher& dispatcher;
+  platform_system::Dispatcher &dispatcher;
   platform_system::Event readyEvent;
   platform_system::ContextGroup refreshContext;
 
