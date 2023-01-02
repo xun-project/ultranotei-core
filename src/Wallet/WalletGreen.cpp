@@ -3149,7 +3149,7 @@ void WalletGreen::transactionUpdated(TransactionInformation transactionInfo, con
     return;
   }
 
-  size_t firstDepositId = std::numeric_limits<DepositId>::max();
+  size_t firstDepositId = WALLET_INVALID_DEPOSIT_ID;
   size_t depositCount = 0;
 
   bool updated = false;

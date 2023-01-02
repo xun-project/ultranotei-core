@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -93,7 +93,7 @@ struct WalletTransaction {
   uint64_t creationTime;
   uint64_t unlockTime;
   std::string extra;
-  size_t firstDepositId = std::numeric_limits<DepositId>::max();
+  size_t firstDepositId = WALLET_INVALID_DEPOSIT_ID;
   size_t depositCount = 0;
   bool isBase;
 };
@@ -157,7 +157,7 @@ struct DepositsInBlockInfo
 
 class IWallet {
 public:
-  virtual ~IWallet() {}
+  virtual ~IWallet() = default;
 
   virtual void initialize(const std::string& path, const std::string& password) = 0;
   virtual void createDeposit(uint64_t amount, uint64_t term, std::string sourceAddress, std::string destinationAddress, std::string &transactionHash) = 0;
