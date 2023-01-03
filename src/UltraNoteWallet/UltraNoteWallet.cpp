@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2022 UltraNote Infinity developers
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -628,7 +628,7 @@ std::string ultranote_wallet::wallet_menu(bool do_ext)
 
   if (do_ext)
   {
-    menu_item += "\t\tUltraNote Wallet Extended Menu\n\n";
+    menu_item += "\t\tUltraNote Infinity Wallet Extended Menu\n\n";
     menu_item += "[ ] = Optional arg\n";
     menu_item += "\"balance_proof <amount>\"                           - Generate a signature proving that you own at least <amount> | [<message>]\n";
     menu_item += "\"create_integrated <payment_id>\"                   - Create an integrated address with a payment ID.\n";
@@ -646,7 +646,7 @@ std::string ultranote_wallet::wallet_menu(bool do_ext)
   }
   else
   {
-    menu_item += "\t\tUltraNote Wallet Menu\n\n";
+    menu_item += "\t\tUltraNote Infinity Wallet Menu\n\n";
     menu_item += "[ ] = Optional arg\n\n";
     menu_item += "\"help\"                        - Shows this help dialog.\n";
     menu_item += "\"ext_help\"                    - Shows this extended help dialog.\n\n";

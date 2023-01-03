@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2022 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +11,7 @@
 #include <limits>
 #include <vector>
 #include "crypto/hash.h"
+#include "IWallet.h"
 #include "ITransaction.h"
 #include "IObservable.h"
 #include "IStreamSerializable.h"
@@ -24,7 +26,7 @@ struct TransactionInformation {
   crypto::PublicKey publicKey;
   uint32_t blockHeight;
   uint64_t timestamp;
-  size_t firstDepositId;
+  size_t firstDepositId = WALLET_INVALID_DEPOSIT_ID;
   size_t depositCount = 0;
   uint64_t unlockTime;
   uint64_t totalAmountIn;
@@ -95,6 +97,9 @@ public:
     TransferAvailable,
     TransferSpent
   };
+
+  virtual ~ITransfersContainer() = default;
+
 
   virtual size_t transfersCount() const = 0;
   virtual size_t transactionsCount() const = 0;
