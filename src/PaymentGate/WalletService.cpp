@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
 // Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -294,146 +294,145 @@ namespace
 
   //KD2
 
-  
-  std::vector<payment_service::TransactionHashesInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(
-      const std::vector<cn::TransactionsInBlockInfo> &blocks)
-  {
-
-    std::vector<payment_service::TransactionHashesInBlockRpcInfo> transactionHashes;
-    transactionHashes.reserve(blocks.size());
-    for (const cn::TransactionsInBlockInfo &block : blocks)
+    std::vector<payment_service::TransactionHashesInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionHashesInBlockRpcInfo(
+        const std::vector<cn::TransactionsInBlockInfo> &blocks)
     {
-      payment_service::TransactionHashesInBlockRpcInfo item;
-      item.blockHash = common::podToHex(block.blockHash);
 
-      for (const cn::WalletTransactionWithTransfers &transaction : block.transactions)
+      std::vector<payment_service::TransactionHashesInBlockRpcInfo> transactionHashes;
+      transactionHashes.reserve(blocks.size());
+      for (const cn::TransactionsInBlockInfo &block : blocks)
       {
-        item.transactionHashes.emplace_back(common::podToHex(transaction.transaction.hash));
+        payment_service::TransactionHashesInBlockRpcInfo item;
+        item.blockHash = common::podToHex(block.blockHash);
+
+        for (const cn::WalletTransactionWithTransfers &transaction : block.transactions)
+        {
+          item.transactionHashes.emplace_back(common::podToHex(transaction.transaction.hash));
+        }
+
+        transactionHashes.push_back(std::move(item));
       }
 
-      transactionHashes.push_back(std::move(item));
+      return transactionHashes;
     }
 
-    return transactionHashes;
-  }
-
-  void validateAddresses(const std::vector<std::string> &addresses, const cn::Currency &currency, logging::LoggerRef logger)
-  {
-    for (const auto &address : addresses)
+    void validateAddresses(const std::vector<std::string> &addresses, const cn::Currency &currency, logging::LoggerRef logger)
     {
-      if (!cn::validateAddress(address, currency))
+      for (const auto &address : addresses)
       {
-        logger(logging::WARNING) << "Can't validate address " << address;
-        throw std::system_error(make_error_code(cn::error::BAD_ADDRESS));
-      }
-    }
-  }
-
-  std::vector<std::string> collectDestinationAddresses(const std::vector<payment_service::WalletRpcOrder> &orders)
-  {
-    std::vector<std::string> result;
-
-    result.reserve(orders.size());
-    for (const auto &order : orders)
-    {
-      result.push_back(order.address);
-    }
-
-    return result;
-  }
-
-  std::vector<payment_service::WalletRpcMessage> collectMessages(const std::vector<payment_service::WalletRpcOrder> &orders)
-  {
-    std::vector<payment_service::WalletRpcMessage> result;
-
-    result.reserve(orders.size());
-    for (const auto &order : orders)
-    {
-      if (!order.message.empty())
-      {
-        result.push_back({order.address, order.message});
+        if (!cn::validateAddress(address, currency))
+        {
+          logger(logging::WARNING) << "Can't validate address " << address;
+          throw std::system_error(make_error_code(cn::error::BAD_ADDRESS));
+        }
       }
     }
 
-    return result;
-  }
-
-  std::vector<cn::WalletOrder> convertWalletRpcOrdersToWalletOrders(const std::vector<payment_service::WalletRpcOrder> &orders)
-  {
-    std::vector<cn::WalletOrder> result;
-    result.reserve(orders.size());
-
-    for (const auto &order : orders)
+    std::vector<std::string> collectDestinationAddresses(const std::vector<payment_service::WalletRpcOrder> &orders)
     {
-      result.emplace_back(cn::WalletOrder{order.address, order.amount});
+      std::vector<std::string> result;
+
+      result.reserve(orders.size());
+      for (const auto &order : orders)
+      {
+        result.push_back(order.address);
+      }
+
+      return result;
     }
 
-    return result;
-  }
-
-  std::vector<cn::WalletMessage> convertWalletRpcMessagesToWalletMessages(const std::vector<payment_service::WalletRpcMessage> &messages)
-  {
-    std::vector<cn::WalletMessage> result;
-    result.reserve(messages.size());
-
-    for (const auto &message : messages)
+    std::vector<payment_service::WalletRpcMessage> collectMessages(const std::vector<payment_service::WalletRpcOrder> &orders)
     {
-      result.emplace_back(cn::WalletMessage{message.address, message.message});
+      std::vector<payment_service::WalletRpcMessage> result;
+
+      result.reserve(orders.size());
+      for (const auto &order : orders)
+      {
+        if (!order.message.empty())
+        {
+          result.push_back({order.address, order.message});
+        }
+      }
+
+      return result;
     }
 
-    return result;
-  }
+    std::vector<cn::WalletOrder> convertWalletRpcOrdersToWalletOrders(const std::vector<payment_service::WalletRpcOrder> &orders)
+    {
+      std::vector<cn::WalletOrder> result;
+      result.reserve(orders.size());
 
-} // namespace
+      for (const auto &order : orders)
+      {
+        result.emplace_back(cn::WalletOrder{order.address, order.amount});
+      }
 
-void createWalletFile(std::fstream &walletFile, const std::string &filename)
-{
-  boost::filesystem::path pathToWalletFile(filename);
-  boost::filesystem::path directory = pathToWalletFile.parent_path();
-  if (!directory.empty() && !tools::directoryExists(directory.string()))
+      return result;
+    }
+
+    std::vector<cn::WalletMessage> convertWalletRpcMessagesToWalletMessages(const std::vector<payment_service::WalletRpcMessage> &messages)
+    {
+      std::vector<cn::WalletMessage> result;
+      result.reserve(messages.size());
+
+      for (const auto &message : messages)
+      {
+        result.emplace_back(cn::WalletMessage{message.address, message.message});
+      }
+
+      return result;
+    }
+
+  } // namespace
+
+  void createWalletFile(std::fstream &walletFile, const std::string &filename)
   {
-    throw std::runtime_error("Directory does not exist: " + directory.string());
-  }
+    boost::filesystem::path pathToWalletFile(filename);
+    boost::filesystem::path directory = pathToWalletFile.parent_path();
+    if (!directory.empty() && !tools::directoryExists(directory.string()))
+    {
+      throw std::runtime_error("Directory does not exist: " + directory.string());
+    }
 
-  walletFile.open(filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::binary);
-  if (walletFile)
-  {
+    walletFile.open(filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::binary);
+    if (walletFile)
+    {
+      walletFile.close();
+      throw std::runtime_error("Wallet file already exists");
+    }
+
+    walletFile.open(filename.c_str(), std::fstream::out);
     walletFile.close();
-    throw std::runtime_error("Wallet file already exists");
+
+    walletFile.open(filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::binary);
   }
 
-  walletFile.open(filename.c_str(), std::fstream::out);
-  walletFile.close();
-
-  walletFile.open(filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::binary);
-}
-
-void saveWallet(cn::IWallet &wallet, std::fstream &walletFile, bool saveDetailed = true, bool saveCache = true)
-{
-  wallet.save();
-  walletFile.flush();
-}
-
-void secureSaveWallet(cn::IWallet &wallet, const std::string &path, bool saveDetailed = true, bool saveCache = true)
-{
-  std::fstream tempFile;
-  std::string tempFilePath = createTemporaryFile(path, tempFile);
-
-  try
+  void saveWallet(cn::IWallet &wallet, std::fstream &walletFile, bool saveDetailed = true, bool saveCache = true)
   {
-    saveWallet(wallet, tempFile, saveDetailed, saveCache);
+    wallet.save();
+    walletFile.flush();
   }
-  catch (std::exception &)
+
+  void secureSaveWallet(cn::IWallet &wallet, const std::string &path, bool saveDetailed = true, bool saveCache = true)
   {
-    deleteFile(tempFilePath);
+    std::fstream tempFile;
+    std::string tempFilePath = createTemporaryFile(path, tempFile);
+
+    try
+    {
+      saveWallet(wallet, tempFile, saveDetailed, saveCache);
+    }
+    catch (std::exception &)
+    {
+      deleteFile(tempFilePath);
+      tempFile.close();
+      throw;
+    }
     tempFile.close();
-    throw;
+
+    replaceWalletFiles(path, tempFilePath);
   }
-  tempFile.close();
-
-  replaceWalletFiles(path, tempFilePath);
-}
-
+  
 /* Generate a new wallet (-g) or import a new wallet if the secret keys have been specified */
 void generateNewWallet(
     const cn::Currency &currency,
@@ -657,7 +656,7 @@ std::error_code WalletService::resetWallet()
   return std::error_code();
 }
 
-std::error_code WalletService::exportWallet(const std::string &fileName)
+ std::error_code WalletService::exportWallet(const std::string &fileName, bool keysOnly)
 {
   try
   {
@@ -672,35 +671,17 @@ std::error_code WalletService::exportWallet(const std::string &fileName)
     boost::filesystem::path walletPath(config.walletFile);
     boost::filesystem::path exportPath = walletPath.parent_path() / fileName;
 
-    logger(logging::INFO, logging::BRIGHT_WHITE) << "Exporting wallet to " << exportPath.string();
-    wallet.exportWallet(exportPath.string());
-  }
-  catch (std::system_error &x)
-  {
-    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while exporting wallet: " << x.what();
-    return x.code();
-  }
-  catch (std::exception &x)
-  {
-    logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Error while exporting wallet: " << x.what();
-    return make_error_code(cn::error::INTERNAL_WALLET_ERROR);
-  }
-
-  return std::error_code();
-}
-
-std::error_code WalletService::resetWallet(const uint32_t scanHeight)
-{
-  try
-  {
-    platform_system::EventLock lk(readyEvent);
-
-    logger(logging::INFO, logging::BRIGHT_WHITE) << "Resetting wallet";
-
-    if (!inited)
+if (keysOnly)
+	
     {
-      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Reset impossible: Wallet Service is not initialized";
-      return make_error_code(cn::error::NOT_INITIALIZED);
+        logger(logging::INFO, logging::BRIGHT_WHITE) << "Exporting wallet keys to " << exportPath.string();
+        wallet.exportWallet(exportPath.string(), WalletSaveLevel::SAVE_KEYS_ONLY);
+      }
+      else
+      {
+        logger(logging::INFO, logging::BRIGHT_WHITE) << "Exporting wallet to " << exportPath.string();
+        wallet.exportWallet(exportPath.string(), WalletSaveLevel::SAVE_ALL);
+      }
     }
 
     wallet.reset(scanHeight);
@@ -2021,7 +2002,6 @@ std::error_code WalletService::getStatus(
 
       return rpcBlocks;
     }
-
 
 
 } //namespace payment_service

@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,12 +12,14 @@
 namespace payment_service
 {
 
-void Save::Request::serialize(cn::ISerializer & /*serializer*/)
+void Save::Request::serialize(const cn::ISerializer &) const
 {
+	// Nothing to do here.
 }
 
-void Save::Response::serialize(cn::ISerializer & /*serializer*/)
+void Save::Response::serialize(const cn::ISerializer &) const
 {
+	// Nothing to do here.
 }
 
 void Reset::Request::serialize(cn::ISerializer& serializer) {
@@ -23,11 +27,24 @@ void Reset::Request::serialize(cn::ISerializer& serializer) {
   serializer(scanHeight, "scanHeight");
 }
 
-void Reset::Response::serialize(cn::ISerializer& serializer) {
+void Reset::Response::serialize(const cn::ISerializer &) const
+{
+  // Nothing to do here.
 }
 
-void GetViewKey::Request::serialize(cn::ISerializer &serializer)
+void ExportWalletKeys::Request::serialize(cn::ISerializer &serializer)
 {
+  serializer(exportFilename, "exportFilename");
+}
+
+void ExportWalletKeys::Response::serialize(const cn::ISerializer &) const
+{
+  // Nothing to do here.
+}
+
+void GetViewKey::Request::serialize(const cn::ISerializer &) const
+{
+	//Nothing to do here.
 }
 
 void GetViewKey::Response::serialize(cn::ISerializer &serializer)
@@ -35,8 +52,9 @@ void GetViewKey::Response::serialize(cn::ISerializer &serializer)
   serializer(viewSecretKey, "privateViewKey");
 }
 
-void GetStatus::Request::serialize(cn::ISerializer &serializer)
+void GetStatus::Request::serialize(const cn::ISerializer &) const
 {
+	// Nothing to do here. 
 }
 
 void GetStatus::Response::serialize(cn::ISerializer &serializer)
@@ -104,8 +122,9 @@ void GetDeposit::Response::serialize(cn::ISerializer &serializer)
   serializer(address, "address");
 }
 
-void GetAddresses::Request::serialize(cn::ISerializer &serializer)
+void GetAddresses::Request::serialize(const cn::ISerializer &) const
 {
+	// Nothing to do here.
 }
 
 void GetAddresses::Response::serialize(cn::ISerializer &serializer)
@@ -136,6 +155,7 @@ void CreateAddressList::Request::serialize(cn::ISerializer &serializer)
   {
     throw RequestSerializationError();
   }
+    serializer(reset, "reset");
 }
 
 void CreateAddressList::Response::serialize(cn::ISerializer &serializer)
@@ -151,8 +171,9 @@ void DeleteAddress::Request::serialize(cn::ISerializer &serializer)
   }
 }
 
-void DeleteAddress::Response::serialize(cn::ISerializer &serializer)
+void DeleteAddress::Response::serialize(const cn::ISerializer &) const
 {
+  // Nothing to do here.
 }
 
 void GetSpendKeys::Request::serialize(cn::ISerializer &serializer)
@@ -423,8 +444,9 @@ void CreateDelayedTransaction::Response::serialize(cn::ISerializer &serializer)
   serializer(transactionHash, "transactionHash");
 }
 
-void GetDelayedTransactionHashes::Request::serialize(cn::ISerializer &serializer)
+void GetDelayedTransactionHashes::Request::serialize(const cn::ISerializer &) const
 {
+  // Nothing to do here.
 }
 
 void GetDelayedTransactionHashes::Response::serialize(cn::ISerializer &serializer)
@@ -440,8 +462,9 @@ void DeleteDelayedTransaction::Request::serialize(cn::ISerializer &serializer)
   }
 }
 
-void DeleteDelayedTransaction::Response::serialize(cn::ISerializer &serializer)
+void DeleteDelayedTransaction::Response::serialize(const cn::ISerializer &) const
 {
+  // Nothing to do here.
 }
 
 void SendDelayedTransaction::Request::serialize(cn::ISerializer &serializer)
@@ -452,8 +475,17 @@ void SendDelayedTransaction::Request::serialize(cn::ISerializer &serializer)
   }
 }
 
-void SendDelayedTransaction::Response::serialize(cn::ISerializer &serializer)
+void SendDelayedTransaction::Response::serialize(const cn::ISerializer &) const
 {
+  // Nothing to do here.
+}
+
+void GetMessagesFromExtra::Request::serialize(cn::ISerializer &serializer)
+{
+  if (!serializer(extra, "extra"))
+  {
+    throw RequestSerializationError();
+  }
 }
 
 void GetMessagesFromExtra::Request::serialize(cn::ISerializer &serializer)

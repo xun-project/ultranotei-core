@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2022 UltraNote Infinity Developers
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -485,7 +485,8 @@ void WalletGreen::initialize(
 
     /* Now pair each of those amounts to the change address
      which in the case of a deposit is the source address */
-    typedef std::pair<const AccountPublicAddress *, uint64_t> AmountToAddress;
+    
+	typedef std::pair<const AccountPublicAddress *, uint64_t> AmountToAddress;
     std::vector<AmountToAddress> amountsToAddresses;
     for (const auto &output : decomposedChange)
     {
@@ -497,6 +498,7 @@ void WalletGreen::initialize(
     std::sort(amountsToAddresses.begin(), amountsToAddresses.end(), [](const AmountToAddress &left, const AmountToAddress &right) {
       return left.second < right.second;
     });
+
 
     /* Add the change outputs to the transaction */
     try
@@ -906,13 +908,12 @@ void WalletGreen::initWithKeys(const std::string &path, const std::string &passw
     incIv(dstPrefix->nextIv);
   }
 
-  void WalletGreen::exportWallet(const std::string &path, bool encrypt, WalletSaveLevel saveLevel, const std::string &extra)
+   void WalletGreen::exportWallet(const std::string &path, WalletSaveLevel saveLevel, bool encrypt, const std::string &extra)
   {
     m_logger(INFO, BRIGHT_WHITE) << "Exporting container...";
 
     throwIfNotInitialized();
     throwIfStopped();
-
     stopBlockchainSynchronizer();
 
     try
@@ -959,7 +960,7 @@ void WalletGreen::initWithKeys(const std::string &path, const std::string &passw
     startBlockchainSynchronizer();
     m_logger(INFO, BRIGHT_WHITE) << "Container exported";
   }
-
+  
   void WalletGreen::convertAndLoadWalletFile(const std::string &path, std::ifstream &&walletFileStream)
   {
 
@@ -2013,11 +2014,11 @@ size_t WalletGreen::insertOutgoingTransactionAndPushEvent(const Hash& transactio
   insertTx.state = WalletTransactionState::CREATED;
   insertTx.creationTime = static_cast<uint64_t>(time(nullptr));
   insertTx.unlockTime = unlockTimestamp;
-  insertTx.firstDepositId = cn::WALLET_INVALID_DEPOSIT_ID;
+  
   insertTx.blockHeight = cn::WALLET_UNCONFIRMED_TRANSACTION_HEIGHT;
   insertTx.extra.assign(reinterpret_cast<const char*>(extra.data()), extra.size());
   insertTx.fee = fee;
-  insertTx.depositCount = 77;
+  
   insertTx.hash = transactionHash;
   insertTx.totalAmount = 0; // 0 until transactionHandlingEnd() is called
   insertTx.timestamp = 0; //0 until included in a block
@@ -2155,18 +2156,16 @@ size_t WalletGreen::insertBlockchainTransaction(const TransactionInformation& in
       return 0;
     }
 
-    /* Get the block timestamp from the node if the node has it */
-    uint64_t timestamp = static_cast<uint64_t>(std::time(nullptr));
-
+  
     /* Get the amount of seconds since the blockchain launched */
-    uint64_t secondsSinceLaunch = scanHeight * cn::parameters::DIFFICULTY_TARGET;
+    double secondsSinceLaunch = scanHeight * cn::parameters::DIFFICULTY_TARGET;
 
     /* Add a bit of a buffer in case of difficulty weirdness, blocks coming
 	   out too fast */
-    secondsSinceLaunch = static_cast<uint64_t>(secondsSinceLaunch * 0.95);
+    secondsSinceLaunch = secondsSinceLaunch * 0.95;
 
     /* Get the genesis block timestamp and add the time since launch */
-    timestamp = UINT64_C(1527135120) + secondsSinceLaunch;
+    uint64_t timestamp = m_currency.getGenesisTimestamp() + static_cast<uint64_t>(secondsSinceLaunch);
 
     /* Timestamp in the future */
     if (timestamp >= static_cast<uint64_t>(std::time(nullptr)))
@@ -2443,7 +2442,30 @@ std::unique_ptr<cn::ITransaction> WalletGreen::makeTransaction(const std::vector
   std::vector<InputInfo>& keysInfo, const std::vector<WalletMessage>& messages, const std::string& extra, uint64_t unlockTimestamp, crypto::SecretKey &transactionSK) {
 
   std::unique_ptr<ITransaction> tx = createTransaction();
+  
+    using AmountToAddress = std::pair<const AccountPublicAddress *, uint64_t>;
+    std::vector<AmountToAddress> amountsToAddresses;
+    for (const auto &output : decomposedOutputs)
+    {
+      for (auto amount : output.amounts)
+      {
+        amountsToAddresses.emplace_back(AmountToAddress{&output.receiver, amount});
+      }
+    }
 
+    std::shuffle(amountsToAddresses.begin(), amountsToAddresses.end(), std::default_random_engine{crypto::rand<std::default_random_engine::result_type>()});
+    std::sort(amountsToAddresses.begin(), amountsToAddresses.end(), [](const AmountToAddress &left, const AmountToAddress &right) {
+      return left.second < right.second;
+    });
+
+    tx->setUnlockTime(unlockTimestamp);
+
+    for (auto &input : keysInfo)
+    {
+      tx->addInput(makeAccountKeys(*input.walletRecord), input.keyInfo, input.ephKeys);
+    }
+
+  tx->setDeterministicTransactionSecretKey(m_viewSecretKey);
   tx->getTransactionSecretKey(transactionSK);
   crypto::PublicKey publicKey = tx->getTransactionPublicKey();
   cn::KeyPair kp = { publicKey, transactionSK };
@@ -2458,33 +2480,21 @@ std::unique_ptr<cn::ITransaction> WalletGreen::makeTransaction(const std::vector
     tx->appendExtra(ba);
   }
 
-  typedef std::pair<const AccountPublicAddress*, uint64_t> AmountToAddress;
-  std::vector<AmountToAddress> amountsToAddresses;
-  for (const auto& output: decomposedOutputs) {
-    for (auto amount: output.amounts) {
-      amountsToAddresses.emplace_back(AmountToAddress{&output.receiver, amount});
-    }
-  }
 
-  std::shuffle(amountsToAddresses.begin(), amountsToAddresses.end(), std::default_random_engine{crypto::rand<std::default_random_engine::result_type>()});
-  std::sort(amountsToAddresses.begin(), amountsToAddresses.end(), [] (const AmountToAddress& left, const AmountToAddress& right) {
-    return left.second < right.second;
-  });
 
   for (const auto& amountToAddress: amountsToAddresses) {
     tx->addOutput(amountToAddress.second, *amountToAddress.first);
   }
 
-  tx->setUnlockTime(unlockTimestamp);
+  
   tx->appendExtra(common::asBinaryArray(extra));
 
-  for (auto& input: keysInfo) {
-    tx->addInput(makeAccountKeys(*input.walletRecord), input.keyInfo, input.ephKeys);
-  }
+ 
 
   size_t i = 0;
-  for(auto& input: keysInfo) {
-    tx->signInputKey(i++, input.keyInfo, input.ephKeys);
+  for (const auto &input : keysInfo)
+    tx->signInputKey(i, input.keyInfo, input.ephKeys);
+      i++;
   }
 
   return tx;

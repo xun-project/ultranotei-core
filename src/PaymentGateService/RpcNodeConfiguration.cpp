@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,11 +11,6 @@
 namespace payment_service {
 
 namespace po = boost::program_options;
-
-RpcNodeConfiguration::RpcNodeConfiguration() {
-  daemonHost = "";
-  daemonPort = 0;
-}
 
 void RpcNodeConfiguration::initOptions(boost::program_options::options_description& desc) {
   desc.add_options()
@@ -29,6 +25,16 @@ void RpcNodeConfiguration::init(const boost::program_options::variables_map& opt
 
   if (options.count("daemon-port") != 0 && (!options["daemon-port"].defaulted() || daemonPort == 0)) {
     daemonPort = options["daemon-port"].as<uint16_t>();
+  }
+
+  bool testnet = options["testnet"].as<bool>();
+  if (testnet)
+  {
+    daemonPort = cn::TESTNET_RPC_DEFAULT_PORT;
+    if (!options["daemon-port"].defaulted())
+    {
+      daemonPort = options["daemon-port"].as<uint16_t>();
+    }
   }
 }
 

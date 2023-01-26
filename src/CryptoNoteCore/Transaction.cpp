@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2020 UltraNote Network & UlraNote Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -106,6 +106,7 @@ namespace cn {
     // secret key
     virtual bool getTransactionSecretKey(SecretKey& key) const override;
     virtual void setTransactionSecretKey(const SecretKey& key) override;
+	void setDeterministicTransactionSecretKey(const SecretKey& key) override;
 
   private:
 
@@ -231,6 +232,22 @@ namespace cn {
 
     secretKey = key;
   }
+  
+    void TransactionImpl::setDeterministicTransactionSecretKey(const SecretKey& key)
+  {
+    checkIfSigning();
+    KeyPair deterministicTxKeys;
+    generateDeterministicTransactionKeys(getTransactionInputsHash(), key, deterministicTxKeys);
+
+    TransactionExtraPublicKey pk = { deterministicTxKeys.publicKey };
+    extra.set(pk);
+
+    transaction.extra = extra.serialize();
+
+    secretKey = deterministicTxKeys.secretKey;
+  }
+
+
 
   size_t TransactionImpl::addInput(const KeyInput& input) {
     checkIfSigning();

@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,26 +11,12 @@
 #include <algorithm>
 #include <boost/program_options.hpp>
 
-#include "Logging/ILogger.h"
 
 namespace po = boost::program_options;
 
 namespace payment_service {
 
-Configuration::Configuration() {
-  generateNewContainer = false;
-  daemonize = false;
-  registerService = false;
-  unregisterService = false;
-  logFile = "payment_gate.log";
-  testnet = false;
-  printAddresses = false;
-  logLevel = logging::INFO;
-  bindAddress = "";
-  bindPort = 0;
-  secretSpendKey = "";
-  secretViewKey = "";
-}
+
 
 void Configuration::initOptions(boost::program_options::options_description& desc) {
   desc.add_options()

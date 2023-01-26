@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,14 +12,11 @@
 
 #include "Common/CommandLine.h"
 #include "Common/Util.h"
+#include "version.h"
 
 namespace payment_service {
 
 namespace po = boost::program_options;
-
-ConfigurationManager::ConfigurationManager() {
-  startInprocess = false;
-}
 
 bool ConfigurationManager::init(int argc, char** argv) {
   po::options_description cmdGeneralOptions("Common Options");
@@ -36,6 +34,7 @@ bool ConfigurationManager::init(int argc, char** argv) {
       ("local", po::bool_switch(), "start with local node (remote is default)")
       ("testnet", po::bool_switch(), "testnet mode");
 
+  command_line::add_arg(cmdGeneralOptions, command_line::arg_version);
   command_line::add_arg(cmdGeneralOptions, command_line::arg_data_dir, tools::getDefaultDataDirectory());
   command_line::add_arg(confGeneralOptions, command_line::arg_data_dir, tools::getDefaultDataDirectory());
 
@@ -60,7 +59,14 @@ bool ConfigurationManager::init(int argc, char** argv) {
   po::notify(cmdOptions);
 
   if (cmdOptions.count("help")) {
+    std::cout << CCX_PAYMENT_SERVICE_RELEASE_VERSION << std::endl;
     std::cout << cmdOptionsDesc << std::endl;
+    return false;
+  }
+
+  if (get_arg(cmdOptions, command_line::arg_version))
+  {
+    std::cout << CCX_PAYMENT_SERVICE_RELEASE_VERSION << std::endl;
     return false;
   }
 

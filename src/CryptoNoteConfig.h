@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote Developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2022 UltraNote Infinity Developers
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 UltraNote Infinity Developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -444,7 +444,14 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {640000, "d4627c0b35b4059a3b8cedb0e11e0ed2162ac4cb017fb52bd845031266b876a2"},
  {650000, "c9d7761fd75dd1f9d103315a3d2ff77e20ee15a3ce2f4bf1ef7eeca0fb6ed255"},
  
+     // version 1.0.8
  
+ {660000, "b42066bb3f6981a0325140efec3f2eb6255e1b36725ba59e7f68ce97a6496e04"}
+ {670000, "97b9b29afa514559c40b5876f43087baa3e4503d36fddbd3bbe1e3439517e637"},
+ {680000, "3353dba90c221b5f3a8c2ddaca219442ad0e68298ba176017b436adb88a0b9b0"},
+ {690000, "28742429a8bccec3915583ac7925dab86857b5535797b61eafabfe0d26591ad2"},
+ 
+
 };
 
 

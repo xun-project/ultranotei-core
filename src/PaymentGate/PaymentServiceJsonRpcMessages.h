@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,19 +21,19 @@ const uint32_t DEFAULT_ANONYMITY_LEVEL = 4;
 class RequestSerializationError : public std::exception
 {
 public:
-  virtual const char *what() const throw() override { return "Request error"; }
+ const char *what() const throw() override { return "Request error"; }
 };
 
 struct Save
 {
   struct Request
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 
   struct Response
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 };
 
@@ -45,7 +46,7 @@ struct Reset {
   };
 
   struct Response {
-    void serialize(cn::ISerializer& serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 };
 
@@ -53,7 +54,7 @@ struct GetViewKey
 {
   struct Request
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 
   struct Response
@@ -68,7 +69,7 @@ struct GetStatus
 {
   struct Request
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 
   struct Response
@@ -173,7 +174,7 @@ struct GetAddresses
 {
   struct Request
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 
   struct Response
@@ -229,7 +230,7 @@ struct DeleteAddress
 
   struct Response
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 };
 
@@ -471,7 +472,7 @@ struct SendTransaction
     std::vector<WalletRpcOrder> transfers;
     std::string changeAddress;
     uint64_t fee = 1000;
-    uint32_t anonymity = DEFAULT_ANONYMITY_LEVEL;
+    uint32_t anonymity = cn::parameters::MINIMUM_MIXIN;
     std::string extra;
     std::string paymentId;
     uint64_t unlockTime = 0;
@@ -496,7 +497,7 @@ struct CreateDelayedTransaction
     std::vector<WalletRpcOrder> transfers;
     std::string changeAddress;
     uint64_t fee = 1000;
-    uint32_t anonymity = DEFAULT_ANONYMITY_LEVEL;
+    uint32_t anonymity = cn::parameters::MINIMUM_MIXIN;
     std::string extra;
     std::string paymentId;
     uint64_t unlockTime = 0;
@@ -516,7 +517,7 @@ struct GetDelayedTransactionHashes
 {
   struct Request
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 
   struct Response
@@ -538,7 +539,7 @@ struct DeleteDelayedTransaction
 
   struct Response
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 };
 
@@ -553,7 +554,7 @@ struct SendDelayedTransaction
 
   struct Response
   {
-    void serialize(cn::ISerializer &serializer);
+    void serialize(const cn::ISerializer &serializer) const;
   };
 };
 
