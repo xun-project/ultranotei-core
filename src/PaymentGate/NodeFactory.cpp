@@ -65,9 +65,7 @@ public:
   void getTransactions(const std::vector<crypto::Hash>& transactionHashes, std::vector<cn::TransactionDetails>& transactions,
     const Callback& callback) override { }
 	
-  void getTransaction(const crypto::Hash &transactionHash, cn::Transaction &transaction, 
-    const Callback &callback) override {}
-
+ 
   void getPoolTransactions(uint64_t timestampBegin, uint64_t timestampEnd, uint32_t transactionsNumberLimit, std::vector<cn::TransactionDetails>& transactions, uint64_t& transactionsNumberWithinTimestamps,
     const Callback& callback) override { }
 
