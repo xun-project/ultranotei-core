@@ -47,6 +47,9 @@ struct tx_message_entry
   AccountPublicAddress addr;
 };
 
+bool generateDeterministicTransactionKeys(const crypto::Hash &inputsHash, const crypto::SecretKey &viewSecretKey, KeyPair &generatedKeys);
+bool generateDeterministicTransactionKeys(const Transaction &tx, const crypto::SecretKey &viewSecretKey, KeyPair &generatedKeys);
+
 bool constructTransaction(
   const AccountKeys& senderAccountKeys,
   const std::vector<TransactionSourceEntry>& sources,

@@ -50,6 +50,7 @@ namespace cn {
     // ITransactionReader
     virtual Hash getTransactionHash() const override;
     virtual Hash getTransactionPrefixHash() const override;
+    virtual Hash getTransactionInputsHash() const override;
     virtual PublicKey getTransactionPublicKey() const override;
     virtual uint64_t getUnlockTime() const override;
     virtual bool getPaymentId(Hash& hash) const override;
@@ -62,6 +63,7 @@ namespace cn {
     virtual transaction_types::InputType getInputType(size_t index) const override;
     virtual void getInput(size_t index, KeyInput& input) const override;
     virtual void getInput(size_t index, MultisignatureInput& input) const override;
+    virtual std::vector<TransactionInput> getInputs() const override;
 
     // outputs
     virtual size_t getOutputCount() const override;
@@ -80,7 +82,7 @@ namespace cn {
 
     // get serialized transaction
     virtual BinaryArray getTransactionData() const override;
-
+    TransactionPrefix getTransactionPrefix() const override;
     // ITransactionWriter
 
     virtual void setUnlockTime(uint64_t unlockTime) override;
@@ -106,7 +108,7 @@ namespace cn {
     // secret key
     virtual bool getTransactionSecretKey(SecretKey& key) const override;
     virtual void setTransactionSecretKey(const SecretKey& key) override;
-	void setDeterministicTransactionSecretKey(const SecretKey& key) override;
+    void setDeterministicTransactionSecretKey(const SecretKey& key) override;
 
   private:
 
@@ -192,6 +194,11 @@ namespace cn {
 
   Hash TransactionImpl::getTransactionPrefixHash() const {
     return getObjectHash(*static_cast<const TransactionPrefix*>(&transaction));
+  }
+
+  Hash TransactionImpl::getTransactionInputsHash() const
+  {
+    return getObjectHash(transaction.inputs);
   }
 
   PublicKey TransactionImpl::getTransactionPublicKey() const {
@@ -414,6 +421,11 @@ namespace cn {
     return toBinaryArray(transaction);
   }
 
+  TransactionPrefix TransactionImpl::getTransactionPrefix() const
+  {
+    return transaction;
+  }
+
   void TransactionImpl::setPaymentId(const Hash& hash) {
     checkIfSigning();
     BinaryArray paymentIdBlob;
@@ -483,6 +495,11 @@ namespace cn {
 
   size_t TransactionImpl::getOutputCount() const {
     return transaction.outputs.size();
+  }
+
+  std::vector<TransactionInput> TransactionImpl::getInputs() const
+  {
+    return transaction.inputs;
   }
 
   uint64_t TransactionImpl::getOutputTotalAmount() const {

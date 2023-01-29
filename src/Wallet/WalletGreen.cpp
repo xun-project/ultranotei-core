@@ -2493,6 +2493,7 @@ std::unique_ptr<cn::ITransaction> WalletGreen::makeTransaction(const std::vector
 
   size_t i = 0;
   for (const auto &input : keysInfo)
+  {
     tx->signInputKey(i, input.keyInfo, input.ephKeys);
       i++;
   }

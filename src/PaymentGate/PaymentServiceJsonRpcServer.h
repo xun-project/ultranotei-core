@@ -64,8 +64,6 @@ private:
 
  std::error_code handleReset(const Reset::Request &request, const Reset::Response &response);
   std::error_code handleSave(const Save::Request& request, const Save::Response& response);
-  std::error_code handleExportWallet(const ExportWallet::Request &request, const ExportWallet::Response &response);
-  std::error_code handleExportWalletKeys(const ExportWalletKeys::Request &request, const ExportWalletKeys::Response &response);
   std::error_code handleCreateIntegrated(const CreateIntegrated::Request& request, CreateIntegrated::Response& response);
   std::error_code handleSplitIntegrated(const SplitIntegrated::Request& request, SplitIntegrated::Response& response);
   std::error_code handleCreateAddress(const CreateAddress::Request& request, CreateAddress::Response& response);

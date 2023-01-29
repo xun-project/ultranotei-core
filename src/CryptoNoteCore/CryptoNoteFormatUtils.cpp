@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2017-2020 UltraNote developers
+// Copyright (c) 2018-2022 Conceal Network & Conceal Devs
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,12 +9,14 @@
 
 #include <set>
 #include <Logging/LoggerRef.h>
+#include <Common/BinaryArray.hpp>
 #include <Common/int-util.h>
 #include <Common/Varint.h>
+#include "Common/Base58.h"
 
 #include "Serialization/BinaryOutputStreamSerializer.h"
 #include "Serialization/BinaryInputStreamSerializer.h"
-
+#include "CryptoNoteSerialization.h"
 #include "Account.h"
 #include "CryptoNoteBasicImpl.h"
 #include "CryptoNoteSerialization.h"
@@ -94,9 +96,6 @@ bool constructTransaction(
   tx.unlockTime = unlock_time;
 
   tx.extra = extra;
-  KeyPair txkey = generateKeyPair();
-  transactionSK = txkey.secretKey;
-  addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);
 
   struct input_generation_context_data {
     KeyPair in_ephemeral;
@@ -127,6 +126,7 @@ bool constructTransaction(
       return false;
     }
 
+
     //put key image into tx input
     KeyInput input_to_key;
     input_to_key.amount = src_entr.amount;
@@ -140,6 +140,17 @@ bool constructTransaction(
     input_to_key.outputIndexes = absolute_output_offsets_to_relative(input_to_key.outputIndexes);
     tx.inputs.push_back(input_to_key);
   }
+
+  KeyPair txkey;
+  if (!generateDeterministicTransactionKeys(getObjectHash(tx.inputs), sender_account_keys.viewSecretKey, txkey))
+  {
+    logger(ERROR) << "Couldn't generate deterministic transaction keys";
+    return false;
+  }
+
+  addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);
+
+  transactionSK = txkey.secretKey;
 
   // "Shuffle" outs
   std::vector<TransactionDestinationEntry> shuffled_dsts(destinations);
@@ -227,6 +238,22 @@ bool constructTransaction(
   }
 
   return true;
+}
+
+bool generateDeterministicTransactionKeys(const crypto::Hash &inputsHash, const crypto::SecretKey &viewSecretKey, KeyPair &generatedKeys)
+{
+  BinaryArray ba;
+  common::append(ba, std::begin(viewSecretKey.data), std::end(viewSecretKey.data));
+  common::append(ba, std::begin(inputsHash.data), std::end(inputsHash.data));
+
+  hash_to_scalar(ba.data(), ba.size(), generatedKeys.secretKey);
+  return crypto::secret_key_to_public_key(generatedKeys.secretKey, generatedKeys.publicKey);
+}
+
+bool generateDeterministicTransactionKeys(const Transaction &tx, const SecretKey &viewSecretKey, KeyPair &generatedKeys)
+{
+  crypto::Hash inputsHash = getObjectHash(tx.inputs);
+  return generateDeterministicTransactionKeys(inputsHash, viewSecretKey, generatedKeys);
 }
 
 bool get_inputs_money_amount(const Transaction& tx, uint64_t& money) {

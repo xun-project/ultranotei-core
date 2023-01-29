@@ -59,14 +59,12 @@ bool ConfigurationManager::init(int argc, char** argv) {
   po::notify(cmdOptions);
 
   if (cmdOptions.count("help")) {
-    std::cout << CCX_PAYMENT_SERVICE_RELEASE_VERSION << std::endl;
     std::cout << cmdOptionsDesc << std::endl;
     return false;
   }
 
   if (get_arg(cmdOptions, command_line::arg_version))
   {
-    std::cout << CCX_PAYMENT_SERVICE_RELEASE_VERSION << std::endl;
     return false;
   }
 

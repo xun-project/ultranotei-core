@@ -656,32 +656,18 @@ std::error_code WalletService::resetWallet()
   return std::error_code();
 }
 
- std::error_code WalletService::exportWallet(const std::string &fileName, bool keysOnly)
+std::error_code WalletService::resetWallet(const uint32_t scanHeight)
 {
   try
   {
     platform_system::EventLock lk(readyEvent);
 
+    logger(logging::INFO, logging::BRIGHT_WHITE) << "Resetting wallet";
+
     if (!inited)
     {
-      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Export impossible: Wallet Service is not initialized";
+      logger(logging::WARNING, logging::BRIGHT_YELLOW) << "Reset impossible: Wallet Service is not initialized";
       return make_error_code(cn::error::NOT_INITIALIZED);
-    }
-
-    boost::filesystem::path walletPath(config.walletFile);
-    boost::filesystem::path exportPath = walletPath.parent_path() / fileName;
-
-if (keysOnly)
-	
-    {
-        logger(logging::INFO, logging::BRIGHT_WHITE) << "Exporting wallet keys to " << exportPath.string();
-        wallet.exportWallet(exportPath.string(), WalletSaveLevel::SAVE_KEYS_ONLY);
-      }
-      else
-      {
-        logger(logging::INFO, logging::BRIGHT_WHITE) << "Exporting wallet to " << exportPath.string();
-        wallet.exportWallet(exportPath.string(), WalletSaveLevel::SAVE_ALL);
-      }
     }
 
     wallet.reset(scanHeight);

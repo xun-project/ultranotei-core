@@ -30,6 +30,7 @@ public:
 
   virtual Hash getTransactionHash() const override;
   virtual Hash getTransactionPrefixHash() const override;
+  virtual Hash getTransactionInputsHash() const override;
   virtual PublicKey getTransactionPublicKey() const override;
   virtual uint64_t getUnlockTime() const override;
 
@@ -44,6 +45,7 @@ public:
   virtual transaction_types::InputType getInputType(size_t index) const override;
   virtual void getInput(size_t index, KeyInput& input) const override;
   virtual void getInput(size_t index, MultisignatureInput& input) const override;
+  virtual std::vector<TransactionInput> getInputs() const override;
 
   // outputs
   virtual size_t getOutputCount() const override;
@@ -63,7 +65,7 @@ public:
 
   // serialized transaction
   virtual BinaryArray getTransactionData() const override;
-
+  virtual TransactionPrefix getTransactionPrefix() const override;
   virtual bool getTransactionSecretKey(SecretKey& key) const override;
 
 private:
@@ -88,6 +90,11 @@ Hash TransactionPrefixImpl::getTransactionHash() const {
 
 Hash TransactionPrefixImpl::getTransactionPrefixHash() const {
   return getObjectHash(m_txPrefix);
+}
+
+Hash TransactionPrefixImpl::getTransactionInputsHash() const
+{
+  return getObjectHash(m_txPrefix.inputs);
 }
 
 PublicKey TransactionPrefixImpl::getTransactionPublicKey() const {
@@ -169,6 +176,11 @@ void TransactionPrefixImpl::getOutput(size_t index, KeyOutput& output, uint64_t&
   amount = out.amount;
 }
 
+std::vector<TransactionInput> TransactionPrefixImpl::getInputs() const
+{
+  return m_txPrefix.inputs;
+}
+
 void TransactionPrefixImpl::getOutput(size_t index, MultisignatureOutput& output, uint64_t& amount) const {
   const auto& out = getOutputChecked(m_txPrefix, index, transaction_types::OutputType::Multisignature);
   output = boost::get<MultisignatureOutput>(out.target);
@@ -201,6 +213,11 @@ bool TransactionPrefixImpl::validateSignatures() const {
 
 BinaryArray TransactionPrefixImpl::getTransactionData() const {
   return toBinaryArray(m_txPrefix);
+}
+
+TransactionPrefix TransactionPrefixImpl::getTransactionPrefix() const
+{
+  return m_txPrefix;
 }
 
 bool TransactionPrefixImpl::getTransactionSecretKey(SecretKey& key) const {

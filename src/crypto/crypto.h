@@ -26,14 +26,6 @@ namespace crypto {
 
   extern std::mutex random_lock;
 
-struct EllipticCurvePoint {
-  uint8_t data[32];
-};
-
-struct EllipticCurveScalar {
-  uint8_t data[32];
-};
-
   class crypto_ops {
     crypto_ops();
     crypto_ops(const crypto_ops &);
@@ -137,6 +129,8 @@ struct EllipticCurveScalar {
       return rand<T>();
     }
   };
+
+  void hash_to_scalar(const void *data, size_t length, EllipticCurveScalar &res);
 
   /* Generate a new key pair
    */
@@ -282,6 +276,7 @@ struct EllipticCurveScalar {
     return check_ring_signature(prefix_hash, image, pubs.data(), pubs.size(), sig);
   }
 
+  static inline const SecretKey &EllipticCurveScalar2SecretKey(const EllipticCurveScalar &k) { return (const SecretKey &)k; }
 }
 
 CRYPTO_MAKE_HASHABLE(PublicKey)

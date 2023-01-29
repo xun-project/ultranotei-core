@@ -21,6 +21,7 @@ class PaymentGateService {
 public:
 
   PaymentGateService() : currencyBuilder(logger)
+  {
   }
 
   bool init(int argc, char** argv);
