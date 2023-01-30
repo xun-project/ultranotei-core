@@ -87,11 +87,11 @@ const uint64_t CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL  = 7;
 
 const size_t   FUSION_TX_MAX_SIZE = CRYPTONOTE_MAX_TX_SIZE_LIMIT * 2;
 const size_t   FUSION_TX_MIN_INPUT_COUNT 			= 12;
-const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO 		= 4;
+const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO 	= 4;
 
-const uint64_t UPGRADE_HEIGHT 					= 1;			
-const uint64_t UPGRADE_HEIGHT_V2				= 1;
-const uint64_t UPGRADE_HEIGHT_V3 				= 2; 
+const uint64_t UPGRADE_HEIGHT 					    = 1;			
+const uint64_t UPGRADE_HEIGHT_V2				    = 1;
+const uint64_t UPGRADE_HEIGHT_V3 				    = 2; 
 
 const unsigned UPGRADE_VOTING_THRESHOLD = 90; // percent
 const size_t   UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
@@ -104,23 +104,23 @@ const char     CRYPTONOTE_BLOCKS_FILENAME[] 			= "blocks.dat";
 const char     CRYPTONOTE_BLOCKINDEXES_FILENAME[] 		= "blockindexes.dat";
 const char     CRYPTONOTE_BLOCKSCACHE_FILENAME[] 		= "blockscache.dat";
 const char     CRYPTONOTE_POOLDATA_FILENAME[] 			= "poolstate.bin";
-const char     P2P_NET_DATA_FILENAME[] 				= "p2pstate.bin";
+const char     P2P_NET_DATA_FILENAME[] 				    = "p2pstate.bin";
 const char     CRYPTONOTE_BLOCKCHAIN_INDICES_FILENAME[]       	= "blockchainindices.dat";
 const char     MINER_CONFIG_FILE_NAME[]                       	= "miner_conf.json";
 
 } // parameters
 
-const uint64_t START_BLOCK_REWARD 				= (UINT64_C(5) * parameters::COIN); // start reward
-const uint64_t FOUNDATION_TRUST 				= (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network
-const uint64_t MAX_BLOCK_REWARD 				= (UINT64_C(10) * parameters::COIN); // max reward after aprox. 20 months
+const uint64_t START_BLOCK_REWARD 				    = (UINT64_C(5) * parameters::COIN); // start reward
+const uint64_t FOUNDATION_TRUST 				    = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network
+const uint64_t MAX_BLOCK_REWARD 				    = (UINT64_C(10) * parameters::COIN); // max reward after aprox. 20 months
 const uint64_t REWARD_INCREASE_INTERVAL 			= (UINT64_C(22000)); // aprox. 1 month (+ 0.25 xuni increment per month)
 
-const char     CRYPTONOTE_NAME[] 				= "ultranotei";
+const char     CRYPTONOTE_NAME[] 				    = "ultranotei";
 const char     GENESIS_COINBASE_TX_HEX[] 			= "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
 const uint32_t GENESIS_NONCE = 10000;
-const uint64_t GENESIS_TIMESTAMP 				= 1587360548; // 20200420
+const uint64_t GENESIS_TIMESTAMP 				    = 1587360548; // 20200420
 
-const uint64_t TESTNET_GENESIS_TIMESTAMP = 1632048808;
+const uint64_t TESTNET_GENESIS_TIMESTAMP            = 1675014635;
 
 const uint8_t  TRANSACTION_VERSION_1 				= 1; 
 const uint8_t  TRANSACTION_VERSION_2 				= 2; 
