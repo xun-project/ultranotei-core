@@ -59,7 +59,7 @@ private:
   friend class core;
 };
 
-core::core(const Currency& currency, i_cryptonote_protocol* pprotocol, logging::ILogger& logger, bool blockchainIndexesEnabled) :
+core::core(const Currency &currency, i_cryptonote_protocol *pprotocol, logging::ILogger &logger, bool blockchainIndexesEnabled, bool blockchainAutosaveEnabled) :
   m_currency(currency),
   logger(logger, "core"),
   m_mempool(currency, m_blockchain, m_timeProvider, logger),

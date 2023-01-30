@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -49,6 +50,7 @@ public:
 
   virtual crypto::Hash getTransactionHash() const = 0;
   virtual crypto::Hash getTransactionPrefixHash() const = 0;
+  virtual crypto::Hash getTransactionInputsHash() const = 0;
   virtual crypto::PublicKey getTransactionPublicKey() const = 0;
   virtual bool getTransactionSecretKey(crypto::SecretKey& key) const = 0;
   virtual uint64_t getUnlockTime() const = 0;
@@ -64,7 +66,7 @@ public:
   virtual transaction_types::InputType getInputType(size_t index) const = 0;
   virtual void getInput(size_t index, KeyInput& input) const = 0;
   virtual void getInput(size_t index, MultisignatureInput& input) const = 0;
-
+  virtual std::vector<TransactionInput> getInputs() const = 0;
   // outputs
   virtual size_t getOutputCount() const = 0;
   virtual uint64_t getOutputTotalAmount() const = 0;
@@ -83,6 +85,7 @@ public:
 
   // serialized transaction
   virtual BinaryArray getTransactionData() const = 0;
+  virtual TransactionPrefix getTransactionPrefix() const = 0;
 };
 
 //
@@ -110,6 +113,7 @@ public:
   virtual size_t addOutput(uint64_t amount, const std::vector<AccountPublicAddress>& to, uint32_t requiredSignatures, uint32_t term = 0) = 0;
   virtual size_t addOutput(uint64_t amount, const KeyOutput& out) = 0;
   virtual size_t addOutput(uint64_t amount, const MultisignatureOutput& out) = 0;
+  virtual void setDeterministicTransactionSecretKey(const crypto::SecretKey& key) = 0;
 
   // transaction info
   virtual void setTransactionSecretKey(const crypto::SecretKey& key) = 0;

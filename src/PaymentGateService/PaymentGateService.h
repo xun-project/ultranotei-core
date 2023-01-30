@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,7 +20,8 @@
 class PaymentGateService {
 public:
 
-  PaymentGateService() : dispatcher(nullptr), stopEvent(nullptr), config(), service(nullptr), logger(), currencyBuilder(logger) {
+  PaymentGateService() : currencyBuilder(logger)
+  {
   }
 
   bool init(int argc, char** argv);
@@ -35,15 +37,15 @@ public:
 
 private:
 
-  void runInProcess(logging::LoggerRef& log);
-  void runRpcProxy(logging::LoggerRef& log);
+  void runInProcess(const logging::LoggerRef& log);
+  void runRpcProxy(const logging::LoggerRef& log);
 
   void runWalletService(const cn::Currency& currency, cn::INode& node);
 
-  platform_system::Dispatcher* dispatcher;
-  platform_system::Event* stopEvent;
+  platform_system::Dispatcher* dispatcher = nullptr;
+  platform_system::Event* stopEvent = nullptr;
   payment_service::ConfigurationManager config;
-  payment_service::WalletService* service;
+  payment_service::WalletService* service = nullptr;
   cn::CurrencyBuilder currencyBuilder;
   
   logging::LoggerGroup logger;

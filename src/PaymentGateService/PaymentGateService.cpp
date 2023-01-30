@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -116,7 +117,7 @@ void PaymentGateService::stop() {
   log(logging::INFO) << "Stop signal caught";
 
   if (dispatcher != nullptr) {
-    dispatcher->remoteSpawn([&]() {
+    dispatcher->remoteSpawn([this]() {
       if (stopEvent != nullptr) {
         stopEvent->set();
       }
@@ -124,7 +125,7 @@ void PaymentGateService::stop() {
   }
 }
 
-void PaymentGateService::runInProcess(logging::LoggerRef& log) {
+void PaymentGateService::runInProcess(const logging::LoggerRef& log) {
   if (!config.coreConfig.configFolderDefaulted) {
     if (!tools::directoryExists(config.coreConfig.configFolder)) {
       throw std::runtime_error("Directory does not exist: " + config.coreConfig.configFolder);
@@ -138,9 +139,9 @@ void PaymentGateService::runInProcess(logging::LoggerRef& log) {
   log(logging::INFO) << "Starting Payment Gate with local node";
 
   cn::Currency currency = currencyBuilder.currency();
-  cn::core core(currency, NULL, logger, false);
+  cn::core core(currency, nullptr, logger, false, false);
 
-  cn::CryptoNoteProtocolHandler protocol(currency, *dispatcher, core, NULL, logger);
+  cn::CryptoNoteProtocolHandler protocol(currency, *dispatcher, core, nullptr, logger);
   cn::NodeServer p2pNode(*dispatcher, protocol, logger);
   cn::RpcServer rpcServer(*dispatcher, logger, core, p2pNode, protocol);
 
@@ -203,7 +204,7 @@ void PaymentGateService::runInProcess(logging::LoggerRef& log) {
   p2pNode.deinit(); 
 }
 
-void PaymentGateService::runRpcProxy(logging::LoggerRef& log) {
+void PaymentGateService::runRpcProxy(const logging::LoggerRef& log) {
   log(logging::INFO) << "Starting Payment Gate with remote node";
   cn::Currency currency = currencyBuilder.currency();
   

@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2020 UltraNote developers
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -770,6 +770,16 @@ size_t Currency::getApproximateMaximumInputCount(size_t transactionSize, size_t 
 
   return (transactionSize - headerSize - outputsSize) / inputSize;
 }
+
+  uint64_t Currency::getGenesisTimestamp() const
+  {
+    if (m_testnet)
+    {
+      return TESTNET_GENESIS_TIMESTAMP;
+    }
+    return GENESIS_TIMESTAMP;
+  }
+  
 
 /* ---------------------------------------------------------------------------------------------------- */
 

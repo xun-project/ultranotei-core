@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote Developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2022 UltraNote Infinity Developers
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 UltraNote Infinity Developers
 //
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -87,11 +87,11 @@ const uint64_t CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL  = 7;
 
 const size_t   FUSION_TX_MAX_SIZE = CRYPTONOTE_MAX_TX_SIZE_LIMIT * 2;
 const size_t   FUSION_TX_MIN_INPUT_COUNT 			= 12;
-const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO 		= 4;
+const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO 	= 4;
 
-const uint64_t UPGRADE_HEIGHT 					= 1;			
-const uint64_t UPGRADE_HEIGHT_V2				= 1;
-const uint64_t UPGRADE_HEIGHT_V3 				= 2; 
+const uint64_t UPGRADE_HEIGHT 					    = 1;			
+const uint64_t UPGRADE_HEIGHT_V2				    = 1;
+const uint64_t UPGRADE_HEIGHT_V3 				    = 2; 
 
 const unsigned UPGRADE_VOTING_THRESHOLD = 90; // percent
 const size_t   UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; 
@@ -104,21 +104,23 @@ const char     CRYPTONOTE_BLOCKS_FILENAME[] 			= "blocks.dat";
 const char     CRYPTONOTE_BLOCKINDEXES_FILENAME[] 		= "blockindexes.dat";
 const char     CRYPTONOTE_BLOCKSCACHE_FILENAME[] 		= "blockscache.dat";
 const char     CRYPTONOTE_POOLDATA_FILENAME[] 			= "poolstate.bin";
-const char     P2P_NET_DATA_FILENAME[] 				= "p2pstate.bin";
+const char     P2P_NET_DATA_FILENAME[] 				    = "p2pstate.bin";
 const char     CRYPTONOTE_BLOCKCHAIN_INDICES_FILENAME[]       	= "blockchainindices.dat";
 const char     MINER_CONFIG_FILE_NAME[]                       	= "miner_conf.json";
 
 } // parameters
 
-const uint64_t START_BLOCK_REWARD 				= (UINT64_C(5) * parameters::COIN); // start reward
-const uint64_t FOUNDATION_TRUST 				= (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network
-const uint64_t MAX_BLOCK_REWARD 				= (UINT64_C(10) * parameters::COIN); // max reward after aprox. 20 months
+const uint64_t START_BLOCK_REWARD 				    = (UINT64_C(5) * parameters::COIN); // start reward
+const uint64_t FOUNDATION_TRUST 				    = (UINT64_C(2100000) * parameters::COIN); // 2.1M locked funds to secure network
+const uint64_t MAX_BLOCK_REWARD 				    = (UINT64_C(10) * parameters::COIN); // max reward after aprox. 20 months
 const uint64_t REWARD_INCREASE_INTERVAL 			= (UINT64_C(22000)); // aprox. 1 month (+ 0.25 xuni increment per month)
 
-const char     CRYPTONOTE_NAME[] 				= "ultranotei";
+const char     CRYPTONOTE_NAME[] 				    = "ultranotei";
 const char     GENESIS_COINBASE_TX_HEX[] 			= "010a01ff0001c096b102029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121018defaf357ba96274bf7c0aa07cca61025e710e829efb9c5d9af9f067b8882990";
 const uint32_t GENESIS_NONCE = 10000;
-const uint64_t GENESIS_TIMESTAMP 				= 1587360548; // 20200420
+const uint64_t GENESIS_TIMESTAMP 				    = 1587360548; // 20200420
+
+const uint64_t TESTNET_GENESIS_TIMESTAMP            = 1675014635;
 
 const uint8_t  TRANSACTION_VERSION_1 				= 1; 
 const uint8_t  TRANSACTION_VERSION_2 				= 2; 
@@ -444,7 +446,14 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {640000, "d4627c0b35b4059a3b8cedb0e11e0ed2162ac4cb017fb52bd845031266b876a2"},
  {650000, "c9d7761fd75dd1f9d103315a3d2ff77e20ee15a3ce2f4bf1ef7eeca0fb6ed255"},
  
+     // version 1.0.8
  
+ {660000, "b42066bb3f6981a0325140efec3f2eb6255e1b36725ba59e7f68ce97a6496e04"},
+ {670000, "97b9b29afa514559c40b5876f43087baa3e4503d36fddbd3bbe1e3439517e637"},
+ {680000, "3353dba90c221b5f3a8c2ddaca219442ad0e68298ba176017b436adb88a0b9b0"},
+ {690000, "28742429a8bccec3915583ac7925dab86857b5535797b61eafabfe0d26591ad2"},
+ 
+
 };
 
 

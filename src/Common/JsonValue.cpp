@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN developers
 // Copyright (c) 2016-2017 BXC developers
-// Copyright (c) 2017 UltraNote developers
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -590,6 +590,15 @@ std::string JsonValue::toString() const {
   return stream.str();
 }
 
+void ReplaceStringInPlace(std::string& subject, const std::string& search,
+	const std::string& replace) {
+	size_t pos = 0;
+	while ((pos = subject.find(search, pos)) != std::string::npos) {
+		subject.replace(pos, search.length(), replace);
+		pos += replace.length();
+	}
+}
+
 std::ostream& operator<<(std::ostream& out, const JsonValue& jsonValue) {
   switch (jsonValue.type) {
   case JsonValue::ARRAY: {
@@ -641,7 +650,10 @@ std::ostream& operator<<(std::ostream& out, const JsonValue& jsonValue) {
     break;
   }
   case JsonValue::STRING:
-    out << '"' << *reinterpret_cast<const JsonValue::String*>(jsonValue.valueString) << '"';
+	std::string str = (*reinterpret_cast<const JsonValue::String*>(jsonValue.valueString));
+	ReplaceStringInPlace(str, "\"", "\\\"");
+	ReplaceStringInPlace(str, "\n", "\\\n");
+    out << '"' << str << '"';
     break;
   }
 

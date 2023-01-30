@@ -71,7 +71,7 @@
 namespace crypto
 {
   /*!
-   * \namespace crypto::ElectrumWords
+   * \namespace crypto::electrum_words
    * 
    * \brief Mnemonic seed word generation and wallet restoration helper functions.
    */

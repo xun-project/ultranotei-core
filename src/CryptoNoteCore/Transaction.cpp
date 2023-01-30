@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-// Copyright (c) 2018-2020 UltraNote Network & UlraNote Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
+// Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -50,6 +50,7 @@ namespace cn {
     // ITransactionReader
     virtual Hash getTransactionHash() const override;
     virtual Hash getTransactionPrefixHash() const override;
+    virtual Hash getTransactionInputsHash() const override;
     virtual PublicKey getTransactionPublicKey() const override;
     virtual uint64_t getUnlockTime() const override;
     virtual bool getPaymentId(Hash& hash) const override;
@@ -62,6 +63,7 @@ namespace cn {
     virtual transaction_types::InputType getInputType(size_t index) const override;
     virtual void getInput(size_t index, KeyInput& input) const override;
     virtual void getInput(size_t index, MultisignatureInput& input) const override;
+    virtual std::vector<TransactionInput> getInputs() const override;
 
     // outputs
     virtual size_t getOutputCount() const override;
@@ -80,7 +82,7 @@ namespace cn {
 
     // get serialized transaction
     virtual BinaryArray getTransactionData() const override;
-
+    TransactionPrefix getTransactionPrefix() const override;
     // ITransactionWriter
 
     virtual void setUnlockTime(uint64_t unlockTime) override;
@@ -106,6 +108,7 @@ namespace cn {
     // secret key
     virtual bool getTransactionSecretKey(SecretKey& key) const override;
     virtual void setTransactionSecretKey(const SecretKey& key) override;
+    void setDeterministicTransactionSecretKey(const SecretKey& key) override;
 
   private:
 
@@ -193,6 +196,11 @@ namespace cn {
     return getObjectHash(*static_cast<const TransactionPrefix*>(&transaction));
   }
 
+  Hash TransactionImpl::getTransactionInputsHash() const
+  {
+    return getObjectHash(transaction.inputs);
+  }
+
   PublicKey TransactionImpl::getTransactionPublicKey() const {
     PublicKey pk(NULL_PUBLIC_KEY);
     extra.getPublicKey(pk);
@@ -231,6 +239,22 @@ namespace cn {
 
     secretKey = key;
   }
+  
+    void TransactionImpl::setDeterministicTransactionSecretKey(const SecretKey& key)
+  {
+    checkIfSigning();
+    KeyPair deterministicTxKeys;
+    generateDeterministicTransactionKeys(getTransactionInputsHash(), key, deterministicTxKeys);
+
+    TransactionExtraPublicKey pk = { deterministicTxKeys.publicKey };
+    extra.set(pk);
+
+    transaction.extra = extra.serialize();
+
+    secretKey = deterministicTxKeys.secretKey;
+  }
+
+
 
   size_t TransactionImpl::addInput(const KeyInput& input) {
     checkIfSigning();
@@ -397,6 +421,11 @@ namespace cn {
     return toBinaryArray(transaction);
   }
 
+  TransactionPrefix TransactionImpl::getTransactionPrefix() const
+  {
+    return transaction;
+  }
+
   void TransactionImpl::setPaymentId(const Hash& hash) {
     checkIfSigning();
     BinaryArray paymentIdBlob;
@@ -466,6 +495,11 @@ namespace cn {
 
   size_t TransactionImpl::getOutputCount() const {
     return transaction.outputs.size();
+  }
+
+  std::vector<TransactionInput> TransactionImpl::getInputs() const
+  {
+    return transaction.inputs;
   }
 
   uint64_t TransactionImpl::getOutputTotalAmount() const {

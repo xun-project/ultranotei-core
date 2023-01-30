@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
-// Copyright (c) 2018-2019 Conceal Network & Conceal Devs
+// Copyright (c) 2018-2023 Conceal Network & Conceal Devs
 // Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -51,7 +51,7 @@ public:
   std::error_code saveWalletNoThrow();
   std::error_code resetWallet();
   std::error_code resetWallet(const uint32_t scanHeight);
-  std::error_code exportWallet(const std::string& fileName);
+  std::error_code exportWallet(const std::string &fileName, bool keysOnly = false);
   std::error_code replaceWithNewWallet(const std::string &viewSecretKey);
   std::error_code createAddress(const std::string &spendSecretKeyText, std::string &address);
   std::error_code createAddress(std::string &address);
