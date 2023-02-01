@@ -13,6 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: Install Required Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential git cmake libboost-all-dev libreadline-dev
+
       - name: Build
         id: build
         run: |
@@ -39,7 +44,6 @@ jobs:
           echo "::set-output name=release_name::${release_name}.tar.gz"
           echo "::set-output name=asset_path::${asset_path}"
           echo "::set-output name=xuni_ver::${xuni_ver}"
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
