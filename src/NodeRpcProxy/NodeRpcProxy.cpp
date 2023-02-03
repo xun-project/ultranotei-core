@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2017-2018 The Circle Foundation & Conceal Devs
 // Copyright (c) 2018-2019 Conceal Network & Conceal Devs
-//Copyright (c) 2017-2022 UltraNote Infinity Developers
+//Copyright (c) 2017-2023 UltraNote Infinity Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -457,7 +457,7 @@ void NodeRpcProxy::isSynchronized(bool& syncStatus, const Callback& callback) {
     return;
   }
 
-  // TODO NOT IMPLEMENTED
+  syncStatus = getPeerCount() > 0 && m_nodeHeight + 1 >= getLastKnownBlockHeight();
   callback(std::error_code());
 }
 
