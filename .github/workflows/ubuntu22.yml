@@ -13,15 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: Install Required Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential git cmake libboost-all-dev libreadline-dev
+          
       - name: Build
         id: build
         run: |
-          sudo fallocate -l 6G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo apt-get update
-          sudo apt-get install -y libboost-all-dev
+          
           build_folder="build/debug"
           xuni_ver=$(echo "$GITHUB_REF" | sed 's|refs/tags/||')
           xuni_ver_folder=$(echo $xuni_ver | sed 's/\.//g')
