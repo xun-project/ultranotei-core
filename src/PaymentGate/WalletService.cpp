@@ -1302,7 +1302,7 @@ std::error_code WalletService::splitIntegratedAddress(const SplitIntegrated::Req
   std::string integrated_address_str = request.integrated_address;
 
   /* Check that the integrated address the correct length */
-  if (integrated_address_str.length() != 186)
+  if (integrated_address_str.length() != 187)
   {
     return make_error_code(cn::error::BAD_INTEGRATED_ADDRESS);
   }
