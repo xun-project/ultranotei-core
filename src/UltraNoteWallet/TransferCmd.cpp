@@ -56,7 +56,7 @@ namespace cn
         else
         {
           /* Integrated address check */
-          if (arg.length() == 186)
+          if (arg.length() == 187)
           {
             std::string paymentID;
             std::string spendPublicKey;

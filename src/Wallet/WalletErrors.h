@@ -81,7 +81,7 @@ public:
     case MINIMUM_ONE_ADDRESS:      return "You should have at least one address";
     case MINIMUM_INPUT_COUNT:      return "Not enough inputs to optimizne, minimum 12";    
     case BAD_ADDRESS:              return "Invalid address";
-    case BAD_INTEGRATED_ADDRESS:   return "Integrated address should be 186 characters";    
+    case BAD_INTEGRATED_ADDRESS:   return "Integrated address should be 187 characters";    
     case TRANSACTION_SIZE_TOO_BIG: return "Transaction size is too big, please optimize your wallet.";
     case WRONG_AMOUNT:             return "Insufficient funds";
     case BAD_PREFIX:               return "Address has incorrect prefix";    
