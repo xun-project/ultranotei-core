@@ -3,7 +3,7 @@ name: Ubuntu 20.04
 on:
   workflow_dispatch:
   push:
-    tags:
+    branches:
       - "*"
 
 jobs:
@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
 
       - name: Install Required Packages
         run: |
@@ -50,18 +48,16 @@ jobs:
           echo "::set-output name=xuni_ver::${xuni_ver}"
 
       - name: Create Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ steps.build.outputs.xuni_ver }}
           release_name: UltraNote Core CLI v${{ steps.build.outputs.xuni_ver }}
           draft: false
           prerelease: false
 
       - name: Upload Release Asset
-        id: upload_release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
