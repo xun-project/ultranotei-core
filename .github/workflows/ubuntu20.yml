@@ -3,7 +3,7 @@ name: Ubuntu 20.04
 on:
   workflow_dispatch:
   push:
-    branches:
+    tags:
       - "*"
 
 jobs:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
 
       - name: Install Required Packages
         run: |
@@ -48,24 +50,12 @@ jobs:
           echo "::set-output name=xuni_ver::${xuni_ver}"
 
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v0.1.12
+        with:
+          files: ${{ steps.build.outputs.asset_path }}
+          name: UltraNote Core CLI v${{ steps.build.outputs.xuni_ver }}
+          body: |
+            **${{ steps.build.outputs.release_name }}**
+            ${{ steps.build.outputs.sha256 }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.build.outputs.xuni_ver }}
-          release_name: UltraNote Core CLI v${{ steps.build.outputs.xuni_ver }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.build.outputs.asset_path }}
-          asset_name: ${{ steps.build.outputs.release_name }}
-          asset_content_type: application/gzip
-
-      - name: Get Release URL
-        run: echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
