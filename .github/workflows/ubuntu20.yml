@@ -35,7 +35,7 @@ jobs:
           mkdir -p "$build_folder"
           cd "$build_folder"
           cmake ../..
-          make -j4
+          make -j2
           mkdir -p "$release_name/$xuni_ver_folder"
           exeFiles=()
           for f in src/*; do [[ -x $f && -f $f ]] && exeFiles+=( "$f" ); done
@@ -50,13 +50,26 @@ jobs:
           echo "::set-output name=xuni_ver::${xuni_ver}"
 
       - name: Create Release
-        uses: softprops/action-gh-release@v0.1.12
-        with:
-          files: ${{ steps.build.outputs.asset_path }}
-          name: UltraNote Core CLI v${{ steps.build.outputs.xuni_ver }}
-          body: |
-            **${{ steps.build.outputs.release_name }}**
-            ${{ steps.build.outputs.sha256 }}
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: UltraNote Core CLI v${{ steps.build.outputs.xuni_ver }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload_release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.build.outputs.asset_path }}
+          asset_name: ${{ steps.build.outputs.release_name }}
+          asset_content_type: application/gzip
+
+      - name: Get Release URL
+        run: echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
