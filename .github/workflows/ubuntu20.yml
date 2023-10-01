@@ -16,14 +16,14 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Create and push Git tag
+     - name: Create and push Git tag
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run: |
-    git config user.name "UltraNote"
-    git config user.email "support@ultranote.org"
-    git tag -a ${{ github.ref }} -m "Tagged version ${{ github.ref }}"
-    git push origin ${{ github.ref }}:${{ github.ref }}
+    git config --local user.email "action@github.com"
+    git config --local user.name "GitHub Action"
+    git tag ${{ github.ref }} -m "Tagged version ${{ github.ref }}"
+    git push origin ${{ github.ref }}
 
       - name: Install Required Packages
         run: |
