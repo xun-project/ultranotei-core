@@ -16,6 +16,11 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Set Git Config
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
       - name: Create and push Git tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
