@@ -167,9 +167,9 @@ const std::initializer_list<const char*> SEED_NODES  = {
    "45.63.58.18:42000",     // seed1.ultranote.org
    "139.180.136.6:42000",   // seed2.ultranote.org
    "62.171.173.164:42000",  // seed3.ultranote.org
-   "207.244.227.124:42000", // seed4.ultranote.org
-   "209.126.13.23:42000",   // node1.ultranote.org
-   "75.119.146.144:42000",  // node2.ultranote.org
+   "75.119.152.125:42000", // seed4.ultranote.org
+   "178.18.251.66:42000",   // node1.ultranote.org
+  
 
    
 };
@@ -471,8 +471,18 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {830000, "87a41a517c023e46b09b38a1845ec19643aca1b30203090bfec732aeaadb7be3"},
  {840000, "305931701b713e91836a7982662e5ed137a19411f11f6dc18bed4a0954a91629"},
  {850000, "79c39e940e1e835cff6290eecae5d669310e2555b79d0928bb75e31869701cd9"},
- 
 
+// version 2.0
+
+ {860000, "f02f985f1b9072f0727ca499b316313f069b0b526a746ea789f6e3a91670614d"},
+ {870000, "a96d6bec225df3b75fa2eec1301cd7bb77b4f6403a9b18669ecba371e5a13a94"},
+ {880000, "a0d5231008f9aa0537f659aac707e0005b0b70695b9b8a39340ef867979a511c"},
+ {890000, "b916722c3de6c1ea35f92d7d848354cd7809fce76d7e1049ba182eaf0ae4ef27"},
+ {900000, "92a7b222f0c95ab0323b73800c6596efdcbaf92772875ae4a668cf880c83bb49"},
+ {910000, "e4d952a59a16bca07b369d37f92537d31ed9ec6b0978b87228c2dcd456aa7f98"},
+ {920000, "b226505fcaf722105642f744faeaee4b4d42023915d992da46cf1b6573c66ec6"},
+ 
+ 
 };
 
 
