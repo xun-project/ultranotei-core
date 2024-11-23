@@ -28,7 +28,7 @@
 #include "P2p/NetNodeConfig.h"
 #include "Rpc/RpcServer.h"
 #include "Rpc/RpcServerConfig.h"
-#include "version.h"
+
 
 #include "Logging/ConsoleLogger.h"
 #include <Logging/LoggerManager.h>
