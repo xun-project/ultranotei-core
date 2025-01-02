@@ -13,23 +13,37 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/lib
+            /usr/local/include
+          key: ${{ runner.os }}-deps-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
       - name: Install Required Packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential git cmake libboost-all-dev libreadline-dev
+          sudo apt-get install -y build-essential git cmake libboost1.82-all-dev libreadline-dev
           
-      - name: Build
-        id: build
+      - name: Build project
+        id: build-project
         run: |
-          
-          build_folder="build/debug"
+          build_folder="build/release"
           xuni_ver=$(echo "$GITHUB_REF" | sed 's|refs/tags/||')
-          xuni_ver_folder=$(echo $xuni_ver | sed 's/\.//g')
           release_name=xuni-cli-ubuntu-2204-v"$xuni_ver"
           mkdir -p "$build_folder"
           cd "$build_folder"
-          cmake ../..
+          cmake -DCMAKE_BUILD_TYPE=Release ../..
           make -j2
+          
+      - name: Run tests
+        run: |
+          cd "$build_folder"
+          ctest --output-on-failure
           mkdir -p "$release_name/$xuni_ver_folder"
           exeFiles=()
           for f in src/*; do [[ -x $f && -f $f ]] && exeFiles+=( "$f" ); done
