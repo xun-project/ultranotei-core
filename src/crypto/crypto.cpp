@@ -5,6 +5,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include <alloca.h>
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -12,9 +13,11 @@
 #include <cstring>
 #include <memory>
 #include <mutex>
+#include <vector>
 
 #include "Common/Varint.h"
 #include "crypto.h"
+#include "crypto_impl.cpp"
 #include "hash.h"
 
 namespace crypto {
@@ -55,9 +58,78 @@ namespace crypto {
       EllipticCurvePoint Y;
   };
 
+  // Fortuna PRNG state
+  struct FortunaState {
+    std::array<uint8_t, 32> key;
+    std::array<uint8_t, 16> counter;
+    std::mutex mutex;
+    uint64_t reseed_count;
+    std::array<std::vector<uint8_t>, 32> pools;
+  };
+
+  static FortunaState fortuna_state;
+  static constexpr size_t MIN_POOL_SIZE = 64;
+  static constexpr uint64_t RESEED_INTERVAL = 1000;
+
+  static void fortuna_reseed() {
+    std::lock_guard<std::mutex> lock(fortuna_state.mutex);
+    
+    // Collect entropy from all pools
+    std::array<uint8_t, 32> seed;
+    for (size_t i = 0; i < 32; ++i) {
+      if (fortuna_state.pools[i].size() >= MIN_POOL_SIZE) {
+        std::copy(fortuna_state.pools[i].begin(), fortuna_state.pools[i].end(), seed.begin());
+        fortuna_state.pools[i].clear();
+        break;
+      }
+    }
+
+    // Update key using SHA-256
+    std::array<uint8_t, 32> new_key;
+    crypto_hash_sha256(new_key.data(), seed.data(), seed.size());
+    for (size_t i = 0; i < 32; ++i) {
+      new_key[i] ^= fortuna_state.key[i];
+    }
+    fortuna_state.key = new_key;
+
+    // Increment counter
+    for (size_t i = 0; i < 16; ++i) {
+      if (++fortuna_state.counter[i] != 0) break;
+    }
+
+    fortuna_state.reseed_count++;
+  }
+
+  static void fortuna_generate_random_bytes(size_t count, uint8_t* output) {
+    std::lock_guard<std::mutex> lock(fortuna_state.mutex);
+
+    if (fortuna_state.reseed_count % RESEED_INTERVAL == 0) {
+      fortuna_reseed();
+    }
+
+    // Generate random bytes using AES-CTR
+    std::array<uint8_t, 16> iv;
+    std::copy(fortuna_state.counter.begin(), fortuna_state.counter.end(), iv.begin());
+    
+    for (size_t i = 0; i < count; i += 16) {
+      // Encrypt counter
+      std::array<uint8_t, 16> block;
+      aes_encrypt(fortuna_state.key.data(), iv.data(), block.data());
+
+      // Copy to output
+      size_t bytes_to_copy = std::min<size_t>(16, count - i);
+      std::copy(block.begin(), block.begin() + bytes_to_copy, output + i);
+
+      // Increment counter
+      for (size_t j = 0; j < 16; ++j) {
+        if (++iv[j] != 0) break;
+      }
+    }
+  }
+
   static inline void random_scalar(EllipticCurveScalar &res) {
     unsigned char tmp[64];
-    generate_random_bytes(64, tmp);
+    fortuna_generate_random_bytes(64, tmp);
     sc_reduce(tmp);
     memcpy(&res, tmp, 32);
   }

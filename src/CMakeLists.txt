@@ -36,6 +36,7 @@ source_group("" FILES ${Common} ${crypto} ${CryptoNoteCore} ${CryptoNoteProtocol
 add_library(BlockchainExplorer STATIC ${BlockchainExplorer})
 add_library(Common STATIC ${Common})
 add_library(crypto STATIC ${crypto})
+target_link_libraries(crypto ${OPENSSL_LIBRARIES})
 add_library(CryptoNoteCore STATIC ${CryptoNoteCore})
 add_library(Http STATIC ${Http})
 add_library(InProcessNode STATIC ${InProcessNode})
