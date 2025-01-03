@@ -5,6 +5,9 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#ifndef CRYPTO_H
+#define CRYPTO_H
+
 #pragma once
 
 #include <cstddef>
@@ -13,16 +16,19 @@
 #include <type_traits>
 #include <vector>
 
-#include <CryptoTypes.h>
-
+#include "CryptoTypes.h"
 #include "generic-ops.h"
 #include "hash.h"
 
 namespace crypto {
 
-  extern "C" {
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "random.h"
-  }
+#ifdef __cplusplus
+}
+#endif
 
   extern std::mutex random_lock;
 
@@ -283,3 +289,5 @@ CRYPTO_MAKE_HASHABLE(PublicKey)
 CRYPTO_MAKE_HASHABLE(KeyImage)
 CRYPTO_MAKE_COMPARABLE(Signature)
 CRYPTO_MAKE_COMPARABLE(SecretKey)
+
+#endif // CRYPTO_H
