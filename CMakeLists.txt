@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(VERSION "2.1")
-# Packaged from commit dbfc92e1c9e3773c95c15b2547b8206d9dec8da9
+# Set OpenSSL root directory
+set(OPENSSL_ROOT_DIR "C:/Program Files/OpenSSL-Win64")
+
+# Set Boost paths
+set(BOOST_ROOT "C:/local/boost_1_78_0")
+set(BOOST_LIBRARYDIR "C:/local/boost_1_78_0/lib64-msvc-14.2")
+
+set(VERSION "2.2")
 set(COMMIT dbfc92e)
 set(REFS " (HEAD -> master)")
 
@@ -22,14 +28,13 @@ if (MSVC)
 endif()
 
 enable_testing()
-# copy CTestCustom.cmake to build dir to disable long running tests in 'make test'
 configure_file(${CMAKE_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_BINARY_DIR})
 
 project(UltraNoteI)
 
 set(GTEST_OS_SOLARIS 0)
 
-include_directories(include src external "${CMAKE_BINARY_DIR}/version")
+include_directories(include src external "${CMAKE_BINARY_DIR}/version" ${Boost_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 if(APPLE)
   include_directories(SYSTEM /usr/include/malloc)
   enable_language(ASM)
@@ -47,7 +52,6 @@ set(STATIC ${MSVC} CACHE BOOL "Link libraries statically")
 
 # Don't bother searching for readline on windows
 if (NOT MSVC)
-    # If we're forcing readline, then exit if it's not found
     if (FORCE_READLINE)
         find_package(Readline REQUIRED)
     else()
@@ -75,8 +79,6 @@ if(MSVC)
   include_directories(SYSTEM src/platform/msc)
 else()
   if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    # This option has no effect in glibc version less than 2.20. 
-    # Since glibc 2.20 _BSD_SOURCE is deprecated, this macro is recomended instead
     add_definitions("-D_DEFAULT_SOURCE -D_GNU_SOURCE")
   endif()
   set(ARCH native CACHE STRING "CPU to build for: -march value or default")
@@ -127,18 +129,13 @@ else()
   endif()
   set(RELEASE_FLAGS "-Ofast -DNDEBUG -Wno-unused-variable")
   if(NOT APPLE)
-    # There is a clang bug that does not allow to compile code that uses AES-NI intrinsics if -flto is enabled
     if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_NAME STREQUAL "Linux" 
         AND CMAKE_BUILD_TYPE STREQUAL "Release" AND ((CMAKE_C_COMPILER_VERSION VERSION_GREATER 4.9) OR (CMAKE_C_COMPILER_VERSION VERSION_EQUAL 4.9)))
-      # On linux, to build in lto mode, check that ld.gold linker is used: 'update-alternatives --install /usr/bin/ld ld /usr/bin/ld.gold HIGHEST_PRIORITY'
       set(CMAKE_AR gcc-ar)
       set(CMAKE_RANLIB gcc-ranlib)
     endif()
     set(RELEASE_FLAGS "${RELEASE_FLAGS} -flto")
   endif()
-  #if(CMAKE_C_COMPILER_ID STREQUAL "GNU" AND NOT MINGW)
-  #  set(RELEASE_FLAGS "${RELEASE_FLAGS} -fno-fat-lto-objects")
-  #endif()
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${DEBUG_FLAGS}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DEBUG_FLAGS}")
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${RELEASE_FLAGS}")
@@ -153,9 +150,22 @@ if(STATIC)
   set(Boost_USE_STATIC_RUNTIME ON)
 endif()
 
-#set(Boost_DEBUG on)
+# Find OpenSSL
+find_package(OpenSSL REQUIRED)
+if(OPENSSL_FOUND)
+    message(STATUS "Found OpenSSL: ${OPENSSL_INCLUDE_DIR}")
+    include_directories(${OPENSSL_INCLUDE_DIR})
+    link_directories(${OPENSSL_LIBRARY_DIRS})
+else()
+    message(FATAL_ERROR "OpenSSL not found")
+endif()
+
+# Find Boost
 find_package(Boost 1.55 REQUIRED COMPONENTS system filesystem thread date_time chrono regex serialization program_options)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+
+# Link OpenSSL libraries
+link_directories(${OPENSSL_LIBRARY_DIRS})
 if(MINGW)
   set(Boost_LIBRARIES "${Boost_LIBRARIES};ws2_32;mswsock")
 elseif(APPLE)
