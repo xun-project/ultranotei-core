@@ -29,7 +29,13 @@ project(UltraNoteI)
 
 set(GTEST_OS_SOLARIS 0)
 
-include_directories(include src external "${CMAKE_BINARY_DIR}/version")
+include_directories(include src external "${CMAKE_BINARY_DIR}/version" "C:/local/boost_1_72_0" "C:/local/boost_1_72_0/boost/spirit/include" "C:/local/boost_1_72_0/boost/thread/include" "C:/local/boost_1_72_0/boost")
+
+set(BOOST_ROOT "C:/local/boost_1_82_0")
+set(BOOST_INCLUDEDIR "C:/local/boost_1_82_0")
+set(BOOST_LIBRARYDIR "C:/local/boost_1_82_0/stage/lib")
+
+find_package(Boost 1.72.0 REQUIRED COMPONENTS system filesystem thread date_time chrono regex serialization program_options utility)
 if(APPLE)
   include_directories(SYSTEM /usr/include/malloc)
   enable_language(ASM)
@@ -154,8 +160,10 @@ if(STATIC)
 endif()
 
 #set(Boost_DEBUG on)
-find_package(Boost 1.55 REQUIRED COMPONENTS system filesystem thread date_time chrono regex serialization program_options)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+set(BOOST_ROOT "C:/local/boost_1_82_0")
+set(Boost_INCLUDE_DIR "C:/local/boost_1_82_0")
+find_package(Boost 1.82 REQUIRED COMPONENTS system filesystem thread date_time chrono regex serialization program_options utility)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${BOOST_ROOT}/include ${BOOST_ROOT}/boost/spirit/include)
 if(MINGW)
   set(Boost_LIBRARIES "${Boost_LIBRARIES};ws2_32;mswsock")
 elseif(APPLE)

@@ -78,6 +78,7 @@ namespace cn {
       cn::ITransactionValidator& validator,
       cn::ITimeProvider& timeProvider,
       logging::ILogger& log);
+    ~tx_memory_pool();
 
     bool addObserver(ITxPoolObserver* observer);
     bool removeObserver(ITxPoolObserver* observer);
@@ -188,16 +189,15 @@ namespace cn {
 
     void buildIndices();
 
-    tools::ObserverManager<ITxPoolObserver> m_observerManager;
     const cn::Currency& m_currency;
-    OnceInTimeInterval m_txCheckInterval;
+    cn::ITimeProvider& m_timeProvider;
+    cn::ITransactionValidator& m_validator;
+    tools::ObserverManager<ITxPoolObserver> m_observerManager;
+    OnceInTimeInterval m_txCheckInterval{60, m_timeProvider};
     mutable std::recursive_mutex m_transactions_lock;
     key_images_container m_spent_key_images;
     GlobalOutputsContainer m_spentOutputs;
-
     std::string m_config_folder;
-    cn::ITransactionValidator& m_validator;
-    cn::ITimeProvider& m_timeProvider;
 
     tx_container_t m_transactions;  
     tx_container_t::nth_index<1>::type& m_fee_index;

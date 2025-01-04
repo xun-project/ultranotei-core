@@ -34,6 +34,7 @@ namespace cn {
     
     virtual bool checkTransactionInputs(const cn::Transaction& tx, BlockInfo& maxUsedBlock) = 0;
     virtual bool checkTransactionInputs(const cn::Transaction& tx, BlockInfo& maxUsedBlock, BlockInfo& lastFailed) = 0;
+    virtual bool validateTransactionInputs(const cn::Transaction& tx, uint64_t& inputsAmount) = 0;
     virtual bool haveSpentKeyImages(const cn::Transaction& tx) = 0;
     virtual bool checkTransactionSize(size_t blobSize) = 0;
   };

@@ -67,6 +67,12 @@ public:
 
   uint64_t minimumFee() const { return m_minimumFee; }
   uint64_t minimumFeeBanking() const { return m_minimumFeeBanking; }
+  
+  uint64_t getMinimumFee(uint64_t dailyDifficulty, uint64_t transactionSize) const {
+    const uint64_t minFee = minimumFee();
+    const uint64_t feePerByte = dailyDifficulty / (1024 * 1024);
+    return std::max(minFee, feePerByte * transactionSize);
+  }
 
   uint64_t defaultDustThreshold() const { return m_defaultDustThreshold; }
 

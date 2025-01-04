@@ -60,6 +60,23 @@ namespace cn {
     virtual bool checkTransactionInputs(const cn::Transaction& tx, BlockInfo& maxUsedBlock, BlockInfo& lastFailed) override;
     virtual bool haveSpentKeyImages(const cn::Transaction& tx) override;
     virtual bool checkTransactionSize(size_t blobSize) override;
+    
+    virtual bool validateTransactionInputs(const cn::Transaction& tx, uint64_t& inputsAmount) override {
+      BlockInfo maxUsedBlock;
+      BlockInfo lastFailed;
+      if (!checkTransactionInputs(tx, maxUsedBlock, lastFailed)) {
+        return false;
+      }
+      
+      inputsAmount = 0;
+      for (const auto& input : tx.inputs) {
+        if (input.type() == typeid(KeyInput)) {
+          const KeyInput& in = boost::get<KeyInput>(input);
+          inputsAmount += in.amount;
+        }
+      }
+      return true;
+    }
 
     bool init() { return init(tools::getDefaultDataDirectory(), true); }
     bool init(const std::string& config_folder, bool load_existing);
@@ -392,4 +409,3 @@ bool have_tx_keyimg_as_spent(const crypto::KeyImage &key_im);
     return true;
   }
 }
-

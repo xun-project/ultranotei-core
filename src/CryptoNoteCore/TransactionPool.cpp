@@ -101,8 +101,20 @@ namespace cn {
     m_validator(validator),
     m_timeProvider(timeProvider),
     m_txCheckInterval(60, timeProvider),
-    m_fee_index(boost::get<1>(m_transactions)),
-    logger(log, "txpool") {
+    logger(log, "txpool"),
+    m_fee_index(boost::get<1>(m_transactions)) {
+  }
+
+  //---------------------------------------------------------------------------------
+  tx_memory_pool::~tx_memory_pool() {
+    // Clean up any resources if needed
+    m_transactions.clear();
+    m_spent_key_images.clear();
+    m_spentOutputs.clear();
+    m_recentlyDeletedTransactions.clear();
+    m_paymentIdIndex.clear();
+    m_timestampIndex.clear();
+    m_ttlIndex.clear();
   }
   //---------------------------------------------------------------------------------
   bool tx_memory_pool::add_tx(const Transaction &tx, /*const crypto::Hash& tx_prefix_hash,*/ const crypto::Hash &id, size_t blobSize, tx_verification_context& tvc, bool keptByBlock, uint32_t height) {
