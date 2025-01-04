@@ -288,6 +288,12 @@ std::string makeCenteredString(size_t width, const std::string& text) {
   if (text.size() >= width) {
     return text;
   }
+
+  size_t padding = width - text.size();
+  size_t leftPadding = padding / 2;
+  size_t rightPadding = padding - leftPadding;
+
+  return std::string(leftPadding, ' ') + text + std::string(rightPadding, ' ');
 }
 
 

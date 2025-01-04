@@ -411,8 +411,8 @@ std::error_code WalletLegacy::changePassword(const std::string& oldPassword, con
 }
 
 std::string WalletLegacy::getAddress() {
-  std::unique_lock<std::mutex> lock(m_cacheMutex);
   throwIfNotInitialised();
+  std::unique_lock<std::mutex> lock(m_cacheMutex);
 
   return m_currency.accountAddressAsString(m_account);
 }
@@ -1073,7 +1073,7 @@ bool WalletLegacy::isTrackingWallet() {
 
 
 std::vector<TransactionId> WalletLegacy::deleteOutdatedUnconfirmedTransactions() {
-  std::lock_guard<std::mutex> lock(m_cacheMutex);
+  std::unique_lock<std::mutex> lock(m_cacheMutex);
   return m_transactionsCache.deleteOutdatedTransactions();
 }
 
@@ -1194,7 +1194,10 @@ bool compareTransactionOutputInformationByAmount(const TransactionOutputInformat
 }
 
 std::string WalletLegacy::getReserveProof(const uint64_t &reserve, const std::string &message) {
-	const cn::AccountKeys keys = m_account.getAccountKeys();
+  std::unique_lock<std::mutex> lock(m_cacheMutex);
+  throwIfNotInitialised();
+  
+  const cn::AccountKeys keys = m_account.getAccountKeys();
 	crypto::SecretKey viewSecretKey = keys.viewSecretKey;
 
 	if (keys.spendSecretKey == NULL_SECRET_KEY) {
