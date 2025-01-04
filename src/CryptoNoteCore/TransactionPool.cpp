@@ -102,7 +102,9 @@ namespace cn {
     m_timeProvider(timeProvider),
     m_txCheckInterval(60, timeProvider),
     logger(log, "txpool"),
-    m_fee_index(boost::get<1>(m_transactions)) {
+    m_fee_index(boost::get<1>(m_transactions)),
+    m_maxPoolSize(100000), // 100MB pool size limit
+    m_currentPoolSize(0) {
   }
 
   //---------------------------------------------------------------------------------
@@ -117,7 +119,35 @@ namespace cn {
     m_ttlIndex.clear();
   }
   //---------------------------------------------------------------------------------
-  bool tx_memory_pool::add_tx(const Transaction &tx, /*const crypto::Hash& tx_prefix_hash,*/ const crypto::Hash &id, size_t blobSize, tx_verification_context& tvc, bool keptByBlock, uint32_t height) {
+  bool tx_memory_pool::add_tx(const Transaction &tx, const crypto::Hash &id, size_t blobSize, tx_verification_context& tvc, bool keptByBlock, uint32_t height) {
+    // Check pool size limit
+    if (m_currentPoolSize + blobSize > m_maxPoolSize) {
+      // Evict lowest fee transactions until we have space
+      while (!m_transactions.empty() && (m_currentPoolSize + blobSize > m_maxPoolSize)) {
+        auto lowestFeeTx = m_fee_index.begin();
+        m_currentPoolSize -= lowestFeeTx->blobSize;
+        removeTransaction(lowestFeeTx);
+      }
+      
+      if (m_currentPoolSize + blobSize > m_maxPoolSize) {
+        logger(WARNING) << "Transaction pool full, cannot add transaction " << id;
+        tvc.m_verification_failed = true;
+        return false;
+      }
+    }
+
+    // Strict transaction replacement policy
+    if (m_transactions.count(id)) {
+      auto existingTx = m_transactions.find(id);
+      if (existingTx->fee >= fee) {
+        logger(WARNING) << "Transaction " << id << " already exists with higher or equal fee";
+        tvc.m_verification_failed = true;
+        return false;
+      }
+      // Remove existing transaction if new one has higher fee
+      m_currentPoolSize -= existingTx->blobSize;
+      removeTransaction(existingTx);
+    }
     if (!check_inputs_types_supported(tx)) {
       logger(WARNING, BRIGHT_YELLOW) << "Transaction " << id << " has unsupported input types";
       tvc.m_verification_failed = true;
@@ -165,10 +195,20 @@ namespace cn {
     }
 
     //check key images for transaction if it is not kept by block
-    if (!keptByBlock) {
-      std::lock_guard<std::recursive_mutex> lock(m_transactions_lock);
-      if (haveSpentInputs(tx)) {
-        logger(INFO, YELLOW) << "- TransactionPool.cpp - " << "Transaction with id= " << id << " used already spent inputs";
+    // Always validate inputs regardless of keptByBlock
+    std::lock_guard<std::recursive_mutex> lock(m_transactions_lock);
+    if (haveSpentInputs(tx)) {
+      logger(INFO, YELLOW) << "Transaction with id= " << id << " used already spent inputs";
+      tvc.m_verification_failed = true;
+      return false;
+    }
+
+    // Validate TTL consistency
+    uint64_t now = static_cast<uint64_t>(time(nullptr));
+    if (ttl.ttl != 0) {
+      uint64_t systemTimeDrift = std::abs(static_cast<int64_t>(now) - static_cast<int64_t>(m_timeProvider.now()));
+      if (systemTimeDrift > m_currency.blockFutureTimeLimit()) {
+        logger(WARNING) << "System time inconsistency detected: " << systemTimeDrift << " seconds";
         tvc.m_verification_failed = true;
         return false;
       }
@@ -533,10 +573,12 @@ namespace cn {
 
       uint64_t now = m_timeProvider.now();
 
+      // Reduce cleanup period for recently deleted transactions
       for (auto it = m_recentlyDeletedTransactions.begin(); it != m_recentlyDeletedTransactions.end();) {
         uint64_t elapsedTimeSinceDeletion = now - it->second;
-        if (elapsedTimeSinceDeletion > m_currency.numberOfPeriodsToForgetTxDeletedFromPool() * m_currency.mempoolTxLiveTime()) {
+        if (elapsedTimeSinceDeletion > m_currency.mempoolTxLiveTime() / 2) { // Reduced cleanup period
           it = m_recentlyDeletedTransactions.erase(it);
+          somethingRemoved = true;
         } else {
           ++it;
         }
@@ -614,29 +656,59 @@ namespace cn {
 
   //---------------------------------------------------------------------------------
   bool tx_memory_pool::addTransactionInputs(const crypto::Hash& id, const Transaction& tx, bool keptByBlock) {
-    // should not fail
+    std::lock_guard<std::recursive_mutex> lock(m_transactions_lock);
+    
+    // Synchronized double spend check
+    if (haveSpentInputs(tx)) {
+      logger(ERROR, BRIGHT_RED) << "Transaction " << id << " attempts to spend already spent inputs";
+      return false;
+    }
+
+    // Synchronize key images and outputs tracking
+    std::unordered_set<crypto::KeyImage> keyImages;
+    std::set<GlobalOutput> outputs;
+
+    // Add inputs to tracking structures with synchronization
     for (const auto& in : tx.inputs) {
       if (in.type() == typeid(KeyInput)) {
         const auto& txin = boost::get<KeyInput>(in);
-        std::unordered_set<crypto::Hash>& kei_image_set = m_spent_key_images[txin.keyImage];
-        if (!(keptByBlock || kei_image_set.size() == 0)) {
-          logger(ERROR, BRIGHT_RED)
-              << "internal error: keptByBlock=" << keptByBlock
-              << ",  kei_image_set.size()=" << kei_image_set.size() << ENDL
-              << "txin.keyImage=" << txin.keyImage << ENDL << "tx_id=" << id;
+        
+        // Check if key image already exists in our temporary set
+        if (keyImages.count(txin.keyImage)) {
+          logger(ERROR, BRIGHT_RED) << "Key image " << txin.keyImage << " already spent in this transaction";
           return false;
         }
-        auto ins_res = kei_image_set.insert(id);
-        if (!(ins_res.second)) {
-          logger(ERROR, BRIGHT_RED) << "<< TransactionPool.cpp << " << "internal error: try to insert duplicate iterator in key_image set";
+        keyImages.insert(txin.keyImage);
+
+        // Check if key image exists in main tracking structure
+        auto& key_image_set = m_spent_key_images[txin.keyImage];
+        if (!key_image_set.empty() && !keptByBlock) {
+          logger(ERROR, BRIGHT_RED) << "Key image " << txin.keyImage << " already spent in transaction pool";
           return false;
         }
-      } else if (in.type() == typeid(MultisignatureInput)) {
+        
+        // Insert transaction ID into key image set
+        if (!key_image_set.insert(id).second) {
+          logger(ERROR, BRIGHT_RED) << "Failed to insert transaction " << id << " into key image set";
+          return false;
+        }
+      }
+      else if (in.type() == typeid(MultisignatureInput)) {
         if (!keptByBlock) {
           const auto& msig = boost::get<MultisignatureInput>(in);
-          auto r = m_spentOutputs.insert(GlobalOutput(msig.amount, msig.outputIndex));
-          (void)r;
-          assert(r.second);
+          GlobalOutput output(msig.amount, msig.outputIndex);
+          
+          // Verify output is not already spent
+          if (m_spentOutputs.count(output)) {
+            logger(ERROR, BRIGHT_RED) << "Output " << msig.amount << ":" << msig.outputIndex << " already spent";
+            return false;
+          }
+          
+          // Insert output into spent outputs set
+          if (!m_spentOutputs.insert(output).second) {
+            logger(ERROR, BRIGHT_RED) << "Failed to insert spent output " << msig.amount << ":" << msig.outputIndex;
+            return false;
+          }
         }
       }
     }
