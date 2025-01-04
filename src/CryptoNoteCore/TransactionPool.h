@@ -205,6 +205,9 @@ namespace cn {
 
     logging::LoggerRef logger;
 
+    size_t m_maxPoolSize;
+    size_t m_currentPoolSize;
+
     PaymentIdIndex m_paymentIdIndex;
     TimestampTransactionsIndex m_timestampIndex;
     std::unordered_map<crypto::Hash, uint64_t> m_ttlIndex;

@@ -103,7 +103,7 @@ namespace cn {
     m_txCheckInterval(60, timeProvider),
     logger(log, "txpool"),
     m_fee_index(boost::get<1>(m_transactions)),
-    m_maxPoolSize(100000), // 100MB pool size limit
+    m_maxPoolSize(100 * 1024 * 1024), // 100MB pool size limit
     m_currentPoolSize(0) {
   }
 
@@ -124,9 +124,12 @@ namespace cn {
     if (m_currentPoolSize + blobSize > m_maxPoolSize) {
       // Evict lowest fee transactions until we have space
       while (!m_transactions.empty() && (m_currentPoolSize + blobSize > m_maxPoolSize)) {
-        auto lowestFeeTx = m_fee_index.begin();
-        m_currentPoolSize -= lowestFeeTx->blobSize;
-        removeTransaction(lowestFeeTx);
+        auto it = m_fee_index.begin();
+        auto main_it = m_transactions.find(it->id);
+        if (main_it != m_transactions.end()) {
+          m_currentPoolSize -= main_it->blobSize;
+          removeTransaction(main_it);
+        }
       }
       
       if (m_currentPoolSize + blobSize > m_maxPoolSize) {
@@ -136,10 +139,16 @@ namespace cn {
       }
     }
 
-    // Strict transaction replacement policy
-    if (m_transactions.count(id)) {
-      auto existingTx = m_transactions.find(id);
-      if (existingTx->fee >= fee) {
+    // Validate transaction inputs/outputs
+    uint64_t inputs_amount = m_currency.getTransactionAllInputsAmount(tx, height);
+    uint64_t outputs_amount = get_outs_money_amount(tx);
+    const uint64_t fee = inputs_amount - outputs_amount;
+
+    // Check for existing transaction with same ID
+    auto existingTx = m_transactions.find(id);
+    if (existingTx != m_transactions.end()) {
+      uint64_t existingFee = existingTx->fee;
+      if (existingFee >= fee) {
         logger(WARNING) << "Transaction " << id << " already exists with higher or equal fee";
         tvc.m_verification_failed = true;
         return false;
@@ -148,15 +157,13 @@ namespace cn {
       m_currentPoolSize -= existingTx->blobSize;
       removeTransaction(existingTx);
     }
+
+    // Validate input types
     if (!check_inputs_types_supported(tx)) {
       logger(WARNING, BRIGHT_YELLOW) << "Transaction " << id << " has unsupported input types";
       tvc.m_verification_failed = true;
-      // Error message already set via m_verification_failed
       return false;
     }
-
-    uint64_t inputs_amount = m_currency.getTransactionAllInputsAmount(tx, height);
-    uint64_t outputs_amount = get_outs_money_amount(tx);
 
     if (outputs_amount > inputs_amount) {
       logger(INFO, RED) << "- TransactionPool.cpp - " << "transaction use more money then it has: use " << m_currency.formatAmount(outputs_amount) <<
@@ -172,7 +179,6 @@ namespace cn {
       ttl.ttl = 0;
     }
 
-    const uint64_t fee = inputs_amount - outputs_amount;
     bool isFusionTransaction = fee == 0 && m_currency.isFusionTransaction(tx, blobSize);
 
     if (ttl.ttl != 0 && !keptByBlock) {
@@ -196,7 +202,6 @@ namespace cn {
 
     //check key images for transaction if it is not kept by block
     // Always validate inputs regardless of keptByBlock
-    std::lock_guard<std::recursive_mutex> lock(m_transactions_lock);
     if (haveSpentInputs(tx)) {
       logger(INFO, YELLOW) << "Transaction with id= " << id << " used already spent inputs";
       tvc.m_verification_failed = true;
@@ -615,11 +620,34 @@ namespace cn {
   }
 
   tx_memory_pool::tx_container_t::iterator tx_memory_pool::removeTransaction(tx_memory_pool::tx_container_t::iterator i) {
-    removeTransactionInputs(i->id, i->tx, i->keptByBlock);
+    // Get the transaction ID before removing
+    crypto::Hash id = i->id;
+    
+    // Remove transaction from all indexes and tracking structures
+    removeTransactionInputs(id, i->tx, i->keptByBlock);
     m_paymentIdIndex.remove(i->tx);
-    m_timestampIndex.remove(i->receiveTime, i->id);
-    m_ttlIndex.erase(i->id);
-    return m_transactions.erase(i);
+    m_timestampIndex.remove(i->receiveTime, id);
+    m_ttlIndex.erase(id);
+    
+    // Get reference to the main index (index 0)
+    auto& main_index = m_transactions.template get<0>();
+    
+    // Find the transaction in the main index using its ID
+    auto main_it = main_index.find(id);
+    if (main_it == main_index.end()) {
+      // If not found, return end iterator
+      return m_transactions.end();
+    }
+    
+    // Get the next iterator before erasing
+    auto next_it = main_it;
+    ++next_it;
+    
+    // Erase from the main index
+    main_index.erase(main_it);
+    
+    // Return next iterator
+    return next_it;
   }
 
   bool tx_memory_pool::removeTransactionInputs(const crypto::Hash& tx_id, const Transaction& tx, bool keptByBlock) {
