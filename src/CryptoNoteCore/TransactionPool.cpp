@@ -119,7 +119,9 @@ namespace cn {
   //---------------------------------------------------------------------------------
   bool tx_memory_pool::add_tx(const Transaction &tx, /*const crypto::Hash& tx_prefix_hash,*/ const crypto::Hash &id, size_t blobSize, tx_verification_context& tvc, bool keptByBlock, uint32_t height) {
     if (!check_inputs_types_supported(tx)) {
+      logger(WARNING, BRIGHT_YELLOW) << "Transaction " << id << " has unsupported input types";
       tvc.m_verification_failed = true;
+      // Error message already set via m_verification_failed
       return false;
     }
 
