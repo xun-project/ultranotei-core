@@ -332,7 +332,7 @@ static void Final(hashState* ctx,
 }
 
 /* hash bit sequence */
-void groestl(const BitSequence* data, 
+static void groestl(const BitSequence* data,
 		DataLength databitlen,
 		BitSequence* hashval) {
 

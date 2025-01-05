@@ -1,23 +1,93 @@
-## UltraNote Infinity Systemctl Daemon
+# UltraNote Infinity Systemd Service Management
 
-Make sure your UltraNote Infinity infrastructure keeps running after a reboot or after any failure. For this we recommand systemd
+## Overview
+This document provides comprehensive documentation for managing UltraNote Infinity services using systemd.
 
-Make sure you have the binaries downloaded in advance.
+## Service Configuration
 
-To use the UltraNote Infinity Daemon Service, update the `ultranoteid.service` file.
-Next, copy the `ultranoted.service` file to `/etc/systemd/system/ultranoteid.service`.
-After that, copy the `ultranoteid` binary to `/usr/bin/ultranoteid`.
+### Required Files
+- `ultranoteid.service`
+- `ultranotei-walletd.service`
+- `walletd.service`
 
-Now test the setup with `sudo systemctl start ultranoteid`.
-To check the status, run `sudo systemctl status ultranoteid`.
-Once it works, run `sudo systemctl enable ultranoteid` to make sure ultranoteid starts at boot and after a failure.
+### Installation Steps
+1. Copy service files to systemd directory:
+```bash
+sudo cp ultranoteid.service /etc/systemd/system/
+sudo cp ultranotei-walletd.service /etc/systemd/system/
+sudo cp walletd.service /etc/systemd/system/
+```
 
-Restarting: `sudo systemctl restart ultranoteid`
-Stopping: `sudo systemctl stop ultranoteid`
-Starting: `sudo systemctl start ultranoteid`
+2. Copy binaries to system path:
+```bash
+sudo cp ultranoteid /usr/bin/
+sudo cp ultranotei-walletd /usr/bin/
+sudo cp walletd /usr/bin/
+```
 
-*Same process goes for `ultranotei-walletd.service`*
+3. Reload systemd configuration:
+```bash
+sudo systemctl daemon-reload
+```
 
-### Running as a remote node use
+## Service Management
 
-`ExecStart=/usr/bin/ultranoteid --data-dir=/home/YOUR_USER/.ultranotei --rpc-bind-ip=0.0.0.0 --rpc-bind-port=33000`
+### Starting Services
+```bash
+sudo systemctl start ultranoteid
+sudo systemctl start ultranotei-walletd
+sudo systemctl start walletd
+```
+
+### Enabling Services
+```bash
+sudo systemctl enable ultranoteid
+sudo systemctl enable ultranotei-walletd
+sudo systemctl enable walletd
+```
+
+### Checking Status
+```bash
+sudo systemctl status ultranoteid
+sudo systemctl status ultranotei-walletd
+sudo systemctl status walletd
+```
+
+## Configuration Examples
+
+### Local Node Configuration
+```ini
+ExecStart=/usr/bin/ultranoteid --data-dir=/home/YOUR_USER/.ultranotei
+```
+
+### Remote Node Configuration
+```ini
+ExecStart=/usr/bin/ultranoteid --data-dir=/home/YOUR_USER/.ultranotei \
+  --rpc-bind-ip=0.0.0.0 \
+  --rpc-bind-port=33000
+```
+
+## Troubleshooting
+
+### Common Issues
+- Service fails to start
+- Permission denied errors
+- Port conflicts
+- Resource allocation problems
+
+### Diagnostic Commands
+```bash
+# Check service logs
+journalctl -u ultranoteid
+
+# Verify file permissions
+ls -l /usr/bin/ultranoteid
+
+# Check port usage
+sudo netstat -tulpn | grep 33000
+```
+
+## Support
+For technical assistance, contact:
+- Email: support@ultranote.org
+- GitHub Issues: [Report Issues](https://github.com/xun-project/UltraNote-RPC-PHP/issues)

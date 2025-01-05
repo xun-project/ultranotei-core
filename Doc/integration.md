@@ -1,72 +1,112 @@
-# WORK IN PROGRESS
-## UltraNote Infinity For Online Services 
+# UltraNote Infinity Integration Guide
 
-Depending on how your system accounts user funds there are two ways to integrate UltraNote into an application to receive and send transactions.
+## Overview
+This guide provides instructions for integrating UltraNote Infinity into online services and applications.
 
-UltraNote distributes two wallet solutions: `ultranoteiwallet` and `walletd`. Both daemons are capable of recieving and sending mass payouts. The difference is that `walletd` provides multiple wallet addresses when `ultranotewallet` provides only one wallet address. 
+## Integration Options
 
-In this document we'll show how to use  `ultranotewallet`. If you need a multi-wallet solution (one wallet per user) refer to [paymentgate documentation](./paymentgate.md), use the [PHP Wrapper](https://github.com/xun-project/UltraNote-RPC-PHP) or use the [WordPress Plugin](https://github.com/xun-project/UltraNote-WP-PaymentGateway).
+### Single-Wallet Solution (ultranoteiwallet)
+- Provides one wallet address
+- Suitable for services managing funds in a single account
+- Uses JSON RPC interface
 
+### Multi-Wallet Solution (walletd)
+- Provides multiple wallet addresses
+- Suitable for services managing funds per user
+- Uses JSON RPC interface
+- Supports PHP wrapper and WordPress plugin
 
+## Single-Wallet Integration
 
-### Using `ultranoteiwallet`
+### Prerequisites
+1. Generate new wallet:
+   ```sh
+   ./ultranoteiwallet --generate-new-wallet walletname
+   ```
+2. Start node daemon:
+   ```sh
+   ./ultranoteid --config-file /etc/XUNI/node.conf
+   ```
+3. Start wallet RPC server:
+   ```sh
+   ./ultranoteiwallet --wallet-file walletname --password 1234 --rpc-bind-port 8078 --rpc-user test --rpc-password 1234
+   ```
 
-`ultranoteiwallet` provides *JSON RPC* service. At the time this is the only way to use wallet methods if your application cannot call `c++` methods directly. 
+### RPC Methods
 
-
-### Running
-
-1. Before running `ultranoteiwallet` you need to generate a new wallet:
-
-```sh
-	~# ./ultranoteiwallet --generate-new-wallet walletname
-
-```
-
-2. Run the node daemon `ultranoteid`:
-
-```sh
-	~# ./ultranoteid --config-file /etc/XUNI/node.conf
-```   
-
-3. Run the wallet in RPC Server mode
-
-```sh
-	~# ./ultranoteiwallet  --wallet-file walletname --password 1234 --rpc-bind-port 8078 --rpc-user test --rpc-password 1234
-``` 
-
-Now the rpc server runs at `http://127.0.0.1:8078/json_rpc` and you can call following methods:
-
-
-### Method: `getbalance()`
-Get current balance
-
-Request:
+#### getbalance()
+##### Request
 ```json
 {
-	"method":"getbalance", 
-	"params": {},
-	"jsonrpc": "2.0", 
-	"id": "1"
+  "method":"getbalance",
+  "params": {},
+  "jsonrpc": "2.0",
+  "id": "1"
 }
 ```
 
-
-Response:
+##### Response
 ```json
 {
-	"id":"1",
-	"jsonrpc":"2.0",
-	"result":{
-		"available_balance":1000,
-		"balance":1000,
-		"locked_amount":0,
-		"unlocked_balance":0
-	}
+  "id":"1",
+  "jsonrpc":"2.0",
+  "result":{
+    "available_balance":1000,
+    "balance":1000,
+    "locked_amount":0,
+    "unlocked_balance":0
+  }
 }
 ```
 
+## Multi-Wallet Integration
 
-### Use cases
+### Prerequisites
+1. Install walletd
+2. Create configuration file
+3. Generate wallet container:
+   ```sh
+   walletd --config=/etc/paymentgate.conf --generate-container
+   ```
+4. Start walletd:
+   ```sh
+   walletd --config=/etc/paymentgate.conf
+   ```
 
-#### _Case 1:_ Using PaymentID 
+### Available Integration Methods
+1. Direct JSON RPC calls
+2. PHP wrapper
+3. WordPress plugin
+
+## Best Practices
+
+### Security
+- Use HTTPS for RPC communication
+- Implement proper authentication
+- Regularly rotate credentials
+- Monitor system logs
+
+### Performance
+- Optimize database configuration
+- Use proper indexing
+- Implement caching
+- Monitor resource usage
+
+## Troubleshooting
+
+### Common Issues
+- Wallet synchronization problems
+- RPC connection failures
+- Transaction processing delays
+- Resource allocation issues
+
+### Diagnostic Tools
+- Check system logs
+- Verify network connectivity
+- Monitor resource usage
+- Test RPC endpoints
+
+## Support
+For technical assistance, contact:
+- Email: support@ultranote.org
+- GitHub Issues: [Report Issues](https://github.com/xun-project/UltraNote-RPC-PHP/issues)

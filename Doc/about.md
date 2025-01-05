@@ -1,14 +1,83 @@
-UltraNote Infinity XUNI
-=====================
+# UltraNote Infinity (XUNI) Overview
 
-Intro
------
-UltraNote Infinity is a free open source privacy protected peer-to-peer digital cash system 
-that is completely decentralized, without the need for a central server or trusted
-parties.  Users hold the crypto keys to their own money and transact directly
-with each other, with the help of a P2P network to check for double-spending.
-UltraNote Infinity has a decentralized blockchain banking in core as well as instant 
-untraceable crypto messages that can be decrypted with recipient`s private key.
-As well as an encrypted IPFS file system to transfer files up to 100Mb.
-Integrated TOR VPN and Browser with DuckDuckGo search engine.
-Invoice system and more ..
+## Introduction
+UltraNote Infinity is a decentralized, privacy-focused cryptocurrency system that enables secure peer-to-peer transactions without the need for trusted intermediaries.
+
+## Key Features
+
+### Core Technology
+- Decentralized blockchain banking system
+- Instant untraceable crypto messages
+- Encrypted IPFS file transfer (up to 100MB)
+- Integrated TOR VPN and browser
+- DuckDuckGo search engine integration
+
+### Privacy Features
+- Advanced cryptographic protocols
+- Untraceable transactions
+- Encrypted messaging system
+- Integrated TOR network support
+
+### Security Features
+- Decentralized architecture
+- Military-grade encryption
+- Secure wallet system
+- Integrated VPN protection
+
+### User Benefits
+- Complete control over funds
+- Direct peer-to-peer transactions
+- Secure communication channels
+- Anonymous file sharing
+- Integrated privacy tools
+
+## Technical Specifications
+
+### Blockchain
+- Decentralized consensus mechanism
+- Secure transaction validation
+- Immutable ledger technology
+- Scalable architecture
+
+### Wallet System
+- Multiple wallet options
+- Secure key management
+- Cross-platform compatibility
+- Advanced security features
+
+### Network
+- Peer-to-peer architecture
+- Integrated TOR support
+- Encrypted communication
+- Distributed node network
+
+## Use Cases
+
+### Financial Transactions
+- Secure payments
+- Private transfers
+- International remittances
+- Merchant integration
+
+### Communication
+- Encrypted messaging
+- Secure file sharing
+- Anonymous communication
+- Privacy-focused networking
+
+### Development
+- API integration
+- Custom wallet solutions
+- Blockchain applications
+- Privacy-focused services
+
+## Getting Started
+For installation and setup instructions, refer to:
+- [Integration Guide](./integration.md)
+- [Systemd Configuration](./systemd.md)
+- [Payment Gateway Documentation](./paymentgate.md)
+
+## Support
+For technical assistance, contact:
+- Email: support@ultranote.org
+- GitHub Issues: [Report Issues](https://github.com/xun-project/UltraNote-RPC-PHP/issues)
