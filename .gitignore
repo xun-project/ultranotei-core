@@ -3,6 +3,7 @@
 *.ycm_extra_conf.pyc
 
 build/
+build_*/
 tags/
 Release/
 Debug/
@@ -18,10 +19,23 @@ CMakeFiles/
 
 version/
 
+# Generated files
 miniupnpcstrings.h
 compile_commands.json
 *.ipch
 *.bin
 *.json
-*.json
-*.json
+*.db
+*.opendb
+*.suo
+*.user
+*.filters
+*.vcxproj
+
+# CMake generated
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+*.sln
+Testing/

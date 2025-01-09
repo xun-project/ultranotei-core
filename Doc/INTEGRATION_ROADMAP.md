@@ -66,6 +66,7 @@ UltraNote Infinity Core is being updated to enhance security, improve cross-plat
    - Enhanced type safety across cryptographic operations
    - Unified cryptographic types in CryptoTypes.h
    - Added proper namespace separation (crypto and cn)
+   - Note: Mining algorithm (CryptoNight variants) remains unchanged
 
 2. **Key Management Improvements**
    - Enhanced key derivation and storage
@@ -84,6 +85,10 @@ UltraNote Infinity Core is being updated to enhance security, improve cross-plat
 2. Develop input validation framework
 3. Create comprehensive security documentation
 4. Set up automated security scanning
+5. Review and optimize mining algorithm (planned for later phase)
+   - Analyze current CryptoNight implementation
+   - Evaluate performance optimizations
+   - Consider algorithm adjustments if needed
 
 ## 3. Code Modernization (Phase 3)
 - [ ] **Core Functionality Updates**
