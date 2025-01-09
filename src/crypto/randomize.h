@@ -19,122 +19,61 @@
 
 #pragma once
 
-#include <algorithm>
+#include <cstdint>
+#include <mutex>
 #include <random>
-#include <type_traits>
 
-namespace randomize
-{
-    /**
-     * Obtain a random seed
-     */
-    static thread_local std::random_device device;
+namespace crypto {
 
-    /**
-     * Generator, seeded with the random device
-     */
-    static thread_local std::mt19937 gen(device());
+  inline std::mt19937_64& get_random_generator() {
+    static thread_local std::mt19937_64 generator(std::random_device{}());
+    return generator;
+  }
 
-    /**
-     * Obtain the generator used internally. Helpful for passing to functions
-     * like std::shuffle.
-     */
-    inline std::mt19937 generator()
-    {
-        return gen;
+  inline void randomize(void* data, size_t size) {
+    static thread_local std::uniform_int_distribution<uint64_t> distribution;
+    uint8_t* dataPtr = static_cast<uint8_t*>(data);
+    
+    while (size >= 8) {
+      *reinterpret_cast<uint64_t*>(dataPtr) = distribution(get_random_generator());
+      dataPtr += 8;
+      size -= 8;
     }
-
-    /**
-     * Generate n random bytes (uint8_t), and place them in *result. Result should be large
-     * enough to contain the bytes.
-     */
-    inline void randomBytes(size_t n, uint8_t *result)
-    {
-        for (size_t i = 0; i < n; i++)
-        {
-            result[i] = static_cast<uint8_t>(random_value<uint8_t>(0, std::numeric_limits<uint8_t>::max()));
-        }
+    
+    if (size > 0) {
+      uint64_t random = distribution(get_random_generator());
+      std::memcpy(dataPtr, &random, size);
     }
+  }
 
-    /**
-     * Generate n random bytes (uint8_t), and return them in a vector.
-     */
-    inline std::vector<uint8_t> randomBytes(size_t n)
-    {
-        std::vector<uint8_t> result;
+  inline uint64_t rand() {
+    static thread_local std::uniform_int_distribution<uint64_t> distribution;
+    return distribution(get_random_generator());
+  }
 
-        result.reserve(n);
+  inline uint64_t rand64() {
+    return rand();
+  }
 
-        for (size_t i = 0; i < n; i++)
-        {
-            result.push_back(static_cast<uint8_t>(random_value<uint8_t>(0, std::numeric_limits<uint8_t>::max())));
-        }
+  template<typename T>
+  T rand() {
+    static thread_local std::uniform_int_distribution<T> distribution;
+    return distribution(get_random_generator());
+  }
 
-        return result;
-    }
+  template<>
+  inline uint8_t rand<uint8_t>() {
+    return static_cast<uint8_t>(rand() & 0xFF);
+  }
 
-    /**
-     * Generate a random value of the type specified, in the full range of the
-     * type
-     */
-    template <typename T>
-    T randomValue()
-    {
-        return random_value<T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
-    }
+  template<>
+  inline int8_t rand<int8_t>() {
+    return static_cast<int8_t>(rand() & 0xFF);
+  }
 
-    /**
-     * Generate a random value of the type specified, in the range [min, max]
-     * Note that both min, and max, are included in the results. Therefore,
-     * randomValue(0, 100), will generate numbers between 0 and 100.
-     *
-     * Note that min must be <= max, or undefined behaviour will occur.
-     */
-    template <typename T>
-    T randomValue(T min, T max)
-    {
-        return random_value<T>(min, max);
-    }
+  template<>
+  inline char rand<char>() {
+    return static_cast<char>(rand() & 0xFF);
+  }
 
-    /**
-     * Generate a random value of the type specified, in the range [min, max]
-     * Note that both min, and max, are included in the results. Therefore,
-     * randomValue(0, 100), will generate numbers between 0 and 100.
-     *
-     * Note that min must be <= max, or undefined behaviour will occur.
-     */
-    template <typename T>
-    T random_value(T min, T max)
-    {
-        std::lock_guard<std::mutex> lock(random_lock);
-        std::uniform_int_distribution<T> dist(min, max);
-        return dist(gen);
-    }
-
-    /**
-     * Obtain the generator used internally. Helpful for passing to functions
-     * like std::shuffle.
-     */
-    inline std::mutex random_lock;
-    inline std::random_device random_engine;
-
-    /**
-     * Shuffle the range [first, last) using the random engine
-     */
-    template <typename Iter>
-    void shuffle(Iter first, Iter last)
-    {
-        size_t count = std::distance(first, last);
-        if (count < 2) {
-            return;
-        }
-
-        std::lock_guard<std::mutex> lock(random_lock);
-        for (size_t i = count - 1; i > 0; --i) {
-            size_t j = random_value<size_t>(0, i);
-            if (i != j) {
-                std::swap(first[i], first[j]);
-            }
-        }
-    }
-}
+}  // namespace crypto

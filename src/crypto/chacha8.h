@@ -23,8 +23,6 @@ namespace crypto {
 #pragma pack(push, 1)
   struct chacha8_key {
     uint8_t data[CHACHA8_KEY_SIZE];
-
-
   };
 
   // MS VC 2012 doesn't interpret `class chacha8_iv` as POD in spite of [9.0.10], so it is a struct
@@ -53,7 +51,7 @@ namespace crypto {
   inline chacha8_iv randomChachaIV()
   {
     chacha8_iv result;
-    randomize::randomBytes(CHACHA8_IV_SIZE, result.data);
+    crypto::randomize(result.data, CHACHA8_IV_SIZE);
     return result;
   }
 }

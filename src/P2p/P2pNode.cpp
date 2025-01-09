@@ -64,13 +64,11 @@ public:
 private:
 
   size_t getRandomIndex() {
-    //divide by zero workaround
-    if (maxIndex == 0) {
+    size_t count = m_contexts.size();
+    if (count == 0) {
       return 0;
     }
-
-    size_t x = crypto::rand<size_t>() % (maxIndex + 1);
-    return (x * x * x) / (maxIndex * maxIndex);
+    return crypto::rand() % count;
   }
 
   const size_t maxIndex;

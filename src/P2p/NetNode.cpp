@@ -53,13 +53,35 @@ using namespace boost::placeholders;
 namespace {
 
 size_t get_random_index_with_fixed_probability(size_t max_index) {
-  //divide by zero workaround
-  if (!max_index) {
+  if (max_index == 0) {
     return 0;
   }
+  size_t x = crypto::rand() % (max_index + 1);
+  return (x * x * x) / (max_index * max_index);
+}
 
-  size_t x = crypto::rand<size_t>() % (max_index + 1);
-  return (x * x * x ) / (max_index * max_index); //parabola \/
+bool get_random_indexes_for_peers(size_t peers_count, size_t random_index_count, std::vector<size_t>& result) {
+  if (peers_count == 0) {
+    return false;
+  }
+
+  result.clear();
+  result.reserve(random_index_count);
+
+  size_t i = 0;
+  while (i < random_index_count) {
+    size_t idx = crypto::rand() % peers_count;
+    if (std::find(result.begin(), result.end(), idx) == result.end()) {
+      result.push_back(idx);
+      ++i;
+    }
+  }
+  return true;
+}
+
+bool get_random_out_peer(size_t& number) {
+  number = crypto::rand() % m_outgoing_connections_count;
+  return true;
 }
 
 void addPortMapping(logging::LoggerRef& logger, uint32_t port) {
@@ -323,7 +345,7 @@ namespace cn
   }
 
   //-----------------------------------------------------------------------------------
-  void NodeServer::externalRelayNotifyToAll(int command, const BinaryArray& data_buff) {
+  void NodeServer::externalRelayNotifyToAll(int command, const BinaryArray& data_buff, const net_connection_id* excludeConnection) {
     m_dispatcher.remoteSpawn([this, command, data_buff] {
       relay_notify_to_all(command, data_buff, nullptr);
     });
@@ -589,7 +611,7 @@ namespace cn
       logger(logging::DEBUGGING) << context << "COMMAND_HANDSHAKE Failed, peer is wrong version! (" << std::to_string(rsp.node_data.version) << "), closing connection.";
       return false;
     } else if ((rsp.node_data.version - cn::P2P_CURRENT_VERSION) >= cn::P2P_UPGRADE_WINDOW) {
-      logger(logging::WARNING) << context << "COMMAND_HANDSHAKE Warning, your software may be out of date. Please upgrade to the latest version.";
+      logger(logging::WARNING) << context << "Warning, your software may be out of date. Please upgrade to the latest version.";
     }
 
     if (!handle_remote_peerlist(rsp.local_peerlist, rsp.node_data.local_time, context)) {
@@ -696,7 +718,7 @@ namespace cn
       }
     }
     return false;
-  }
+}
 
 
   bool NodeServer::try_to_connect_and_handshake_with_new_peer(const NetworkAddress& na, bool just_take_peerlist, uint64_t last_seen_stamp, bool white)  {
@@ -732,7 +754,6 @@ namespace cn
       ctx.m_remote_port = na.port;
       ctx.m_is_income = false;
       ctx.m_started = time(nullptr);
-
 
       try {
         platform_system::Context<bool> handshakeContext(m_dispatcher, [&] {
