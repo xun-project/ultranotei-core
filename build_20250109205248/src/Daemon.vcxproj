@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B0D23BE5-F206-315B-BA27-C0293235E0DC}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>Daemon</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\github-repos\ultranotei-core\build_20250109205248\src\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Daemon.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ultranoteid</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\github-repos\ultranotei-core\build_20250109205248\src\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Daemon.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ultranoteid</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\github-repos\ultranotei-core\build_20250109205248\src\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Daemon.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ultranoteid</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4345</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;BOOST_ALL_NO_LIB;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;BOOST_ALL_NO_LIB;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Debug\CryptoNoteCore.lib;Debug\P2P.lib;Debug\Rpc.lib;Debug\System.lib;Debug\Http.lib;Debug\Logging.lib;Debug\Common.lib;Debug\crypto.lib;..\external\miniupnpc\Debug\miniupnpc.lib;Debug\BlockchainExplorer.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_system-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_filesystem-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_thread-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_date_time-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_chrono-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_regex-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_serialization-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_program_options-vc142-mt-sgd-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_atomic-vc142-mt-sgd-x64-1_72.lib;Debug\Serialization.lib;ws2_32.lib;iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/github-repos/ultranotei-core/build_20250109205248/src/Debug/ultranoteid.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/github-repos/ultranotei-core/build_20250109205248/src/Debug/ultranoteid.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10485760</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4345</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;BOOST_ALL_NO_LIB;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;BOOST_ALL_NO_LIB;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>RelWithDebInfo\CryptoNoteCore.lib;RelWithDebInfo\P2P.lib;RelWithDebInfo\Rpc.lib;RelWithDebInfo\System.lib;RelWithDebInfo\Http.lib;RelWithDebInfo\Logging.lib;RelWithDebInfo\Common.lib;RelWithDebInfo\crypto.lib;..\external\miniupnpc\RelWithDebInfo\miniupnpc.lib;RelWithDebInfo\BlockchainExplorer.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_system-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_filesystem-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_thread-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_date_time-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_chrono-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_regex-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_serialization-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_program_options-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_atomic-vc142-mt-s-x64-1_72.lib;RelWithDebInfo\Serialization.lib;ws2_32.lib;iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/github-repos/ultranotei-core/build_20250109205248/src/RelWithDebInfo/ultranoteid.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/github-repos/ultranotei-core/build_20250109205248/src/RelWithDebInfo/ultranoteid.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10485760</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DisableSpecificWarnings>4996;4345</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;BOOST_ALL_NO_LIB;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;BOOST_ALL_NO_LIB;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Release\CryptoNoteCore.lib;Release\P2P.lib;Release\Rpc.lib;Release\System.lib;Release\Http.lib;Release\Logging.lib;Release\Common.lib;Release\crypto.lib;..\external\miniupnpc\Release\miniupnpc.lib;Release\BlockchainExplorer.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_system-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_filesystem-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_thread-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_date_time-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_chrono-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_regex-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_serialization-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_program_options-vc142-mt-s-x64-1_72.lib;C:\local\boost_1_72_0\lib64-msvc-14.2\lib\libboost_atomic-vc142-mt-s-x64-1_72.lib;Release\Serialization.lib;ws2_32.lib;iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/github-repos/ultranotei-core/build_20250109205248/src/Release/ultranoteid.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/github-repos/ultranotei-core/build_20250109205248/src/Release/ultranoteid.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10485760</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Daemon\Daemon.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Daemon\DaemonCommandsHandler.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Daemon\DaemonCommandsHandler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\BlockchainExplorer.vcxproj">
+      <Project>{97A57C96-DA6F-37A2-9730-E343C7CE2659}</Project>
+      <Name>BlockchainExplorer</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\Common.vcxproj">
+      <Project>{A536D795-5C5C-3D18-8131-3565B194BA47}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\CryptoNoteCore.vcxproj">
+      <Project>{0D9DE18B-D798-375E-8AC5-98363E2AA38F}</Project>
+      <Name>CryptoNoteCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\Http.vcxproj">
+      <Project>{BA62C8C1-AD9B-38D8-AA79-184A6CD37F71}</Project>
+      <Name>Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\Logging.vcxproj">
+      <Project>{002B8E92-5240-387D-9AB3-D3D37464FA5E}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\P2P.vcxproj">
+      <Project>{D2179B50-8E0C-3A7A-8C69-FC31609F2B9A}</Project>
+      <Name>P2P</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\Rpc.vcxproj">
+      <Project>{260754D9-23E2-31D6-8EE6-A06CCAD6ED6F}</Project>
+      <Name>Rpc</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\Serialization.vcxproj">
+      <Project>{DE3F66F3-2FE7-305F-90E4-E579E5F23116}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\System.vcxproj">
+      <Project>{71B3E60B-6659-3170-9BD0-522AB227427F}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\src\crypto.vcxproj">
+      <Project>{4436A1C8-9B41-3785-BDEB-9E26B89DD1ED}</Project>
+      <Name>crypto</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\external\miniupnpc\upnpc-static.vcxproj">
+      <Project>{4CAFF3CC-15BB-363C-A2A3-82B8079478D8}</Project>
+      <Name>upnpc-static</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\github-repos\ultranotei-core\build_20250109205248\version.vcxproj">
+      <Project>{57AAAB5C-E3CB-3C47-898C-A202D03C849F}</Project>
+      <Name>version</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

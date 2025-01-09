@@ -19,18 +19,30 @@
 
 #pragma once
 
+#include <algorithm>
 #include <random>
+#include <type_traits>
 
 namespace randomize
 {
-    /* Used to obtain a random seed */
+    /**
+     * Obtain a random seed
+     */
     static thread_local std::random_device device;
 
-    /* Generator, seeded with the random device */
+    /**
+     * Generator, seeded with the random device
+     */
     static thread_local std::mt19937 gen(device());
 
-    /* The distribution to get numbers for - in this case, uint8_t */
-    static std::uniform_int_distribution<int> distribution{0, std::numeric_limits<uint8_t>::max()};
+    /**
+     * Obtain the generator used internally. Helpful for passing to functions
+     * like std::shuffle.
+     */
+    inline std::mt19937 generator()
+    {
+        return gen;
+    }
 
     /**
      * Generate n random bytes (uint8_t), and place them in *result. Result should be large
@@ -40,7 +52,7 @@ namespace randomize
     {
         for (size_t i = 0; i < n; i++)
         {
-            result[i] = distribution(gen);
+            result[i] = static_cast<uint8_t>(random_value<uint8_t>(0, std::numeric_limits<uint8_t>::max()));
         }
     }
 
@@ -55,7 +67,7 @@ namespace randomize
 
         for (size_t i = 0; i < n; i++)
         {
-            result.push_back(distribution(gen));
+            result.push_back(static_cast<uint8_t>(random_value<uint8_t>(0, std::numeric_limits<uint8_t>::max())));
         }
 
         return result;
@@ -68,11 +80,7 @@ namespace randomize
     template <typename T>
     T randomValue()
     {
-        std::uniform_int_distribution<T> distribution{
-            std::numeric_limits<T>::min(), std::numeric_limits<T>::max()
-        };
-
-        return distribution(gen);
+        return random_value<T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
     }
 
     /**
@@ -85,16 +93,48 @@ namespace randomize
     template <typename T>
     T randomValue(T min, T max)
     {
-        std::uniform_int_distribution<T> distribution{min, max};
-        return distribution(gen);
+        return random_value<T>(min, max);
+    }
+
+    /**
+     * Generate a random value of the type specified, in the range [min, max]
+     * Note that both min, and max, are included in the results. Therefore,
+     * randomValue(0, 100), will generate numbers between 0 and 100.
+     *
+     * Note that min must be <= max, or undefined behaviour will occur.
+     */
+    template <typename T>
+    T random_value(T min, T max)
+    {
+        std::lock_guard<std::mutex> lock(random_lock);
+        std::uniform_int_distribution<T> dist(min, max);
+        return dist(gen);
     }
 
     /**
      * Obtain the generator used internally. Helpful for passing to functions
      * like std::shuffle.
      */
-    inline std::mt19937 generator()
+    inline std::mutex random_lock;
+    inline std::random_device random_engine;
+
+    /**
+     * Shuffle the range [first, last) using the random engine
+     */
+    template <typename Iter>
+    void shuffle(Iter first, Iter last)
     {
-        return gen;
+        size_t count = std::distance(first, last);
+        if (count < 2) {
+            return;
+        }
+
+        std::lock_guard<std::mutex> lock(random_lock);
+        for (size_t i = count - 1; i > 0; --i) {
+            size_t j = random_value<size_t>(0, i);
+            if (i != j) {
+                std::swap(first[i], first[j]);
+            }
+        }
     }
 }

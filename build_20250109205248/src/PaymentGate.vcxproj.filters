@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\PaymentGate\NodeFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\PaymentGate\PaymentServiceJsonRpcMessages.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\PaymentGate\PaymentServiceJsonRpcServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\PaymentGate\WalletService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\PaymentGate\WalletServiceErrorCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\PaymentGate\NodeFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\PaymentGate\PaymentServiceJsonRpcMessages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\PaymentGate\PaymentServiceJsonRpcServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\PaymentGate\WalletService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\PaymentGate\WalletServiceErrorCategory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{BC6D142E-BAAF-384B-BEB0-0F7DE77566DC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DF0E8586-CE7D-3C72-8437-215FA62A13BD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

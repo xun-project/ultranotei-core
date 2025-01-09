@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\aux_hash.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\chacha8.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\crypto-ops-data.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\crypto-ops.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\crypto.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\cryptonight.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\groestl.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\hash.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\keccak.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\oaes_lib.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\random.c" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\crypto\tree-hash.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\aux_hash.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\chacha8.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\cn_aux.hpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\coin_algos.hpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\crypto-ops.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\crypto.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\cryptonight.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\cryptonight.hpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\generic-ops.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\groestl.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\groestl_tables.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\hash-ops.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\hash.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\initializer.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\keccak.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\oaes_config.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\oaes_lib.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\random.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\randomize.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\rctTypes.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\crypto\soft_aes.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

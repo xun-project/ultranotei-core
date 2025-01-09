@@ -61,6 +61,10 @@ namespace cn {
     virtual bool haveSpentKeyImages(const cn::Transaction& tx) override;
     virtual bool checkTransactionSize(size_t blobSize) override;
 
+    bool checkTransactionInputs(const cn::Transaction& tx, uint32_t height, crypto::Hash& blockId, BlockInfo* tail = nullptr);
+    uint64_t getCurrentCumulativeBlocksizeLimit() const;
+    bool haveTransactionKeyImagesAsSpent(const Transaction& tx);
+
     bool init() { return init(tools::getDefaultDataDirectory(), true); }
     bool init(const std::string& config_folder, bool load_existing);
     bool deinit();
@@ -106,7 +110,6 @@ namespace cn {
     bool getBackwardBlocksSize(size_t from_height, std::vector<size_t>& sz, size_t count);
     bool getTransactionOutputGlobalIndexes(const crypto::Hash& tx_id, std::vector<uint32_t>& indexs);
     bool get_out_by_msig_gindex(uint64_t amount, uint64_t gindex, MultisignatureOutput& out);
-    bool checkTransactionInputs(const Transaction& tx, uint32_t& pmax_used_block_height, crypto::Hash& max_used_block_id, BlockInfo* tail = 0);
     uint64_t getCurrentCumulativeBlocksizeLimit();
     uint64_t blockDifficulty(size_t i);
     bool getBlockContainingTransaction(const crypto::Hash& txId, crypto::Hash& blockId, uint32_t& blockHeight);
@@ -308,7 +311,6 @@ bool have_tx_keyimg_as_spent(const crypto::KeyImage &key_im);
     bool update_next_comulative_size_limit();
     bool check_tx_input(const KeyInput& txin, const crypto::Hash& tx_prefix_hash, const std::vector<crypto::Signature>& sig, uint32_t* pmax_related_block_height = NULL);
     bool checkTransactionInputs(const Transaction& tx, const crypto::Hash& tx_prefix_hash, uint32_t* pmax_used_block_height = NULL);
-    bool checkTransactionInputs(const Transaction& tx, uint32_t* pmax_used_block_height = NULL);
     bool check_tx_outputs(const Transaction& tx) const;
 
     const TransactionEntry& transactionByIndex(TransactionIndex index);
@@ -392,4 +394,3 @@ bool have_tx_keyimg_as_spent(const crypto::KeyImage &key_im);
     return true;
   }
 }
-

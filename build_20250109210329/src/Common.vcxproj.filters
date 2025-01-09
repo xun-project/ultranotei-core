@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Base58.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Base64.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\BlockingQueue.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\CommandLine.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\ConsoleHandler.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\ConsoleTools.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\DnsTools.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\FileMappedVector.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\IInputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\IOutputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\JsonValue.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Math.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\MemoryInputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\PathTools.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\ScopeExit.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\SignalHandler.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StdInputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StdOutputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StreamTools.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringInputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringOutputStream.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringTools.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringView.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Util.cpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\VectorOutputStream.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ArrayRef.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ArrayView.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Base58.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Base64.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\BinaryArray.hpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\BlockingQueue.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ColouredMsg.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\CommandLine.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ConsoleHandler.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ConsoleTools.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\DnsTools.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\FileMappedVector.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\IInputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\IOutputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\JsonValue.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Math.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\MemoryInputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ObserverManager.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\PathTools.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ScopeExit.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ShuffleGenerator.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\SignalHandler.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StdInputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StdOutputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StreamTools.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringBuffer.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringInputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringOutputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringTools.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringView.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Util.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Varint.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\VectorOutputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\int-util.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\pod-class.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\static_assert.h" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

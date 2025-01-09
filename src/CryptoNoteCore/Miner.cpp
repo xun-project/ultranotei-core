@@ -251,7 +251,7 @@ namespace cn
     }
 
     m_threads.clear();
-    logger(INFO, YELLOW) << "- Miner.cpp - " << "Mining has been stopped, " << m_threads.size() << " finished" ;
+    logger(static_cast<logging::Level>(logging::INFO)) << "- Miner.cpp - " << "Mining has been stopped, " << m_threads.size() << " finished" ;
     return true;
   }
   //-----------------------------------------------------------------------------------------------------

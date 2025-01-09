@@ -1,13 +1,32 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.15)
 
 set(VERSION "2.1")
 # Packaged from commit dbfc92e1c9e3773c95c15b2547b8206d9dec8da9
 set(COMMIT dbfc92e)
 set(REFS " (HEAD -> master)")
 
-set(CMAKE_CXX_STANDARD 11)
+# Set modern C++ standard
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set compiler requirements
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX /MP")
+    if(MSVC_VERSION LESS 1910)
+        message(FATAL_ERROR "This project requires Visual Studio 2017 or newer")
+    endif()
+else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7.3)
+            message(FATAL_ERROR "This project requires GCC 4.7.3 or newer")
+        endif()
+    endif()
+endif()
+
+# Build settings
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
 set(CMAKE_SKIP_INSTALL_RULES OFF)
@@ -44,6 +63,16 @@ include_directories(src/Platform/Linux)
 endif()
 
 set(STATIC ${MSVC} CACHE BOOL "Link libraries statically")
+
+# Set Boost variables before find_package
+if(MSVC)
+    set(BOOST_ROOT "C:/local/boost_1_72_0" CACHE PATH "Boost root directory")
+    set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib64-msvc-14.2" CACHE PATH "Boost library directory")
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC_RUNTIME ON)
+    set(Boost_USE_MULTITHREADED ON)
+    set(Boost_NO_SYSTEM_PATHS ON)
+endif()
 
 # Don't bother searching for readline on windows
 if (NOT MSVC)
@@ -154,7 +183,25 @@ if(STATIC)
 endif()
 
 #set(Boost_DEBUG on)
-find_package(Boost 1.55 REQUIRED COMPONENTS system filesystem thread date_time chrono regex serialization program_options)
+find_package(Boost 1.72.0 REQUIRED COMPONENTS
+    system
+    filesystem
+    thread
+    date_time
+    chrono
+    regex
+    serialization
+    program_options
+    atomic
+)
+
+if(Boost_FOUND)
+    message(STATUS "Boost found: ${Boost_INCLUDE_DIRS}")
+    message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
+else()
+    message(FATAL_ERROR "Could not find Boost")
+endif()
+
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 if(MINGW)
   set(Boost_LIBRARIES "${Boost_LIBRARIES};ws2_32;mswsock")

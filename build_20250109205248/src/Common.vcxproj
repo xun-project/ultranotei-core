@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A536D795-5C5C-3D18-8131-3565B194BA47}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>Common</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\github-repos\ultranotei-core\build_20250109205248\src\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Common.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\github-repos\ultranotei-core\build_20250109205248\src\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Common.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\github-repos\ultranotei-core\build_20250109205248\src\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Common.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4345</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4345</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DisableSpecificWarnings>4996;4345</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;WIN32_LEAN_AND_MEAN;GTEST_HAS_TR1_TUPLE=0;_VARIADIC_MAX=8;__SSE4_1__;STATICLIB;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\github-repos\ultranotei-core\include;C:\github-repos\ultranotei-core\src;C:\github-repos\ultranotei-core\external;C:\github-repos\ultranotei-core\build_20250109205248\version;C:\github-repos\ultranotei-core\src\Platform\Windows;C:\github-repos\ultranotei-core\src\platform\msc;C:\local\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ArrayRef.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ArrayView.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Base58.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Base58.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Base64.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Base64.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\BinaryArray.hpp" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\BlockingQueue.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\BlockingQueue.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ColouredMsg.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\CommandLine.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\CommandLine.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\ConsoleHandler.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ConsoleHandler.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\ConsoleTools.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ConsoleTools.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\DnsTools.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\DnsTools.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\FileMappedVector.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\FileMappedVector.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\IInputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\IInputStream.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\IOutputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\IOutputStream.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\JsonValue.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\JsonValue.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Math.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Math.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\MemoryInputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\MemoryInputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ObserverManager.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\PathTools.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\PathTools.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\ScopeExit.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ScopeExit.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\ShuffleGenerator.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\SignalHandler.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\SignalHandler.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StdInputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StdInputStream.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StdOutputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StdOutputStream.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StreamTools.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StreamTools.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringBuffer.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringInputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringInputStream.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringOutputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringOutputStream.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringTools.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringTools.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\StringView.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\StringView.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\Util.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Util.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\Varint.h" />
+    <ClCompile Include="C:\github-repos\ultranotei-core\src\Common\VectorOutputStream.cpp" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\VectorOutputStream.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\int-util.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\pod-class.h" />
+    <ClInclude Include="C:\github-repos\ultranotei-core\src\Common\static_assert.h" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
