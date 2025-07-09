@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(VERSION "2.2")
+set(VERSION "2.3")
 # Packaged from commit 4494979e9cbfbd0a692d45d78c99ea795e238a8c
 set(COMMIT 4494979)
 set(REFS " (HEAD -> master)")

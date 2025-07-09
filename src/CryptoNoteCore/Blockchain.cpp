@@ -438,6 +438,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
       loadBlockchainIndices();
     }
 
+    loadBlockchainIndices();
 
   } else {
     m_blocks.clear();
