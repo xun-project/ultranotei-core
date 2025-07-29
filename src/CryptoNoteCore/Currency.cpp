@@ -68,7 +68,12 @@ const std::vector<uint64_t> Currency::REWARD_INCREASING_FACTOR = {
 	12000000, 12250000, 12500000, 12750000,
 	13000000, 13250000, 13500000, 13750000,
 	14000000, 14250000, 14500000, 14750000,
-	15000000
+	15000000, 15250000, 15500000, 15750000,
+	16000000, 16250000, 16500000, 16750000,
+	17000000, 17250000, 17500000, 17750000,
+	18000000, 18250000, 18500000, 18750000,
+	19000000, 19250000, 19500000, 19750000,
+	20000000
 };
 
 bool Currency::init() {
@@ -162,8 +167,12 @@ uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint32_t h
   }
 
   uint64_t incrIntervals = static_cast<uint64_t>(height) / REWARD_INCREASE_INTERVAL;
-  assert(incrIntervals < REWARD_INCREASING_FACTOR.size());
-  uint64_t base_reward = START_BLOCK_REWARD + REWARD_INCREASING_FACTOR[incrIntervals];
+  uint64_t base_reward = START_BLOCK_REWARD;
+  if (incrIntervals < REWARD_INCREASING_FACTOR.size()) {
+    base_reward += REWARD_INCREASING_FACTOR[incrIntervals];
+  } else {
+    base_reward = MAX_BLOCK_REWARD;
+  }
   base_reward = (std::min)(base_reward, MAX_BLOCK_REWARD);
   base_reward = (std::min)(base_reward, m_moneySupply - alreadyGeneratedCoins);
 
