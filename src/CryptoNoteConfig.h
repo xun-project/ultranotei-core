@@ -137,14 +137,14 @@ const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT 		= 128; // by default, blocks
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT 		= 1000;
 const size_t   COMMAND_RPC_GET_OBJECTS_MAX_COUNT 		= 1000;
 
-const int      P2P_DEFAULT_PORT 				= 42000;
+const int      P2P_DEFAULT_PORT 				= 42001;
 const int      RPC_DEFAULT_PORT 				= 43000;
 
 
 /* P2P Network Configuration Section - This defines our current P2P network version
 and the minimum version for communication between nodes */
-const uint8_t  P2P_CURRENT_VERSION 				= 1;
-const uint8_t  P2P_MINIMUM_VERSION 				= 1;
+const uint8_t  P2P_CURRENT_VERSION 				= 2;
+const uint8_t  P2P_MINIMUM_VERSION 				= 2;
 const uint8_t  P2P_UPGRADE_WINDOW  				= 2;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT 			= 1000;
@@ -160,15 +160,15 @@ const uint32_t P2P_DEFAULT_CONNECTION_TIMEOUT 			= 5000; 					  // 5 seconds
 const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT 		= 2000; // 2 seconds
 const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT 			= 60 * 2 * 1000; // 2 minutes
 const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT 		= 5000; // 5 seconds
-const char     P2P_STAT_TRUSTED_PUB_KEY[] 			= "e9a5f0d30549afde49c9bfbaa52ac60afdc46304642b460a9ea34bf7a4ef7061";
+const char     P2P_STAT_TRUSTED_PUB_KEY[] 			= "8f3a813a6f7a1e1e3c7b2f9d4a5c8e0f2b6d1e3a7c9e2f4d6b8a0c3e5f7a9d2b4";
 
 // Seed Nodes
 const std::initializer_list<const char*> SEED_NODES  = {
-   "94.72.101.233:42000",     // seed1.ultranote.org
-   "139.180.136.6:42000",   // seed2.ultranote.org
-   "62.171.173.164:42000",  // seed3.ultranote.org
-   "75.119.152.125:42000", // seed4.ultranote.org
-   "178.18.251.66:42000",   // node1.ultranote.org
+   "94.72.101.233:42001",     // seed1.ultranote.org
+   // "139.180.136.6:42001",   // seed2.ultranote.org
+   "62.171.173.164:42001",  // seed3.ultranote.org
+   "75.119.152.125:42001", // seed4.ultranote.org
+   "178.18.251.66:42001",   // node1.ultranote.org
   
 
    
@@ -516,6 +516,10 @@ const std::initializer_list<CheckpointData> CHECKPOINTS  = {
  {1180000, "8f5bc160079355abf431ee59541c90c4cbe24dcf2706febd4ff45bbc545cf367"},
  {1190000, "8f8dae40bc2251e5e57bf17d08f7cb86bc9dc9fc8eebecf42381e71384ddd5b2"},
  {1200000, "c923458806fee4b099954f01c424c32122292dad51d2126246212bc2fa841120"},
+
+ // version 2.4 rollback
+
+ {1341997, "a157722bcd6e0fe0918306fa714dffb8424353246f0545bfc7f0c3b81d6130a4"}
  
 };
 
