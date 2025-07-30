@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(VERSION "2.4")
-# Packaged from commit 51901798e7831eeb77d0159ef6189a8f133dd21f
-set(COMMIT 5190179)
+# Packaged from commit 5c7029e87d57f3db59b2903b45a0f4e8e2bfe64e
+set(COMMIT 5c7029e)
 set(REFS " (HEAD -> master)")
 
 set(CMAKE_CXX_STANDARD 11)
