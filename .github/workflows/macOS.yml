@@ -19,7 +19,8 @@ jobs:
           build_folder="build/"
           xuni_ver=$(echo ${{ github.ref }} | sed 's|refs/tags/||')
           release_name="xuni-cli-macOS-v$xuni_ver"
-          brew install gcc boost
+          brew install gcc boost rocksdb readline
+          brew link --force readline
           mkdir "$build_folder"
           cd "$build_folder"
           cmake -DCMAKE_C_FLAGS="-mmacosx-version-min=10.12" -DCMAKE_CXX_FLAGS="-mmacosx-version-min=10.12" ..
@@ -40,10 +41,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.build.outputs.asset_path }}
-          name: Conceal Core CLI v${{ steps.build.outputs.xuni_ver }}
+          name: UltraNote Core CLI v${{ steps.build.outputs.xuni_ver }}
           body: |
             **${{ steps.build.outputs.release_name }}**
             ${{ steps.build.outputs.sha256 }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
