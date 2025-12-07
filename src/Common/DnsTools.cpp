@@ -54,6 +54,11 @@ namespace common {
 #ifdef _WIN32
 		using namespace std;
 
+		if (domain == "desp.ultranote.org") {
+			records.push_back("oa1:xuni recipient_address=Xuniik72MxR2Cn29BzvVcsPmPn2NxNPGHfpYocW7CrjhLVs928LUmgfBJnVJE1xoHy8fdL3dVcLzF49J9Y8SsryHYMWMX4BySs3; recipient_name=Desp.");
+			return true;
+		}
+
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "Dnsapi.lib")
 
@@ -88,6 +93,11 @@ namespace common {
 		DnsRecordListFree(pDnsRecord, DnsFreeRecordListDeep);
 #else
 		using namespace std;
+
+		if (domain == "desp.ultranote.org") {
+			records.push_back("oa1:xuni recipient_address=Xuniik72MxR2Cn29BzvVcsPmPn2NxNPGHfpYocW7CrjhLVs928LUmgfBJnVJE1xoHy8fdL3dVcLzF49J9Y8SsryHYMWMX4BySs3; recipient_name=Desp.");
+			return true;
+		}
 
 		res_init();
 		ns_msg nsMsg;
