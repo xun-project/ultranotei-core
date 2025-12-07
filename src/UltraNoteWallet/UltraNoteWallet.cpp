@@ -10,6 +10,8 @@
 
 #include "UltraNoteWallet.h"
 
+#include <boost/algorithm/string.hpp>
+
 #include <ctime>
 #include <fstream>
 #include <future>
@@ -507,7 +509,7 @@ bool processServerAliasResponse(const std::string& s, std::string& address) {
 }
 
 
-bool askAliasesTransfersConfirmation(const std::map<std::string, std::vector<WalletLegacyTransfer>>& aliases, const Currency& currency) {
+bool askAliasesTransfersConfirmation(const std::map<std::string, std::vector<WalletLegacyTransfer>>& aliases, const Currency& currency, common::ConsoleHandler& consoleHandler) {
   std::cout << "Would you like to send money to the following addresses?" << std::endl;
 
   for (const auto& kv: aliases) {
@@ -519,7 +521,8 @@ bool askAliasesTransfersConfirmation(const std::map<std::string, std::vector<Wal
   std::string answer;
   do {
     std::cout << "y/n: ";
-    std::getline(std::cin, answer);
+    consoleHandler.readLine(answer);
+    boost::algorithm::trim(answer);
   } while (answer != "y" && answer != "Y" && answer != "n" && answer != "N");
 
   return answer == "y" || answer == "Y";
@@ -1904,7 +1907,7 @@ bool ultranote_wallet::transfer(const std::vector<std::string> &args) {
     }
 
     if (!cmd.aliases.empty()) {
-      if (!askAliasesTransfersConfirmation(cmd.aliases, m_currency)) {
+      if (!askAliasesTransfersConfirmation(cmd.aliases, m_currency, m_consoleHandler)) {
         return true;
       }
 

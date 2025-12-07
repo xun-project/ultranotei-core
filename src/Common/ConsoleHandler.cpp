@@ -147,6 +147,10 @@ void ConsoleHandler::wait() {
   }
 }
 
+bool ConsoleHandler::readLine(std::string& line) {
+  return m_consoleReader.getline(line);
+}
+
 void ConsoleHandler::requestStop() {
   m_consoleReader.stop();
 }
