@@ -95,17 +95,16 @@ The resulting executables can be found in `build/release/src`.
 
 #### On Windows:
 
-1. Install [Visual Studio 2017 Community Edition](https://www.visualstudio.com/thank-you-downloading-visual-studio/?sku=Community&rel=15&page=inlineinstall)
-2. Install **Desktop development with C++** and **VC++ v140 toolchain**
+1. Install [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/downloads/)
+2. Install **Desktop development with C++**
 3. Install [Boost 1.72.0](https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.1-64.exe/download)
 
 ```cmd
 cd ultranotei-core
 mkdir build
 cd build
-set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%
-cmake -G "Visual Studio 16 2019" .. -DBOOST_ROOT=C:/local/boost_1_72_0
-MSBuild UltraNoteI.sln /p:Configuration=Release /m
+cmake -G "Visual Studio 17 2022" .. -DBOOST_ROOT=C:/local/boost_1_72_0
+cmake --build . --config Release
 ```
 
 #### On Apple:

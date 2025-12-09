@@ -55,7 +55,8 @@ public:
 
   void start(bool startThread = true, const std::string& prompt = "", console::Color promptColor = console::Color::Default);
   void stop();
-  void wait(); 
+  void wait();
+  bool readLine(std::string& line); 
 
 private:
 

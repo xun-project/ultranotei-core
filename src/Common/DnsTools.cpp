@@ -54,6 +54,8 @@ namespace common {
 #ifdef _WIN32
 		using namespace std;
 
+
+
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "Dnsapi.lib")
 
@@ -88,6 +90,8 @@ namespace common {
 		DnsRecordListFree(pDnsRecord, DnsFreeRecordListDeep);
 #else
 		using namespace std;
+
+
 
 		res_init();
 		ns_msg nsMsg;

@@ -12,6 +12,7 @@
 #include <future>
 #include <memory>
 #include <mutex>
+#include <chrono>
 
 #include <boost/program_options/variables_map.hpp>
 
