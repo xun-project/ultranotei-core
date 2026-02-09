@@ -220,9 +220,9 @@ namespace
     bool created = false;
     std::string temporaryName;
 
-    for (size_t i = 1; i < 100; i++)
+    for (size_t i = 1; i < 100; ++i)
     {
-      temporaryName = path + "." + std::to_string(i++);
+      temporaryName = path + "." + std::to_string(i);
 
       if (createOutputBinaryFile(temporaryName, tempFile))
       {
@@ -726,6 +726,7 @@ std::error_code WalletService::createAddress(std::string &address)
     logger(logging::DEBUGGING) << "Creating address";
 
     address = wallet.createAddress();
+    saveWallet();
   }
   catch (std::system_error &x)
   {
@@ -1847,46 +1848,22 @@ std::error_code WalletService::getStatus(
 
   std::vector<cn::TransactionsInBlockInfo> WalletService::getTransactions(const crypto::Hash &blockHash, size_t blockCount) const
   {
-    std::vector<cn::TransactionsInBlockInfo> result = wallet.getTransactions(blockHash, blockCount);
-    if (result.empty())
-    {
-      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
-    }
-
-    return result;
+    return wallet.getTransactions(blockHash, blockCount);
   }
 
   std::vector<cn::TransactionsInBlockInfo> WalletService::getTransactions(uint32_t firstBlockIndex, size_t blockCount) const
   {
-    std::vector<cn::TransactionsInBlockInfo> result = wallet.getTransactions(firstBlockIndex, blockCount);
-    if (result.empty())
-    {
-      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
-    }
-
-    return result;
+    return wallet.getTransactions(firstBlockIndex, blockCount);
   }
 
   std::vector<cn::DepositsInBlockInfo> WalletService::getDeposits(const crypto::Hash &blockHash, size_t blockCount) const
   {
-    std::vector<cn::DepositsInBlockInfo> result = wallet.getDeposits(blockHash, blockCount);
-    if (result.empty())
-    {
-      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
-    }
-
-    return result;
+    return wallet.getDeposits(blockHash, blockCount);
   }
 
   std::vector<cn::DepositsInBlockInfo> WalletService::getDeposits(uint32_t firstBlockIndex, size_t blockCount) const
   {
-    std::vector<cn::DepositsInBlockInfo> result = wallet.getDeposits(firstBlockIndex, blockCount);
-    if (result.empty())
-    {
-      throw std::system_error(make_error_code(cn::error::WalletServiceErrorCode::OBJECT_NOT_FOUND));
-    }
-
-    return result;
+    return wallet.getDeposits(firstBlockIndex, blockCount);
   }
 
   std::vector<TransactionHashesInBlockRpcInfo> WalletService::getRpcTransactionHashes(const crypto::Hash &blockHash, size_t blockCount, const TransactionsInBlockInfoFilter &filter) const
