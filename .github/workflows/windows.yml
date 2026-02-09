@@ -11,20 +11,16 @@ jobs:
     name: Windows
     runs-on: windows-2019
     env:
-      BOOST_ROOT: C:/local/boost_1_72_0
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
       - uses: actions/checkout@master
 
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v1.0.2
 
-      - name: Install Boost
+      - name: Set Boost Environment
         shell: powershell
-        run: |
-          echo "${env:BOOST_ROOT}"
-          $Url = "https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.2-64.exe"
-          (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-          Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=${env:BOOST_ROOT}"
+        run: echo "BOOST_ROOT=$env:BOOST_ROOT_1_72_0" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Build
         shell: powershell
         id: build
