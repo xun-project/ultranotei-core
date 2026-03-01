@@ -164,11 +164,10 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[] 			= "8f3a813a6f7a1e1e3c7b2f9d4a5c8e0f
 
 // Seed Nodes
 const std::initializer_list<const char*> SEED_NODES  = {
-   "94.72.101.233:42001",     // seed1.ultranote.org
-   // "139.180.136.6:42001",   // seed2.ultranote.org
-   "62.171.173.164:42001",  // seed3.ultranote.org
-   "75.119.152.125:42001", // seed4.ultranote.org
-   "178.18.251.66:42001",   // node1.ultranote.org
+   "173.249.23.60:42001",     // node1.ultranote.org
+   "185.196.21.171:42001",   // seed1.ultranote.org
+   "109.199.106.33:42001",  // seed2.ultranote.org
+   
   
 
    
